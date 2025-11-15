@@ -2,12 +2,19 @@
 
 import { useState } from "react";
 
+interface ImportResult {
+  imported: number;
+  errors: number;
+  errorDetails?: string[];
+  parsingErrors?: string[];
+}
+
 interface UploadResult {
   success: boolean;
   message: string;
-  dailyOut?: { imported: number; errors: number };
-  partsStatus?: { imported: number; errors: number };
-  vendors?: { imported: number; errors: number };
+  dailyOut?: ImportResult;
+  partsStatus?: ImportResult;
+  vendors?: ImportResult;
 }
 
 export default function UploadExtractsPage() {
@@ -108,32 +115,116 @@ export default function UploadExtractsPage() {
             </div>
 
             {result.dailyOut && (
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+              <div
+                className={`p-4 border rounded-md ${
+                  result.dailyOut.errors > 0
+                    ? "bg-yellow-50 border-yellow-200"
+                    : "bg-blue-50 border-blue-200"
+                }`}
+              >
                 <h3 className="font-semibold mb-2">Daily Out</h3>
                 <p className="text-sm">
                   Imported: {result.dailyOut.imported} | Errors:{" "}
                   {result.dailyOut.errors}
                 </p>
+                {result.dailyOut.parsingErrors &&
+                  result.dailyOut.parsingErrors.length > 0 && (
+                    <div className="mt-2 text-xs text-red-600">
+                      <p className="font-semibold">Parsing Errors:</p>
+                      <ul className="list-disc ml-4">
+                        {result.dailyOut.parsingErrors.map((err, i) => (
+                          <li key={i}>{err}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                {result.dailyOut.errorDetails &&
+                  result.dailyOut.errorDetails.length > 0 && (
+                    <div className="mt-2 text-xs text-red-600">
+                      <p className="font-semibold">Import Errors:</p>
+                      <ul className="list-disc ml-4">
+                        {result.dailyOut.errorDetails.map((err, i) => (
+                          <li key={i}>{err}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
               </div>
             )}
 
             {result.partsStatus && (
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+              <div
+                className={`p-4 border rounded-md ${
+                  result.partsStatus.errors > 0
+                    ? "bg-yellow-50 border-yellow-200"
+                    : "bg-blue-50 border-blue-200"
+                }`}
+              >
                 <h3 className="font-semibold mb-2">Parts Status</h3>
                 <p className="text-sm">
                   Imported: {result.partsStatus.imported} | Errors:{" "}
                   {result.partsStatus.errors}
                 </p>
+                {result.partsStatus.parsingErrors &&
+                  result.partsStatus.parsingErrors.length > 0 && (
+                    <div className="mt-2 text-xs text-red-600">
+                      <p className="font-semibold">Parsing Errors:</p>
+                      <ul className="list-disc ml-4">
+                        {result.partsStatus.parsingErrors.map((err, i) => (
+                          <li key={i}>{err}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                {result.partsStatus.errorDetails &&
+                  result.partsStatus.errorDetails.length > 0 && (
+                    <div className="mt-2 text-xs text-red-600">
+                      <p className="font-semibold">Import Errors:</p>
+                      <ul className="list-disc ml-4">
+                        {result.partsStatus.errorDetails.map((err, i) => (
+                          <li key={i}>{err}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
               </div>
             )}
 
             {result.vendors && (
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+              <div
+                className={`p-4 border rounded-md ${
+                  result.vendors.errors > 0
+                    ? "bg-yellow-50 border-yellow-200"
+                    : "bg-blue-50 border-blue-200"
+                }`}
+              >
                 <h3 className="font-semibold mb-2">Vendors</h3>
                 <p className="text-sm">
                   Imported: {result.vendors.imported} | Errors:{" "}
                   {result.vendors.errors}
                 </p>
+                {result.vendors.parsingErrors &&
+                  result.vendors.parsingErrors.length > 0 && (
+                    <div className="mt-2 text-xs text-red-600">
+                      <p className="font-semibold">Parsing Errors:</p>
+                      <ul className="list-disc ml-4">
+                        {result.vendors.parsingErrors.map((err, i) => (
+                          <li key={i}>{err}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                {result.vendors.errorDetails &&
+                  result.vendors.errorDetails.length > 0 && (
+                    <div className="mt-2 text-xs text-red-600">
+                      <p className="font-semibold">Import Errors:</p>
+                      <ul className="list-disc ml-4">
+                        {result.vendors.errorDetails.map((err, i) => (
+                          <li key={i}>{err}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
               </div>
             )}
           </div>

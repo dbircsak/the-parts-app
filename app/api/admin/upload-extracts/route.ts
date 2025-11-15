@@ -21,27 +21,34 @@ export async function POST(request: NextRequest) {
     const results: Record<string, any> = {};
 
     const dailyOutFile = formData.get("daily_out") as File;
-    if (dailyOutFile) {
+    if (dailyOutFile && dailyOutFile.size > 0) {
       const content = await dailyOutFile.text();
-      const rows = await parseCSV(content);
-      const result = await importDailyOut(rows);
-      results.dailyOut = result;
+      const parsed = await parseCSV(content);
+      const result = await importDailyOut(parsed.data);
+      results.dailyOut = { ...result, parsingErrors: parsed.parsingErrors };
     }
 
     const partsStatusFile = formData.get("parts_status") as File;
-    if (partsStatusFile) {
+    if (partsStatusFile && partsStatusFile.size > 0) {
       const content = await partsStatusFile.text();
-      const rows = await parseCSV(content);
-      const result = await importPartsStatus(rows);
-      results.partsStatus = result;
+      const parsed = await parseCSV(content);
+      const result = await importPartsStatus(parsed.data);
+      results.partsStatus = { ...result, parsingErrors: parsed.parsingErrors };
     }
 
     const vendorsFile = formData.get("vendors") as File;
-    if (vendorsFile) {
+    if (vendorsFile && vendorsFile.size > 0) {
       const content = await vendorsFile.text();
-      const rows = await parseCSV(content);
-      const result = await importVendors(rows);
-      results.vendors = result;
+      const parsed = await parseCSV(content);
+      const result = await importVendors(parsed.data);
+      results.vendors = { ...result, parsingErrors: parsed.parsingErrors };
+    }
+
+    if (Object.keys(results).length === 0) {
+      return NextResponse.json(
+        { error: "No files were selected for upload" },
+        { status: 400 }
+      );
     }
 
     return NextResponse.json({
@@ -61,14 +68,17 @@ export async function POST(request: NextRequest) {
 async function importDailyOut(rows: any[]) {
   let imported = 0;
   let errors = 0;
+  const errorDetails: string[] = [];
 
   await prisma.dailyOut.deleteMany();
 
-  for (const row of rows) {
+  for (let index = 0; index < rows.length; index++) {
+    const row = rows[index];
     try {
       const roNumber = parseNumber(row.ro_number);
       if (!roNumber) {
         errors++;
+        errorDetails.push(`Row ${index + 1}: Missing or invalid RO number`);
         continue;
       }
 
@@ -91,24 +101,37 @@ async function importDailyOut(rows: any[]) {
       imported++;
     } catch (err) {
       errors++;
+      errorDetails.push(
+        `Row ${index + 1}: ${err instanceof Error ? err.message : String(err)}`
+      );
+      console.error(`Daily Out import error at row ${index + 1}:`, err);
     }
   }
 
-  return { imported, errors };
+  if (errorDetails.length > 0) {
+    console.warn(`Daily Out import completed with ${errors} error(s):\n${errorDetails.join("\n")}`);
+  }
+
+  return { imported, errors, errorDetails };
 }
 
 async function importPartsStatus(rows: any[]) {
   let imported = 0;
   let errors = 0;
+  const errorDetails: string[] = [];
 
   await prisma.partsStatus.deleteMany();
 
-  for (const row of rows) {
+  for (let index = 0; index < rows.length; index++) {
+    const row = rows[index];
     try {
       const roNumber = parseNumber(row.ro_number);
       const line = parseNumber(row.line);
       if (!roNumber || !line) {
         errors++;
+        errorDetails.push(
+          `Row ${index + 1}: Missing or invalid RO number or line number`
+        );
         continue;
       }
 
@@ -133,23 +156,34 @@ async function importPartsStatus(rows: any[]) {
       imported++;
     } catch (err) {
       errors++;
+      errorDetails.push(
+        `Row ${index + 1}: ${err instanceof Error ? err.message : String(err)}`
+      );
+      console.error(`Parts Status import error at row ${index + 1}:`, err);
     }
   }
 
-  return { imported, errors };
+  if (errorDetails.length > 0) {
+    console.warn(`Parts Status import completed with ${errors} error(s):\n${errorDetails.join("\n")}`);
+  }
+
+  return { imported, errors, errorDetails };
 }
 
 async function importVendors(rows: any[]) {
   let imported = 0;
   let errors = 0;
+  const errorDetails: string[] = [];
 
   await prisma.vendor.deleteMany();
 
-  for (const row of rows) {
+  for (let index = 0; index < rows.length; index++) {
+    const row = rows[index];
     try {
       const vendorName = row.vendor_name?.trim();
       if (!vendorName) {
         errors++;
+        errorDetails.push(`Row ${index + 1}: Missing or empty vendor name`);
         continue;
       }
 
@@ -170,8 +204,16 @@ async function importVendors(rows: any[]) {
       imported++;
     } catch (err) {
       errors++;
+      errorDetails.push(
+        `Row ${index + 1}: ${err instanceof Error ? err.message : String(err)}`
+      );
+      console.error(`Vendors import error at row ${index + 1}:`, err);
     }
   }
 
-  return { imported, errors };
+  if (errorDetails.length > 0) {
+    console.warn(`Vendors import completed with ${errors} error(s):\n${errorDetails.join("\n")}`);
+  }
+
+  return { imported, errors, errorDetails };
 }

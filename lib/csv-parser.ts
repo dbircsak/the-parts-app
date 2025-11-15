@@ -42,20 +42,36 @@ export interface VendorRow {
   electronic: string;
 }
 
-export function parseCSV(content: string): Promise<any[]> {
-  return new Promise((resolve, reject) => {
+export function parseCSV(
+  content: string
+): Promise<{ data: any[]; parsingErrors: string[] }> {
+  return new Promise((resolve) => {
     Papa.parse(content, {
       header: true,
       skipEmptyLines: true,
       complete: (result) => {
-        if (result.errors.length > 0) {
-          reject(new Error("CSV parsing failed"));
-        } else {
-          resolve(result.data as any[]);
+        const parsingErrors = result.errors
+          .map((err: any) => `Row ${err.row}: ${err.message}`)
+          .filter(Boolean);
+
+        if (parsingErrors.length > 0) {
+          console.warn(
+            `CSV parsing had ${result.errors.length} error(s): ${parsingErrors.join("; ")}`
+          );
         }
+
+        resolve({
+          data: result.data as any[],
+          parsingErrors,
+        });
       },
       error: (error) => {
-        reject(error);
+        console.error("CSV parse error:", error);
+        // Continue with empty data if parse fails
+        resolve({
+          data: [],
+          parsingErrors: [String(error)],
+        });
       },
     });
   });
