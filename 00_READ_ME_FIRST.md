@@ -11,7 +11,7 @@ This project is **complete and ready to run**. All code, documentation, and samp
 ```bash
 npm install
 npm run db:migrate
-node scripts/seed.js
+npm run db:seed
 npm run dev
 ```
 
@@ -64,7 +64,7 @@ Start with these in order:
 2. Update `DATABASE_URL` in `.env`
 3. Run `npm install`
 4. Run `npm run db:migrate`
-5. Run `node scripts/seed.js`
+5. Run `npm run db:seed`
 
 Then `npm run dev` and open http://localhost:3000
 
@@ -115,7 +115,7 @@ Check the documentation. Everything is documented.
 ## Ready?
 
 ```bash
-npm install && npm run db:migrate && node scripts/seed.js && npm run dev
+npm install && npm run db:migrate && npm run db:seed && npm run dev
 ```
 
 Open http://localhost:3000

@@ -69,7 +69,7 @@ model DailyOut {
   vehicle               String
   vehicleColor          String
   licensePlateNumber    String
-  partsReceivedPct      Decimal  @db.Numeric(5, 3)
+  partsReceivedPct      Decimal  @db.Decimal(5, 3)
   vehicleIn             DateTime
   currentPhase          String
   scheduledOut          DateTime?
