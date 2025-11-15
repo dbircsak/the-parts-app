@@ -1,0 +1,6 @@
+ro_number,line,part_number,part_description,part_type,vendor_name,ro_qty,ordered_qty,ordered_date,expected_delivery,received_qty,invoice_date,returned_qty
+1001,1,FD-2341,Door Panel,Panel,ACE Auto Parts,2,2,2024-01-14,2024-01-16,2,2024-01-16,0
+1001,2,WD-5678,Window Regulator,Hardware,ACE Auto Parts,1,0,,,,0
+1002,1,BD-1234,Bumper Assembly,Assembly,National Distributors,1,1,2024-01-13,2024-01-15,0,,0
+1002,2,CP-9999,Clips and Fasteners,Hardware,Apex Supplies,5,5,2024-01-13,2024-01-14,5,2024-01-14,0
+1003,1,FM-3333,Fender,Panel,National Distributors,1,1,2024-01-12,2024-01-14,1,2024-01-14,0

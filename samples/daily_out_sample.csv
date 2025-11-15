@@ -1,0 +1,4 @@
+ro_number,owner,vehicle,vehicle_color,license_plate_number,parts_received_pct,vehicle_in,current_phase,scheduled_out,body_technician,estimator
+1001,John Smith,Honda Civic,Blue,ABC123,75.5,2024-01-15T08:00:00,Paint,2024-01-18,Mike Johnson,Sarah Davis
+1002,Jane Doe,Toyota Camry,Silver,XYZ789,45.0,2024-01-14T10:30:00,Body Work,2024-01-17,Mike Johnson,Sarah Davis
+1003,Bob Wilson,Ford F-150,Red,DEF456,90.0,2024-01-13T14:00:00,Assembly,2024-01-16,Tom Lee,John Brown

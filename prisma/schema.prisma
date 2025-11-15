@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String
+  role          Role      @default(TECHNICIAN)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  accounts      Account[]
+  sessions      Session[]
+  tasks         Task[]
+  auditEvents   AuditEvent[]
+  notifications Notification[]
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  @unique
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Role {
+  ADMIN
+  ESTIMATOR
+  TECHNICIAN
+}
+
+model DailyOut {
+  roNumber              Int      @id
+  owner                 String
+  vehicle               String
+  vehicleColor          String
+  licensePlateNumber    String
+  partsReceivedPct      Decimal  @db.Numeric(5, 3)
+  vehicleIn             DateTime
+  currentPhase          String
+  scheduledOut          DateTime?
+  bodyTechnician        String
+  estimator             String
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  @@map("daily_out")
+}
+
+model PartsStatus {
+  id                Int      @id @default(autoincrement())
+  roNumber          Int
+  line              Int
+  partNumber        String
+  partDescription   String
+  partType          String
+  vendorName        String
+  roQty             Int
+  orderedQty        Int
+  orderedDate       DateTime?
+  expectedDelivery  DateTime?
+  receivedQty       Int
+  invoiceDate       DateTime?
+  returnedQty       Int
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@map("parts_status")
+}
+
+model Vendor {
+  vendorName      String   @id
+  primaryPhone    String
+  fax             String
+  address         String
+  city            String
+  state           String   @db.Char(2)
+  zip             String   @db.VarChar(10)
+  preferred       Boolean
+  electronic      Boolean
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("vendors")
+}
+
+model Material {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  category        String
+  quantity        Int
+  unit            String
+  reorderLevel    Int
+  supplier        String?
+  cost            Decimal  @db.Decimal(10, 2)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Task {
+  id              String   @id @default(cuid())
+  roNumber        Int
+  title           String
+  description     String?
+  assignedTo      String?
+  assignedUser    User?    @relation(fields: [assignedTo], references: [id])
+  status          TaskStatus @default(PENDING)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  completedAt     DateTime?
+  
+  @@index([roNumber])
+  @@index([assignedTo])
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Delivery {
+  id              String   @id @default(cuid())
+  roNumber        Int
+  vendorName      String
+  expectedDate    DateTime
+  actualDate      DateTime?
+  status          DeliveryStatus @default(PENDING)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([roNumber])
+}
+
+enum DeliveryStatus {
+  PENDING
+  ARRIVED
+  LATE
+}
+
+model AuditEvent {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  action          String
+  targetEntity    String
+  targetId        String
+  details         String?
+  
+  createdAt       DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Notification {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  type            NotificationType
+  message         String
+  relatedEntity   String?
+  relatedId       String?
+  read            Boolean  @default(false)
+  
+  createdAt       DateTime @default(now())
+  
+  @@index([userId])
+  @@index([read])
+}
+
+enum NotificationType {
+  PART_ARRIVED
+  DELIVERY_DUE
+  UNORDERED_PARTS
+  TASK_ASSIGNED
+  STATUS_CHANGED
+  IMPORT_COMPLETE
+  IMPORT_ERROR
+}
