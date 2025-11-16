@@ -69,7 +69,7 @@ export default async function MaterialsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-2 text-sm">{material.supplier}</td>
-                  <td className="px-4 py-2 text-sm">${material.cost}</td>
+                  <td className="px-4 py-2 text-sm">${material.cost.toString()}</td>
                 </tr>
               ))}
             </tbody>
