@@ -8,6 +8,12 @@ const config: Config = {
   theme: {
     extend: {},
   },
+  safelist: [
+    'bg-blue-300',
+    'bg-green-300',
+    'bg-yellow-500',
+    'bg-pink-500',
+  ],
   plugins: [],
 }
 

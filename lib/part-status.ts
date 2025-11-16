@@ -12,32 +12,26 @@ export function getPartStatus(
   receivedQty: number,
   returnedQty: number
 ): PartStatus {
-  // 1. BLUE – "Returned"
-  if (returnedQty > 0 && returnedQty >= receivedQty) {
-    return { type: "returned", label: "Returned", color: "bg-blue-500" };
+  // 1. LIGHT BLUE – "Returned"
+  if (returnedQty > 0 && returnedQty === receivedQty) {
+    return { type: "returned", label: "Returned", color: "bg-blue-300" };
   }
 
-  // 2. GREEN – "Received"
-  const netReceived = receivedQty - returnedQty;
-  if (netReceived >= roQty && roQty > 0) {
-    return { type: "received", label: "Received", color: "bg-green-500" };
+  // 2. LIGHT GREEN – "Received" (default)
+  if (receivedQty > 0) {
+    return { type: "received", label: "Received", color: "bg-green-300" };
   }
 
-  // 3. YELLOW – "On Order"
-  if (orderedQty > 0) {
-    return { type: "on_order", label: "On Order", color: "bg-yellow-500" };
+  // 3. YELLOW – "Ordered"
+  if (orderedQty > 0 && receivedQty === 0) {
+    return { type: "on_order", label: "Ordered", color: "bg-yellow-500" };
   }
 
-  // 4. RED – "Not Ordered"
-  if (roQty > 0 && orderedQty === 0 && receivedQty === 0 && returnedQty === 0) {
-    return { type: "not_ordered", label: "Not Ordered", color: "bg-red-500" };
+  // 4. PINK – "Not Ordered"
+  if (roQty > 0 && orderedQty === 0 && receivedQty === 0) {
+    return { type: "not_ordered", label: "Not Ordered", color: "bg-pink-500" };
   }
 
-  // Default fallback – treat as "On Order" if we have any ordered/received/returned quantities
-  // Otherwise default to "Not Ordered"
-  if (orderedQty > 0 || receivedQty > 0 || returnedQty > 0) {
-    return { type: "on_order", label: "On Order", color: "bg-yellow-500" };
-  }
-
-  return { type: "not_ordered", label: "Not Ordered", color: "bg-red-500" };
+  // Default fallback
+  return { type: "not_ordered", label: "Not Ordered", color: "bg-pink-500" };
 }
