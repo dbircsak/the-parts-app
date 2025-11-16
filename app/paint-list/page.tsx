@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import PaintWorkQueue from "@/components/PaintWorkQueue";
 
 export default async function PaintListPage() {
   const session = await auth();
@@ -8,62 +9,73 @@ export default async function PaintListPage() {
     redirect("/login");
   }
 
-  const repairs = await prisma.dailyOut.findMany({
+  // Fetch cars in paint queue, ordered by status and priority
+  const paintQueue = await prisma.workQueue.findMany({
     where: {
-      OR: [
-        { currentPhase: { contains: "Paint", mode: "insensitive" } },
-        { currentPhase: { contains: "paint", mode: "insensitive" } },
-      ],
+      departmentCode: "P", // Paint department
     },
-    orderBy: { vehicleIn: "asc" },
+    include: {
+      dailyOut: true,
+    },
+    orderBy: [
+      { status: "asc" },
+      { priority: "asc" },
+      { createdAt: "asc" },
+    ],
   });
+
+  // Fetch available cars NOT yet in paint work queue
+  const availableCars = await prisma.dailyOut.findMany({
+    where: {
+      NOT: {
+        workQueue: {
+          departmentCode: "P",
+        },
+      },
+    },
+    orderBy: {
+      vehicleIn: "asc",
+    },
+  });
+
+  // Fetch all distinct technicians (body technicians)
+  const allTechnicians = await prisma.dailyOut.findMany({
+    distinct: ["bodyTechnician"],
+    select: {
+      bodyTechnician: true,
+    },
+    orderBy: {
+      bodyTechnician: "asc",
+    },
+  });
+
+  // Transform data
+  const queueData = paintQueue.map((item) => ({
+    roNumber: item.roNumber,
+    owner: item.dailyOut.owner,
+    vehicle: item.dailyOut.vehicle,
+    bodyTechnician: item.dailyOut.bodyTechnician,
+    estimator: item.dailyOut.estimator,
+    status: item.status,
+    priority: item.priority,
+  }));
+
+  const availableData = availableCars.map((car) => ({
+    roNumber: car.roNumber,
+    owner: car.owner,
+    vehicle: car.vehicle,
+    bodyTechnician: car.bodyTechnician,
+    estimator: car.estimator,
+  }));
 
   return (
     <div className="p-4 md:p-8">
       <h1 className="text-3xl font-bold mb-6">Paint List</h1>
-
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-medium">RO</th>
-                <th className="px-4 py-2 text-left text-sm font-medium">
-                  Vehicle
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-medium">
-                  Color
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-medium">
-                  Owner
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-medium">
-                  Scheduled Out
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {repairs.map((repair) => (
-                <tr key={repair.roNumber} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-2 text-sm font-medium">
-                    {repair.roNumber}
-                  </td>
-                  <td className="px-4 py-2 text-sm">{repair.vehicle}</td>
-                  <td className="px-4 py-2 text-sm">{repair.vehicleColor}</td>
-                  <td className="px-4 py-2 text-sm">{repair.owner}</td>
-                  <td className="px-4 py-2 text-sm">
-                    {repair.scheduledOut?.toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {repairs.length === 0 && (
-        <p className="text-gray-500">No vehicles in paint queue.</p>
-      )}
+      <PaintWorkQueue 
+        queuedCars={queueData} 
+        availableCars={availableData}
+        allTechnicians={allTechnicians.map((t) => t.bodyTechnician).filter((t) => t)}
+      />
     </div>
   );
 }

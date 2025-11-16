@@ -75,7 +75,7 @@ export default async function UnorderedPartsPage() {
 
   return (
     <div className="p-4 md:p-8">
-      <h1 className="text-3xl font-bold mb-6">Unordered Parts - Order Queue</h1>
+      <h1 className="text-3xl font-bold mb-6">Unordered Parts</h1>
       <UnorderedPartsList parts={enrichedParts} />
     </div>
   );

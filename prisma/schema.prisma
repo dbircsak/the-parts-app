@@ -79,7 +79,29 @@ model DailyOut {
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   
+  workQueue             WorkQueue?
+  
   @@map("daily_out")
+}
+
+model WorkQueue {
+  roNumber              Int      @id @unique
+  priority              Int      @default(0)
+  departmentCode        String   @db.Char(1)
+  status                WorkQueueStatus @default(NOT_STARTED)
+  
+  dailyOut              DailyOut @relation(fields: [roNumber], references: [roNumber], onDelete: Cascade)
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  @@map("work_queue")
+}
+
+enum WorkQueueStatus {
+  NOT_STARTED
+  UNDERWAY
+  COMPLETED
 }
 
 model PartsStatus {
