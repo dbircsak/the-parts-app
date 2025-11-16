@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import PartNumberLink from "./part-number-link";
+import { getPartStatus } from "@/lib/part-status";
 
 interface Part {
   id: number;
@@ -21,8 +22,19 @@ interface Part {
   returnedQty: number;
 }
 
-type SortField = keyof Part;
+type SortField = keyof Part | "status";
 type SortDirection = "asc" | "desc";
+
+const getStatusSortValue = (roQty: number, orderedQty: number, receivedQty: number, returnedQty: number): number => {
+  const status = getPartStatus(roQty, orderedQty, receivedQty, returnedQty);
+  const order: Record<string, number> = {
+    not_ordered: 0,
+    on_order: 1,
+    received: 2,
+    returned: 3,
+  };
+  return order[status.type] ?? 0;
+};
 
 export default function CarViewPartsList({ parts: initialParts }: { parts: Part[] }) {
   const [sortField, setSortField] = useState<SortField>("line");
@@ -32,19 +44,26 @@ export default function CarViewPartsList({ parts: initialParts }: { parts: Part[
     const filtered = initialParts.filter((part) => part.partType !== "Sublet");
     
     return [...filtered].sort((a, b) => {
-      const aVal = a[sortField];
-      const bVal = b[sortField];
-
-      if (aVal === null || aVal === undefined) return 1;
-      if (bVal === null || bVal === undefined) return -1;
-
       let comparison = 0;
-      if (typeof aVal === "string") {
-        comparison = aVal.localeCompare(bVal as string);
-      } else if (typeof aVal === "number") {
-        comparison = (aVal as number) - (bVal as number);
+
+      if (sortField === "status") {
+        const aVal = getStatusSortValue(a.roQty, a.orderedQty, a.receivedQty, a.returnedQty);
+        const bVal = getStatusSortValue(b.roQty, b.orderedQty, b.receivedQty, b.returnedQty);
+        comparison = aVal - bVal;
       } else {
-        comparison = aVal > bVal ? 1 : -1;
+        const aVal = a[sortField as keyof Part];
+        const bVal = b[sortField as keyof Part];
+
+        if (aVal === null || aVal === undefined) return 1;
+        if (bVal === null || bVal === undefined) return -1;
+
+        if (typeof aVal === "string") {
+          comparison = aVal.localeCompare(bVal as string);
+        } else if (typeof aVal === "number") {
+          comparison = (aVal as number) - (bVal as number);
+        } else {
+          comparison = aVal > bVal ? 1 : -1;
+        }
       }
 
       return sortDirection === "asc" ? comparison : -comparison;
@@ -70,13 +89,13 @@ export default function CarViewPartsList({ parts: initialParts }: { parts: Part[
   };
 
   const ColumnHeader = ({ field, label }: { field: SortField; label: string }) => (
-    <th
-      className="text-left py-3 px-2 cursor-pointer hover:bg-gray-100 transition-colors"
-      onClick={() => handleSort(field)}
-    >
-      {label}
-      <SortIcon field={field} />
-    </th>
+   <th
+     className="px-4 py-2 text-left text-sm font-medium cursor-pointer hover:bg-gray-200 transition-colors"
+     onClick={() => handleSort(field)}
+   >
+     {label}
+     <SortIcon field={field} />
+   </th>
   );
 
   if (sortedParts.length === 0) {
@@ -88,6 +107,20 @@ export default function CarViewPartsList({ parts: initialParts }: { parts: Part[
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b bg-gray-50">
+            <th
+              className="px-4 py-2 text-left text-sm font-medium cursor-pointer hover:bg-gray-200 transition-colors"
+              title="Status"
+              onClick={() => handleSort("status")}
+            >
+              Status
+              {sortField === "status" && (
+                sortDirection === "asc" ? (
+                  <ChevronUp className="w-4 h-4 inline ml-1" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 inline ml-1" />
+                )
+              )}
+            </th>
             <ColumnHeader field="line" label="Line" />
             <ColumnHeader field="partNumber" label="Part Number" />
             <ColumnHeader field="partDescription" label="Description" />
@@ -103,8 +136,16 @@ export default function CarViewPartsList({ parts: initialParts }: { parts: Part[
           </tr>
         </thead>
         <tbody>
-          {sortedParts.map((part) => (
+          {sortedParts.map((part) => {
+            const status = getPartStatus(part.roQty, part.orderedQty, part.receivedQty, part.returnedQty);
+            return (
             <tr key={part.id} className="border-b hover:bg-gray-50">
+              <td className="py-2 px-2 text-sm flex items-center gap-2">
+                <div
+                  className={`w-3 h-3 rounded-full ${status.color}`}
+                  title={status.label}
+                />
+              </td>
               <td className="py-2 px-2">{part.line}</td>
               <td className="py-2 px-2 font-mono text-xs">
                 <PartNumberLink partNumber={part.partNumber} />
@@ -123,22 +164,11 @@ export default function CarViewPartsList({ parts: initialParts }: { parts: Part[
               <td className="py-2 px-2">
                 {part.invoiceDate?.toLocaleDateString() || "-"}
               </td>
-              <td className="py-2 px-2 text-center">
-                <span
-                  className={`px-2 py-1 rounded text-xs font-medium ${
-                    part.receivedQty >= part.roQty
-                      ? "bg-green-100 text-green-800"
-                      : part.receivedQty > 0
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  {part.receivedQty}
-                </span>
-              </td>
+              <td className="py-2 px-2 text-center">{part.receivedQty}</td>
               <td className="py-2 px-2 text-center">{part.returnedQty}</td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>

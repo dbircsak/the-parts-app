@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import PartNumberLink from "./part-number-link";
+import { getPartStatus } from "@/lib/part-status";
 
 interface Part {
   id: number;
@@ -26,37 +27,22 @@ interface Part {
 type SortField = keyof Part | "status";
 type SortDirection = "asc" | "desc";
 
-type StatusType = "critical" | "warning" | "healthy" | "returned";
-
-const getPartStatus = (part: Part): { type: StatusType; label: string; color: string } => {
-  if (part.returnedQty > 0) {
-    return { type: "returned", label: "Returned", color: "bg-blue-500" };
-  }
-  if (part.receivedQty >= part.roQty) {
-    return { type: "healthy", label: "Received", color: "bg-green-500" };
-  }
-  if (part.orderedQty > 0) {
-    return { type: "warning", label: "On Order", color: "bg-yellow-500" };
-  }
-  return { type: "critical", label: "Not Ordered", color: "bg-red-500" };
-};
-
 const getStatusSortValue = (part: Part): number => {
-  const status = getPartStatus(part);
-  const order: Record<StatusType, number> = {
-    critical: 0,
-    warning: 1,
-    healthy: 2,
+  const status = getPartStatus(part.roQty, part.orderedQty, part.receivedQty, part.returnedQty);
+  const order: Record<string, number> = {
+    not_ordered: 0,
+    on_order: 1,
+    received: 2,
     returned: 3,
   };
-  return order[status.type];
+  return order[status.type] ?? 0;
 };
 
 export default function PartsSearchClient({ initialParts }: { initialParts: Part[] }) {
   const [searchFilter, setSearchFilter] = useState("");
   const [sortField, setSortField] = useState<SortField>("roNumber");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
-  const [selectedStatus, setSelectedStatus] = useState<StatusType | "all">("all");
+  const [selectedStatus, setSelectedStatus] = useState<string>("all");
 
   const filteredAndSortedParts = useMemo(() => {
     let filtered = initialParts;
@@ -77,7 +63,7 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
     // Apply status filter
     if (selectedStatus !== "all") {
       filtered = filtered.filter((part) => {
-        const status = getPartStatus(part);
+        const status = getPartStatus(part.roQty, part.orderedQty, part.receivedQty, part.returnedQty);
         return status.type === selectedStatus;
       });
     }
@@ -119,11 +105,11 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
     }
   };
 
-  const statusOptions: { value: StatusType | "all"; label: string; color?: string }[] = [
+  const statusOptions: { value: string; label: string; color?: string }[] = [
     { value: "all", label: "All Statuses" },
-    { value: "critical", label: "🔴 Not Ordered", color: "bg-red-500" },
-    { value: "warning", label: "🟡 On Order", color: "bg-yellow-500" },
-    { value: "healthy", label: "🟢 Received", color: "bg-green-500" },
+    { value: "not_ordered", label: "🔴 Not Ordered", color: "bg-red-500" },
+    { value: "on_order", label: "🟡 On Order", color: "bg-yellow-500" },
+    { value: "received", label: "🟢 Received", color: "bg-green-500" },
     { value: "returned", label: "🔵 Returned", color: "bg-blue-500" },
   ];
 
@@ -159,7 +145,7 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
           />
           <select
             value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value as StatusType | "all")}
+            onChange={(e) => setSelectedStatus(e.target.value)}
             className="px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {statusOptions.map((option) => (
@@ -215,7 +201,7 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
               </thead>
               <tbody>
                 {filteredAndSortedParts.map((part) => {
-                  const status = getPartStatus(part);
+                  const status = getPartStatus(part.roQty, part.orderedQty, part.receivedQty, part.returnedQty);
                   return (
                   <tr key={part.id} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-2 text-sm flex items-center gap-2">

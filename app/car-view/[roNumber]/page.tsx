@@ -6,14 +6,15 @@ import CarViewPartsList from "@/components/car-view-parts-list";
 export default async function CarViewPage({
   params,
 }: {
-  params: { roNumber: string };
+  params: Promise<{ roNumber: string }>;
 }) {
   const session = await auth();
   if (!session) {
     redirect("/login");
   }
 
-  const roNumber = parseInt(params.roNumber, 10);
+  const { roNumber: roNumberStr } = await params;
+  const roNumber = parseInt(roNumberStr, 10);
   if (isNaN(roNumber)) {
     notFound();
   }
