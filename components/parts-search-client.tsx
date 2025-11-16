@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 interface Part {
   id: number;
@@ -12,111 +13,151 @@ interface Part {
   vendorName: string;
   roQty: number;
   orderedQty: number;
-  orderedDate: string | null;
-  expectedDelivery: string | null;
+  orderedDate: Date | null;
+  expectedDelivery: Date | null;
   receivedQty: number;
+  invoiceDate: Date | null;
+  returnedQty: number;
+  owner: string;
 }
 
-export default function PartsSearchClient() {
-  const [query, setQuery] = useState("");
-  const [parts, setParts] = useState<Part[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [searched, setSearched] = useState(false);
+type SortField = keyof Part;
+type SortDirection = "asc" | "desc";
 
-  async function handleSearch() {
-    if (!query.trim()) return;
+export default function PartsSearchClient({ initialParts }: { initialParts: Part[] }) {
+  const [searchFilter, setSearchFilter] = useState("");
+  const [sortField, setSortField] = useState<SortField>("roNumber");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
-    setIsLoading(true);
-    setSearched(true);
+  const filteredAndSortedParts = useMemo(() => {
+    let filtered = initialParts;
 
-    try {
-      const res = await fetch(`/api/parts/search?q=${encodeURIComponent(query)}`);
-      const data = await res.json();
-      setParts(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
+    // Apply filter
+    if (searchFilter.trim()) {
+      const lowerFilter = searchFilter.toLowerCase();
+      filtered = initialParts.filter(
+        (part) =>
+          part.roNumber.toString().includes(lowerFilter) ||
+          part.owner.toLowerCase().includes(lowerFilter) ||
+          part.partNumber.toLowerCase().includes(lowerFilter) ||
+          part.partDescription.toLowerCase().includes(lowerFilter) ||
+          part.vendorName.toLowerCase().includes(lowerFilter)
+      );
     }
-  }
 
-  function handleKeyPress(e: React.KeyboardEvent) {
-    if (e.key === "Enter") {
-      handleSearch();
+    // Apply sort
+    return [...filtered].sort((a, b) => {
+      const aVal = a[sortField];
+      const bVal = b[sortField];
+
+      if (aVal === null || aVal === undefined) return 1;
+      if (bVal === null || bVal === undefined) return -1;
+
+      let comparison = 0;
+      if (typeof aVal === "string") {
+        comparison = aVal.localeCompare(bVal as string);
+      } else if (typeof aVal === "number") {
+        comparison = (aVal as number) - (bVal as number);
+      } else {
+        comparison = aVal > bVal ? 1 : -1;
+      }
+
+      return sortDirection === "asc" ? comparison : -comparison;
+    });
+  }, [initialParts, searchFilter, sortField, sortDirection]);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
     }
-  }
+  };
+
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) return null;
+    return sortDirection === "asc" ? (
+      <ChevronUp className="w-4 h-4 inline ml-1" />
+    ) : (
+      <ChevronDown className="w-4 h-4 inline ml-1" />
+    );
+  };
+
+  const ColumnHeader = ({ field, label }: { field: SortField; label: string }) => (
+    <th
+      className="px-4 py-2 text-left text-sm font-medium cursor-pointer hover:bg-gray-200 transition-colors"
+      onClick={() => handleSort(field)}
+    >
+      {label}
+      <SortIcon field={field} />
+    </th>
+  );
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Search by RO, part number, or description..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={handleSearch}
-            disabled={isLoading}
-            className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50"
-          >
-            {isLoading ? "Searching..." : "Search"}
-          </button>
-        </div>
+      <div className="mb-4 flex flex-col gap-2">
+        <input
+          type="text"
+          placeholder="Filter by RO, owner, part number, description, or vendor..."
+          value={searchFilter}
+          onChange={(e) => setSearchFilter(e.target.value)}
+          className="px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <p className="text-sm text-gray-600">
+          Showing {filteredAndSortedParts.length} of {initialParts.length} parts
+        </p>
       </div>
 
-      {searched && parts.length === 0 && !isLoading && (
+      {filteredAndSortedParts.length === 0 && (
         <p className="text-gray-500">No parts found.</p>
       )}
 
-      {parts.length > 0 && (
+      {filteredAndSortedParts.length > 0 && (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="px-4 py-2 text-left text-sm font-medium">RO</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium">
-                    Part Number
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-medium">
-                    Description
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-medium">
-                    Type
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-medium">
-                    Vendor
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-medium">
-                    Qty
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-medium">
-                    Ordered
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-medium">
-                    Received
-                  </th>
+                  <ColumnHeader field="roNumber" label="RO" />
+                  <ColumnHeader field="owner" label="Owner" />
+                  <ColumnHeader field="partNumber" label="Part Number" />
+                  <ColumnHeader field="partDescription" label="Description" />
+                  <ColumnHeader field="vendorName" label="Vendor" />
+                  <ColumnHeader field="roQty" label="Qty" />
+                  <ColumnHeader field="orderedQty" label="Ordered Qty" />
+                  <ColumnHeader field="orderedDate" label="Ordered Date" />
+                  <ColumnHeader field="expectedDelivery" label="Expected Delivery" />
+                  <ColumnHeader field="receivedQty" label="Received Qty" />
+                  <ColumnHeader field="invoiceDate" label="Invoice Date" />
+                  <ColumnHeader field="returnedQty" label="Returned Qty" />
                 </tr>
               </thead>
               <tbody>
-                {parts.map((part) => (
+                {filteredAndSortedParts.map((part) => (
                   <tr key={part.id} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-2 text-sm">{part.roNumber}</td>
+                    <td className="px-4 py-2 text-sm">{part.owner}</td>
                     <td className="px-4 py-2 text-sm font-mono">
                       {part.partNumber}
                     </td>
                     <td className="px-4 py-2 text-sm">
                       {part.partDescription}
                     </td>
-                    <td className="px-4 py-2 text-sm">{part.partType}</td>
                     <td className="px-4 py-2 text-sm">{part.vendorName}</td>
                     <td className="px-4 py-2 text-sm">{part.roQty}</td>
                     <td className="px-4 py-2 text-sm">{part.orderedQty}</td>
+                    <td className="px-4 py-2 text-sm">
+                      {part.orderedDate ? new Date(part.orderedDate).toLocaleDateString() : "-"}
+                    </td>
+                    <td className="px-4 py-2 text-sm">
+                      {part.expectedDelivery ? new Date(part.expectedDelivery).toLocaleDateString() : "-"}
+                    </td>
                     <td className="px-4 py-2 text-sm">{part.receivedQty}</td>
+                    <td className="px-4 py-2 text-sm">
+                      {part.invoiceDate ? new Date(part.invoiceDate).toLocaleDateString() : "-"}
+                    </td>
+                    <td className="px-4 py-2 text-sm">{part.returnedQty}</td>
                   </tr>
                 ))}
               </tbody>
