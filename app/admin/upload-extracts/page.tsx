@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface ImportResult {
   imported: number;
@@ -21,6 +21,15 @@ export default function UploadExtractsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<UploadResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  function handleClearFiles() {
+    if (formRef.current) {
+      formRef.current.reset();
+    }
+    setResult(null);
+    setError(null);
+  }
 
   async function handleFileUpload(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -42,7 +51,16 @@ export default function UploadExtractsPage() {
         setError(data.message || "Upload failed");
       } else {
         setResult(data);
-        e.currentTarget.reset();
+        
+        // Only reset form if all imports were completely successful (no errors)
+        const hasNoErrors =
+          (!data.dailyOut || data.dailyOut.errors === 0) &&
+          (!data.partsStatus || data.partsStatus.errors === 0) &&
+          (!data.vendors || data.vendors.errors === 0);
+
+        if (hasNoErrors && formRef.current) {
+          formRef.current.reset();
+        }
       }
     } catch (err) {
       setError("An error occurred during upload");
@@ -56,7 +74,7 @@ export default function UploadExtractsPage() {
       <h1 className="text-3xl font-bold mb-6">Upload Extracts</h1>
 
       <div className="bg-white rounded-lg shadow p-6 max-w-2xl">
-        <form onSubmit={handleFileUpload} className="space-y-6">
+        <form ref={formRef} onSubmit={handleFileUpload} className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">
               Daily Out CSV
@@ -93,13 +111,23 @@ export default function UploadExtractsPage() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50"
-          >
-            {isLoading ? "Uploading..." : "Upload Files"}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="flex-1 bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50"
+            >
+              {isLoading ? "Uploading..." : "Upload Files"}
+            </button>
+            <button
+              type="button"
+              onClick={handleClearFiles}
+              disabled={isLoading}
+              className="flex-1 bg-gray-400 text-white py-2 rounded-md font-medium hover:bg-gray-500 disabled:opacity-50"
+            >
+              Clear Files
+            </button>
+          </div>
         </form>
 
         {error && (

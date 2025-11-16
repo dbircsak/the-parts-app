@@ -46,9 +46,96 @@ export function parseCSV(
   content: string
 ): Promise<{ data: any[]; parsingErrors: string[] }> {
   return new Promise((resolve) => {
-    Papa.parse(content, {
+    // First pass: find the header row by looking for a line with MULTIPLE known column headers
+    const lines = content.split("\n");
+    let headerRowIndex = 0;
+    const knownHeaders = [
+      "ro number",
+      "owner",
+      "vehicle",
+      "vehicle color",
+      "license plate number",
+      "parts received %",
+      "vendor name",
+      "primary phone",
+      "part number",
+      "part description",
+    ];
+
+    for (let i = 0; i < lines.length && i < 20; i++) {
+      const line = lines[i].toLowerCase();
+      const matchCount = knownHeaders.filter((header) =>
+        line.includes(header)
+      ).length;
+
+      // If this line has multiple known headers, it's probably the header row
+      if (matchCount >= 3) {
+        headerRowIndex = i;
+        console.log(
+          `Found header row at line ${i + 1} (matched ${matchCount} headers)`
+        );
+        break;
+      }
+    }
+
+    const contentFromHeader = lines.slice(headerRowIndex).join("\n");
+
+    Papa.parse(contentFromHeader, {
       header: true,
+      trimHeaders: true,
       skipEmptyLines: true,
+      transformHeader: (header: string) => {
+        // Map actual CSV headers (with spaces) to expected column names (snake_case)
+        // Supports headers from all three CSV types: Daily Out, Parts Status, and Vendors
+        const headerMap: Record<string, string> = {
+          // Daily Out
+          "ro number": "ro_number",
+          owner: "owner",
+          vehicle: "vehicle",
+          "vehicle color": "vehicle_color",
+          "license plate number": "license_plate_number",
+          "parts received %": "parts_received_pct",
+          "vehicle in": "vehicle_in",
+          "current phase": "current_phase",
+          "scheduled out": "scheduled_out",
+          "body technician": "body_technician",
+          estimator: "estimator",
+          // Parts Status
+          line: "line",
+          "part number": "part_number",
+          "part description": "part_description",
+          "part type": "part_type",
+          "vendor name": "vendor_name",
+          "ro qty": "ro_qty",
+          "ordered qty": "ordered_qty",
+          "ordered date": "ordered_date",
+          "expected delivery": "expected_delivery",
+          "received qty": "received_qty",
+          "invoice date": "invoice_date",
+          "returned qty": "returned_qty",
+          // Vendors
+          "primary phone": "primary_phone",
+          fax: "fax",
+          address: "address",
+          city: "city",
+          state: "state",
+          zip: "zip",
+          preferred: "preferred",
+          electronic: "electronic",
+        };
+
+        // Handle empty/undefined headers
+        if (!header) {
+          return undefined as any;
+        }
+
+        const trimmed = header.trim().toLowerCase();
+        return headerMap[trimmed] || trimmed;
+      },
+      transform: (field: string) => {
+        // Trim whitespace from all field values
+        return typeof field === "string" ? field.trim() : field;
+      },
       complete: (result) => {
         const parsingErrors = result.errors
           .map((err: any) => `Row ${err.row}: ${err.message}`)
