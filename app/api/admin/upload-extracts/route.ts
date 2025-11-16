@@ -82,31 +82,31 @@ async function importDailyOut(rows: any[]) {
          continue;
        }
 
-      await prisma.dailyOut.create({
-        data: {
-          roNumber,
-          owner: row.owner || "",
-          vehicle: row.vehicle || "",
-          vehicleColor: row.vehicle_color || "",
-          licensePlateNumber: row.license_plate_number || "",
-          partsReceivedPct: parseNumber(row.parts_received_pct) || 0,
-          vehicleIn: parseDate(row.vehicle_in) || new Date(),
-          currentPhase: row.current_phase || "",
-          scheduledOut: parseDate(row.scheduled_out),
-          bodyTechnician: row.body_technician || "",
-          estimator: row.estimator || "",
-        },
-      });
+       await prisma.dailyOut.create({
+         data: {
+           roNumber,
+           owner: (row.owner || "").replace(/ - 15678$/, ""),
+           vehicle: row.vehicle || "",
+           vehicleColor: row.vehicle_color || "",
+           licensePlateNumber: row.license_plate_number || "",
+           partsReceivedPct: parseNumber(row.parts_received_pct) || 0,
+           vehicleIn: parseDate(row.vehicle_in) || new Date(),
+           currentPhase: row.current_phase || "",
+           scheduledOut: parseDate(row.scheduled_out),
+           bodyTechnician: row.body_technician || "",
+           estimator: row.estimator || "",
+         },
+       });
 
-      imported++;
-    } catch (err) {
-      errors++;
-      errorDetails.push(
-        `Row ${index + 1}: ${err instanceof Error ? err.message : String(err)}`
-      );
-      console.error(`Daily Out import error at row ${index + 1}:`, err);
-    }
-  }
+       imported++;
+     } catch (err) {
+       errors++;
+       errorDetails.push(
+         `Row ${index + 1}: ${err instanceof Error ? err.message : String(err)}`
+       );
+       console.error(`Daily Out import error at row ${index + 1}:`, err);
+     }
+   }
 
   if (errorDetails.length > 0) {
     console.warn(`Daily Out import completed with ${errors} error(s):\n${errorDetails.join("\n")}`);
@@ -142,7 +142,7 @@ async function importPartsStatus(rows: any[]) {
           partNumber: row.part_number || "",
           partDescription: row.part_description || "",
           partType: row.part_type || "",
-          vendorName: row.vendor_name || "",
+          vendorName: (row.vendor_name || "").replace(/ - 15678$/, ""),
           roQty: parseNumber(row.ro_qty) || 0,
           orderedQty: parseNumber(row.ordered_qty) || 0,
           orderedDate: parseDate(row.ordered_date),
@@ -180,26 +180,29 @@ async function importVendors(rows: any[]) {
    for (let index = 0; index < rows.length; index++) {
      const row = rows[index];
      try {
-       const vendorName = row.vendor_name?.trim();
+       let vendorName = (row.vendor_name || "").trim();
+       // Strip trailing " - 15678" if present
+       vendorName = vendorName.replace(/ - 15678$/, "").trim();
+       
        if (!vendorName) {
          errors++;
          errorDetails.push(`Row ${index + 1}: Missing or empty vendor name`);
          continue;
        }
 
-      await prisma.vendor.create({
-        data: {
-          vendorName,
-          primaryPhone: row.primary_phone || "",
-          fax: row.fax || "",
-          address: row.address || "",
-          city: row.city || "",
-          state: (row.state || "").substring(0, 2),
-          zip: row.zip || "",
-          preferred: parseBoolean(row.preferred),
-          electronic: parseBoolean(row.electronic),
-        },
-      });
+       await prisma.vendor.create({
+         data: {
+           vendorName,
+           primaryPhone: row.primary_phone || "",
+           fax: row.fax || "",
+           address: row.address || "",
+           city: row.city || "",
+           state: (row.state || "").substring(0, 2),
+           zip: row.zip || "",
+           preferred: parseBoolean(row.preferred),
+           electronic: parseBoolean(row.electronic),
+         },
+       });
 
       imported++;
     } catch (err) {

@@ -19,7 +19,7 @@ export default async function MaterialsPage() {
         <h1 className="text-3xl font-bold">Materials</h1>
         {isAdmin && (
           <a
-            href="/materials/edit"
+            href="/admin/edit-materials/new"
             className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700"
           >
             Add Material

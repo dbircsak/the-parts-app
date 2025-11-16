@@ -152,8 +152,34 @@ export function parseCSV(
         return headerMap[trimmed] || trimmed;
       },
       transform: (field: string) => {
-        // Trim whitespace from all field values
-        return typeof field === "string" ? field.trim() : field;
+        // Trim whitespace and replace extended ASCII characters
+        if (typeof field !== "string") return field;
+        
+        let cleaned = field.trim();
+        // Replace common extended ASCII/Windows-1252 characters with ASCII equivalents
+        const replacements: Record<string, string> = {
+          '\u2019': "'",  // right single quotation mark → apostrophe
+          '\u2018': "'",  // left single quotation mark → apostrophe
+          '\u201C': '"',  // left double quotation mark → quote
+          '\u201D': '"',  // right double quotation mark → quote
+          '\u2013': '-',  // en dash → hyphen
+          '\u2014': '-',  // em dash → hyphen
+          '\u00E9': 'e',  // é → e
+          '\u00E8': 'e',  // è → e
+          '\u00EA': 'e',  // ê → e
+          '\u00E0': 'a',  // à → a
+          '\u00E1': 'a',  // á → a
+          '\u00E2': 'a',  // â → a
+          '\u00F1': 'n',  // ñ → n
+          '\u00FC': 'u',  // ü → u
+          '\u00F3': 'o',  // ó → o
+        };
+        
+        for (const [char, replacement] of Object.entries(replacements)) {
+          cleaned = cleaned.replace(new RegExp(char, 'g'), replacement);
+        }
+        
+        return cleaned;
       },
       complete: (result) => {
         const parsingErrors = result.errors
@@ -213,5 +239,6 @@ export function parseNumber(numStr: string): number | null {
 }
 
 export function parseBoolean(boolStr: string): boolean {
-  return boolStr?.toLowerCase() === "true" || boolStr === "1";
+  const lower = boolStr?.toLowerCase();
+  return lower === "true" || boolStr === "1" || lower === "electronic";
 }

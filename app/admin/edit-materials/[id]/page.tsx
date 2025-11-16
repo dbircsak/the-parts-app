@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import { useRouter } from "next/navigation";
 
-export default function EditMaterialPage({ params }: { params: { id: string } }) {
+export default function EditMaterialPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,9 +22,9 @@ export default function EditMaterialPage({ params }: { params: { id: string } })
     setIsLoading(true);
 
     try {
-      const method = params.id === "new" ? "POST" : "PATCH";
+      const method = id === "new" ? "POST" : "PATCH";
       const res = await fetch(
-        `/api/admin/materials/${params.id === "new" ? "" : params.id}`,
+        `/api/admin/materials/${id === "new" ? "" : id}`,
         {
           method,
           headers: { "Content-Type": "application/json" },
@@ -44,7 +45,7 @@ export default function EditMaterialPage({ params }: { params: { id: string } })
   return (
     <div className="p-4 md:p-8">
       <h1 className="text-3xl font-bold mb-6">
-        {params.id === "new" ? "Add Material" : "Edit Material"}
+        {id === "new" ? "Add Material" : "Edit Material"}
       </h1>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 max-w-2xl">
