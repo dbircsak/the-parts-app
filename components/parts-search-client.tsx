@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { ChevronUp, ChevronDown } from "lucide-react";
+import PartNumberLink from "./part-number-link";
 
 interface Part {
   id: number;
@@ -222,10 +224,17 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
                         title={status.label}
                       />
                     </td>
-                    <td className="px-4 py-2 text-sm">{part.roNumber}</td>
+                    <td className="px-4 py-2 text-sm">
+                      <Link
+                        href={`/car-view/${part.roNumber}`}
+                        className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                      >
+                        {part.roNumber}
+                      </Link>
+                    </td>
                     <td className="px-4 py-2 text-sm">{part.owner}</td>
                     <td className="px-4 py-2 text-sm font-mono">
-                      {part.partNumber}
+                      <PartNumberLink partNumber={part.partNumber} />
                     </td>
                     <td className="px-4 py-2 text-sm">
                       {part.partDescription}

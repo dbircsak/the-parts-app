@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import PartNumberLink from "./part-number-link";
 
 interface EnrichedPart {
   id: number;
@@ -269,7 +270,7 @@ export default function UnorderedPartsList({
                                       className="border-t hover:bg-blue-50"
                                     >
                                       <td className="px-6 py-2 font-mono text-sm">
-                                        {part.partNumber}
+                                        <PartNumberLink partNumber={part.partNumber} />
                                       </td>
                                       <td className="px-6 py-2 text-sm">
                                         {part.partDescription}
