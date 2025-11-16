@@ -60,8 +60,16 @@ export function parseCSV(
       "primary phone",
       "part number",
       "part description",
+      "fax",
+      "address",
+      "city",
+      "state",
+      "zip",
+      "preferred",
+      "electronic",
     ];
 
+    let headerFound = false;
     for (let i = 0; i < lines.length && i < 20; i++) {
       const line = lines[i].toLowerCase();
       const matchCount = knownHeaders.filter((header) =>
@@ -71,11 +79,22 @@ export function parseCSV(
       // If this line has multiple known headers, it's probably the header row
       if (matchCount >= 3) {
         headerRowIndex = i;
+        headerFound = true;
         console.log(
           `Found header row at line ${i + 1} (matched ${matchCount} headers)`
         );
         break;
       }
+    }
+
+    if (!headerFound) {
+      const error = `No header row found in first 20 lines of CSV. Expected to find a row with at least 3 of these column names: ${knownHeaders.join(", ")}`;
+      console.error(error);
+      resolve({
+        data: [],
+        parsingErrors: [error],
+      });
+      return;
     }
 
     const contentFromHeader = lines.slice(headerRowIndex).join("\n");
@@ -147,8 +166,25 @@ export function parseCSV(
           );
         }
 
+        // Filter out completely empty rows (rows where all values are empty)
+        const filteredData = result.data.filter((row: any) => {
+          return Object.values(row).some((value: any) => value !== "" && value !== null && value !== undefined);
+        });
+
+        if (filteredData.length !== result.data.length) {
+          console.log(
+            `Filtered out ${result.data.length - filteredData.length} empty row(s)`
+          );
+        }
+
+        // Log first row for diagnostic purposes
+        if (filteredData.length > 0) {
+          console.log(`First parsed row keys: ${Object.keys(filteredData[0]).join(", ")}`);
+          console.log(`First parsed row data: ${JSON.stringify(filteredData[0])}`);
+        }
+
         resolve({
-          data: result.data as any[],
+          data: filteredData as any[],
           parsingErrors,
         });
       },

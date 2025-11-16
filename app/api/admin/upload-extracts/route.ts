@@ -66,21 +66,21 @@ export async function POST(request: NextRequest) {
 }
 
 async function importDailyOut(rows: any[]) {
-  let imported = 0;
-  let errors = 0;
-  const errorDetails: string[] = [];
+   let imported = 0;
+   let errors = 0;
+   const errorDetails: string[] = [];
 
-  await prisma.dailyOut.deleteMany();
+   await prisma.dailyOut.deleteMany();
 
-  for (let index = 0; index < rows.length; index++) {
-    const row = rows[index];
-    try {
-      const roNumber = parseNumber(row.ro_number);
-      if (!roNumber) {
-        errors++;
-        errorDetails.push(`Row ${index + 1}: Missing or invalid RO number`);
-        continue;
-      }
+   for (let index = 0; index < rows.length; index++) {
+     const row = rows[index];
+     try {
+       const roNumber = parseNumber(row.ro_number);
+       if (roNumber === null) {
+         errors++;
+         errorDetails.push(`Row ${index + 1}: Missing or invalid RO number`);
+         continue;
+       }
 
       await prisma.dailyOut.create({
         data: {
@@ -116,24 +116,24 @@ async function importDailyOut(rows: any[]) {
 }
 
 async function importPartsStatus(rows: any[]) {
-  let imported = 0;
-  let errors = 0;
-  const errorDetails: string[] = [];
+   let imported = 0;
+   let errors = 0;
+   const errorDetails: string[] = [];
 
-  await prisma.partsStatus.deleteMany();
+   await prisma.partsStatus.deleteMany();
 
-  for (let index = 0; index < rows.length; index++) {
-    const row = rows[index];
-    try {
-      const roNumber = parseNumber(row.ro_number);
-      const line = parseNumber(row.line);
-      if (!roNumber || !line) {
-        errors++;
-        errorDetails.push(
-          `Row ${index + 1}: Missing or invalid RO number or line number`
-        );
-        continue;
-      }
+   for (let index = 0; index < rows.length; index++) {
+     const row = rows[index];
+     try {
+       const roNumber = parseNumber(row.ro_number);
+       const line = parseNumber(row.line);
+       if (roNumber === null || line === null) {
+         errors++;
+         errorDetails.push(
+           `Row ${index + 1}: Missing or invalid RO number or line number`
+         );
+         continue;
+       }
 
       await prisma.partsStatus.create({
         data: {
@@ -171,21 +171,21 @@ async function importPartsStatus(rows: any[]) {
 }
 
 async function importVendors(rows: any[]) {
-  let imported = 0;
-  let errors = 0;
-  const errorDetails: string[] = [];
+   let imported = 0;
+   let errors = 0;
+   const errorDetails: string[] = [];
 
-  await prisma.vendor.deleteMany();
+   await prisma.vendor.deleteMany();
 
-  for (let index = 0; index < rows.length; index++) {
-    const row = rows[index];
-    try {
-      const vendorName = row.vendor_name?.trim();
-      if (!vendorName) {
-        errors++;
-        errorDetails.push(`Row ${index + 1}: Missing or empty vendor name`);
-        continue;
-      }
+   for (let index = 0; index < rows.length; index++) {
+     const row = rows[index];
+     try {
+       const vendorName = row.vendor_name?.trim();
+       if (!vendorName) {
+         errors++;
+         errorDetails.push(`Row ${index + 1}: Missing or empty vendor name`);
+         continue;
+       }
 
       await prisma.vendor.create({
         data: {
