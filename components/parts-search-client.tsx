@@ -107,10 +107,10 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
 
   const statusOptions: { value: string; label: string; color?: string }[] = [
     { value: "all", label: "All Statuses" },
-    { value: "not_ordered", label: "🔴 Not Ordered", color: "bg-red-500" },
-    { value: "on_order", label: "🟡 On Order", color: "bg-yellow-500" },
-    { value: "received", label: "🟢 Received", color: "bg-green-500" },
-    { value: "returned", label: "🔵 Returned", color: "bg-blue-500" },
+    { value: "not_ordered", label: "🔴 Not Ordered", color: "bg-pink-500" },
+    { value: "on_order", label: "🟡 Ordered", color: "bg-yellow-500" },
+    { value: "received", label: "🟢 Received", color: "bg-green-300" },
+    { value: "returned", label: "🔵 Returned", color: "bg-blue-300" },
   ];
 
   const SortIcon = ({ field }: { field: SortField }) => {

@@ -144,17 +144,19 @@ model Vendor {
 }
 
 model Material {
-  id              String   @id @default(cuid())
-  name            String   @unique
-  category        String
-  quantity        Int
-  unit            String
-  reorderLevel    Int
-  supplier        String?
-  cost            Decimal  @db.Decimal(10, 2)
+  id              String    @id @default(cuid())
+  partNumber      String
+  description     String
+  orderedQty      Int
+  orderedDate     DateTime?
+  unitType        String
+  receivedQty     Int
+  receivedDate    DateTime?
   
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@map("materials")
 }
 
 model Task {
