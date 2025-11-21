@@ -7,7 +7,7 @@ import PartNumberLink from "@/components/part-number-link";
 import VehicleStatusFilter from "@/components/VehicleStatusFilter";
 import { VehicleStatus } from "@/lib/vehicle-status-filter";
 
-type ViewMode = "car" | "vendor";
+type GroupMode = "car" | "vendor";
 
 interface PartData {
     partDescription: string;
@@ -52,7 +52,7 @@ interface GroupedData {
 }
 
 export default function DeliveriesPage() {
-    const [viewMode, setViewMode] = useState<ViewMode>("car");
+  const [groupMode, setGroupMode] = useState<GroupMode>("car");
     const [data, setData] = useState<GroupedData | null>(null);
     const [loading, setLoading] = useState(true);
     const [vehicleStatusFilter, setVehicleStatusFilter] = useState<VehicleStatus>("all");
@@ -140,7 +140,7 @@ export default function DeliveriesPage() {
     };
 
     const expandAll = () => {
-        if (viewMode === "car") {
+      if (groupMode === "car") {
             const allCars = new Set(data.carView.cars.map((c) => c.roNumber));
             setExpandedCars(allCars);
             const allVendors = new Set<string>();
@@ -179,22 +179,22 @@ export default function DeliveriesPage() {
                 <div className="flex gap-2 flex-wrap items-center">
                     <div className="flex gap-2">
                         <button
-                            onClick={() => setViewMode("car")}
-                            className={`px-4 py-2 rounded-lg font-medium transition ${viewMode === "car"
+                            onClick={() => setGroupMode("car")}
+                            className={`px-4 py-2 rounded-lg font-medium transition ${groupMode === "car"
                                     ? "bg-blue-600 text-white"
                                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                                 }`}
                         >
-                            View by Car
+                            Group by Car
                         </button>
                         <button
-                            onClick={() => setViewMode("vendor")}
-                            className={`px-4 py-2 rounded-lg font-medium transition ${viewMode === "vendor"
+                            onClick={() => setGroupMode("vendor")}
+                            className={`px-4 py-2 rounded-lg font-medium transition ${groupMode === "vendor"
                                     ? "bg-blue-600 text-white"
                                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                                 }`}
                         >
-                            View by Vendor
+                            Group by Vendor
                         </button>
                     </div>
 
@@ -221,7 +221,7 @@ export default function DeliveriesPage() {
             </div>
 
             {/* Car View */}
-            {viewMode === "car" && (
+            {groupMode === "car" && (
                 <div className="space-y-4">
                     {(() => {
                         const now = new Date();
@@ -367,7 +367,7 @@ export default function DeliveriesPage() {
             )}
 
             {/* Vendor View */}
-            {viewMode === "vendor" && (
+            {groupMode === "vendor" && (
                 <div className="space-y-4">
                     {data.vendorView.vendors.length === 0 ? (
                         <p className="text-gray-500">No deliveries found.</p>
