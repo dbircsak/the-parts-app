@@ -2,9 +2,11 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import PartNumberLink from "./part-number-link";
 import { getPartStatus, PART_STATUS_CONFIG } from "@/lib/part-status";
+import { usePagination } from "@/lib/usePagination";
+import PaginationControls from "./PaginationControls";
 
 interface Part {
   id: number;
@@ -38,14 +40,11 @@ const getStatusSortValue = (part: Part): number => {
   return order[status.type] ?? 0;
 };
 
-const ITEMS_PER_PAGE = 30;
-
 export default function PartsSearchClient({ initialParts }: { initialParts: Part[] }) {
   const [searchFilter, setSearchFilter] = useState("");
   const [sortField, setSortField] = useState<SortField>("roNumber");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
-  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredAndSortedParts = useMemo(() => {
     let filtered = initialParts;
@@ -99,6 +98,16 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
     });
   }, [initialParts, searchFilter, sortField, sortDirection, selectedStatus]);
 
+  const {
+    currentPage,
+    totalPages,
+    startIndex,
+    endIndex,
+    paginatedItems: paginatedParts,
+    setCurrentPage,
+    resetPage,
+  } = usePagination(filteredAndSortedParts);
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -106,13 +115,8 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
       setSortField(field);
       setSortDirection("asc");
     }
-    setCurrentPage(1); // Reset to first page when sorting
+    resetPage();
   };
-
-  const totalPages = Math.ceil(filteredAndSortedParts.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedParts = filteredAndSortedParts.slice(startIndex, endIndex);
 
   const statusOptions = [
     { value: "all", label: "All Statuses" },
@@ -152,7 +156,7 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
             value={searchFilter}
             onChange={(e) => {
               setSearchFilter(e.target.value);
-              setCurrentPage(1); // Reset to first page when filtering
+              resetPage();
             }}
             className="flex-1 px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -160,7 +164,7 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
             value={selectedStatus}
             onChange={(e) => {
               setSelectedStatus(e.target.value);
-              setCurrentPage(1); // Reset to first page when changing status filter
+              resetPage();
             }}
             className="px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -261,82 +265,11 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
               </tbody>
             </table>
           </div>
-          
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="bg-gray-50 px-4 py-3 border-t flex items-center justify-center gap-2">
-              <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                disabled={currentPage === 1}
-                className="flex items-center gap-1 px-2 py-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              
-              <div className="flex gap-1">
-                {(() => {
-                  const pageNumbers = [];
-                  const windowSize = 5;
-                  const halfWindow = Math.floor(windowSize / 2);
-                  
-                  let startPage = Math.max(1, currentPage - halfWindow);
-                  let endPage = Math.min(totalPages, currentPage + halfWindow);
-                  
-                  if (endPage - startPage + 1 < windowSize) {
-                    if (startPage === 1) {
-                      endPage = Math.min(totalPages, windowSize);
-                    } else {
-                      startPage = Math.max(1, endPage - windowSize + 1);
-                    }
-                  }
-                  
-                  if (startPage > 1) {
-                    pageNumbers.push(1);
-                    if (startPage > 2) {
-                      pageNumbers.push('...');
-                    }
-                  }
-                  
-                  for (let i = startPage; i <= endPage; i++) {
-                    pageNumbers.push(i);
-                  }
-                  
-                  if (endPage < totalPages) {
-                    if (endPage < totalPages - 1) {
-                      pageNumbers.push('...');
-                    }
-                    pageNumbers.push(totalPages);
-                  }
-                  
-                  return pageNumbers.map((page, idx) => (
-                    page === '...' ? (
-                      <span key={`ellipsis-${idx}`} className="px-2 py-2">…</span>
-                    ) : (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page as number)}
-                        className={`px-3 py-2 rounded transition-colors ${
-                          currentPage === page
-                            ? "bg-blue-500 text-white"
-                            : "border hover:bg-gray-100"
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    )
-                  ));
-                })()}
-              </div>
-              
-              <button
-                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                disabled={currentPage === totalPages}
-                className="flex items-center gap-1 px-2 py-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
     </>

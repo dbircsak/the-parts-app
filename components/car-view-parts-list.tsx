@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import PartNumberLink from "./part-number-link";
 import { getPartStatus, PART_STATUS_CONFIG } from "@/lib/part-status";
+import { usePagination } from "@/lib/usePagination";
+import PaginationControls from "./PaginationControls";
 
 interface Part {
   id: number;
@@ -30,12 +32,9 @@ const getStatusSortValue = (roQty: number, orderedQty: number, receivedQty: numb
   return PART_STATUS_CONFIG[status.type].sortOrder;
 };
 
-const ITEMS_PER_PAGE = 30;
-
 export default function CarViewPartsList({ parts: initialParts }: { parts: Part[] }) {
   const [sortField, setSortField] = useState<SortField>("line");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
-  const [currentPage, setCurrentPage] = useState(1);
 
   const sortedParts = useMemo(() => {
     const filtered = initialParts.filter((part) => part.partType !== "Sublet");
@@ -67,6 +66,16 @@ export default function CarViewPartsList({ parts: initialParts }: { parts: Part[
     });
   }, [initialParts, sortField, sortDirection]);
 
+  const {
+    currentPage,
+    totalPages,
+    startIndex,
+    endIndex,
+    paginatedItems: paginatedParts,
+    setCurrentPage,
+    resetPage,
+  } = usePagination(sortedParts);
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -74,13 +83,8 @@ export default function CarViewPartsList({ parts: initialParts }: { parts: Part[
       setSortField(field);
       setSortDirection("asc");
     }
-    setCurrentPage(1);
+    resetPage();
   };
-
-  const totalPages = Math.ceil(sortedParts.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedParts = sortedParts.slice(startIndex, endIndex);
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return null;
@@ -181,81 +185,11 @@ export default function CarViewPartsList({ parts: initialParts }: { parts: Part[
         </table>
       </div>
 
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="bg-gray-50 px-4 py-3 border-t border-l border-r border-gray-200 rounded-b-lg flex items-center justify-center gap-2 mt-4">
-          <button
-            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-            className="flex items-center gap-1 px-2 py-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          
-          <div className="flex gap-1">
-            {(() => {
-              const pageNumbers = [];
-              const windowSize = 5;
-              const halfWindow = Math.floor(windowSize / 2);
-              
-              let startPage = Math.max(1, currentPage - halfWindow);
-              let endPage = Math.min(totalPages, currentPage + halfWindow);
-              
-              if (endPage - startPage + 1 < windowSize) {
-                if (startPage === 1) {
-                  endPage = Math.min(totalPages, windowSize);
-                } else {
-                  startPage = Math.max(1, endPage - windowSize + 1);
-                }
-              }
-              
-              if (startPage > 1) {
-                pageNumbers.push(1);
-                if (startPage > 2) {
-                  pageNumbers.push('...');
-                }
-              }
-              
-              for (let i = startPage; i <= endPage; i++) {
-                pageNumbers.push(i);
-              }
-              
-              if (endPage < totalPages) {
-                if (endPage < totalPages - 1) {
-                  pageNumbers.push('...');
-                }
-                pageNumbers.push(totalPages);
-              }
-              
-              return pageNumbers.map((page, idx) => (
-                page === '...' ? (
-                  <span key={`ellipsis-${idx}`} className="px-2 py-2">…</span>
-                ) : (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page as number)}
-                    className={`px-3 py-2 rounded transition-colors ${
-                      currentPage === page
-                        ? "bg-blue-500 text-white"
-                        : "border hover:bg-gray-100"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                )
-              ));
-            })()}
-          </div>
-          
-          <button
-            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage === totalPages}
-            className="flex items-center gap-1 px-2 py-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }
