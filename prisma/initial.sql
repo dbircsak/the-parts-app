@@ -1,5 +1,8 @@
--- CreateEnum
+﻿-- CreateEnum
 CREATE TYPE "Role" AS ENUM ('ADMIN', 'ESTIMATOR', 'TECHNICIAN');
+
+-- CreateEnum
+CREATE TYPE "WorkQueueStatus" AS ENUM ('NOT_STARTED', 'UNDERWAY', 'COMPLETED');
 
 -- CreateEnum
 CREATE TYPE "TaskStatus" AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED');
@@ -78,6 +81,18 @@ CREATE TABLE "daily_out" (
 );
 
 -- CreateTable
+CREATE TABLE "work_queue" (
+    "roNumber" INTEGER NOT NULL,
+    "priority" INTEGER NOT NULL DEFAULT 0,
+    "departmentCode" CHAR(1) NOT NULL,
+    "status" "WorkQueueStatus" NOT NULL DEFAULT 'NOT_STARTED',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "work_queue_pkey" PRIMARY KEY ("roNumber")
+);
+
+-- CreateTable
 CREATE TABLE "parts_status" (
     "id" SERIAL NOT NULL,
     "roNumber" INTEGER NOT NULL,
@@ -117,19 +132,19 @@ CREATE TABLE "vendors" (
 );
 
 -- CreateTable
-CREATE TABLE "Material" (
+CREATE TABLE "materials" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "category" TEXT NOT NULL,
-    "quantity" INTEGER NOT NULL,
-    "unit" TEXT NOT NULL,
-    "reorderLevel" INTEGER NOT NULL,
-    "supplier" TEXT,
-    "cost" DECIMAL(10,2) NOT NULL,
+    "partNumber" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "orderedQty" INTEGER NOT NULL,
+    "orderedDate" TIMESTAMP(3),
+    "unitType" TEXT NOT NULL,
+    "receivedQty" INTEGER NOT NULL,
+    "receivedDate" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Material_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "materials_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -207,7 +222,7 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Material_name_key" ON "Material"("name");
+CREATE UNIQUE INDEX "work_queue_roNumber_key" ON "work_queue"("roNumber");
 
 -- CreateIndex
 CREATE INDEX "Task_roNumber_idx" ON "Task"("roNumber");
@@ -237,6 +252,9 @@ ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "work_queue" ADD CONSTRAINT "work_queue_roNumber_fkey" FOREIGN KEY ("roNumber") REFERENCES "daily_out"("roNumber") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Task" ADD CONSTRAINT "Task_assignedTo_fkey" FOREIGN KEY ("assignedTo") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -244,3 +262,4 @@ ALTER TABLE "AuditEvent" ADD CONSTRAINT "AuditEvent_userId_fkey" FOREIGN KEY ("u
 
 -- AddForeignKey
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+

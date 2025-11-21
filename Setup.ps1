@@ -169,12 +169,22 @@ NEXTAUTH_SECRET="$secret"
     Write-Prompt "`nReview and edit .env if needed for your database configuration"
 }
 
-# Run Prisma migrations
+# Setup database schema
 function Setup-Database-Schema {
     Write-Prompt "`n=== Setting Up Database Schema ==="
     
+    Write-Info "Pushing schema to database..."
+    npx prisma db push
+    
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error-Custom "Failed to push schema to database"
+        exit 1
+    }
+    
+    Write-Success "Schema pushed successfully"
+    
     Write-Info "Generating Prisma client..."
-    npm run prisma:generate
+    npx prisma generate
     
     if ($LASTEXITCODE -ne 0) {
         Write-Error-Custom "Failed to generate Prisma client"
@@ -182,16 +192,6 @@ function Setup-Database-Schema {
     }
     
     Write-Success "Prisma client generated"
-    
-    Write-Info "Running database migrations..."
-    npm run db:migrate
-    
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error-Custom "Failed to run migrations"
-        Write-Info "You can run 'npm run db:migrate' manually later"
-    } else {
-        Write-Success "Database migrations completed"
-    }
 }
 
 # Seed initial data
@@ -226,15 +226,6 @@ function Show-NextSteps {
     Write-Host "   Password: admin`n"
     
     Write-Host "4. Change the admin password immediately in production`n"
-    
-    Write-Host "5. Import sample CSV files from samples/ directory via Admin > Upload Extracts`n"
-    
-    Write-Prompt "Useful commands:"
-    Write-Host "  npm run dev           - Start development server"
-    Write-Host "  npm run db:studio     - Open database UI"
-    Write-Host "  npm run db:migrate    - Run pending migrations"
-    Write-Host "  npm run build         - Build for production"
-    Write-Host "  npm start             - Run production build`n"
 }
 
 # Main execution
