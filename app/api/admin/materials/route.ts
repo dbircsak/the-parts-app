@@ -14,13 +14,13 @@ export async function POST(request: NextRequest) {
 
     const material = await prisma.material.create({
       data: {
-        name: body.name,
-        category: body.category,
-        quantity: body.quantity,
-        unit: body.unit,
-        reorderLevel: body.reorderLevel,
-        supplier: body.supplier,
-        cost: body.cost,
+        partNumber: body.partNumber,
+        description: body.description,
+        orderedQty: body.orderedQty || 0,
+        orderedDate: body.orderedDate ? new Date(body.orderedDate) : null,
+        unitType: body.unitType,
+        receivedQty: body.receivedQty || 0,
+        receivedDate: body.receivedDate ? new Date(body.receivedDate) : null,
       },
     });
 

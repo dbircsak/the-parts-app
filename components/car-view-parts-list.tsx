@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import PartNumberLink from "./part-number-link";
-import { getPartStatus } from "@/lib/part-status";
+import { getPartStatus, PART_STATUS_CONFIG } from "@/lib/part-status";
 
 interface Part {
   id: number;
@@ -27,13 +27,7 @@ type SortDirection = "asc" | "desc";
 
 const getStatusSortValue = (roQty: number, orderedQty: number, receivedQty: number, returnedQty: number): number => {
   const status = getPartStatus(roQty, orderedQty, receivedQty, returnedQty);
-  const order: Record<string, number> = {
-    not_ordered: 0,
-    on_order: 1,
-    received: 2,
-    returned: 3,
-  };
-  return order[status.type] ?? 0;
+  return PART_STATUS_CONFIG[status.type].sortOrder;
 };
 
 export default function CarViewPartsList({ parts: initialParts }: { parts: Part[] }) {

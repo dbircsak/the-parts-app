@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function AdminLayout({
   children,
@@ -21,18 +22,18 @@ export default async function AdminLayout({
               <h1 className="text-lg font-semibold">Admin</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <a
+              <Link
                 href="/admin/upload-extracts"
                 className="text-sm font-medium text-blue-600 hover:text-blue-700"
               >
                 Upload Extracts
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/admin/edit-materials"
                 className="text-sm font-medium text-blue-600 hover:text-blue-700"
               >
                 Edit Materials
-              </a>
+              </Link>
             </div>
           </div>
         </div>

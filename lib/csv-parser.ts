@@ -99,7 +99,7 @@ export function parseCSV(
 
     const contentFromHeader = lines.slice(headerRowIndex).join("\n");
 
-    Papa.parse(contentFromHeader, {
+    (Papa.parse as any)(contentFromHeader, {
       header: true,
       trimHeaders: true,
       skipEmptyLines: true,
@@ -181,7 +181,7 @@ export function parseCSV(
         
         return cleaned;
       },
-      complete: (result) => {
+      complete: (result: any) => {
         const parsingErrors = result.errors
           .map((err: any) => `Row ${err.row}: ${err.message}`)
           .filter(Boolean);
@@ -214,7 +214,7 @@ export function parseCSV(
           parsingErrors,
         });
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error("CSV parse error:", error);
         // Continue with empty data if parse fails
         resolve({

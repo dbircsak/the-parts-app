@@ -50,8 +50,6 @@ export default function VendorTable({ vendors }: { vendors: Vendor[] }) {
         comparison = aVal.localeCompare(bVal as string);
       } else if (typeof aVal === "boolean") {
         comparison = (aVal as boolean) === (bVal as boolean) ? 0 : (aVal as boolean) ? 1 : -1;
-      } else {
-        comparison = aVal > bVal ? 1 : -1;
       }
 
       return sortDirection === "asc" ? comparison : -comparison;

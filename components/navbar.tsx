@@ -14,7 +14,6 @@ export default function Navbar({ role = "TECHNICIAN" }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const isAdmin = role === "ADMIN";
-  const isEstimator = role === "ESTIMATOR";
 
   const isActive = (path: string) => pathname === path;
 

@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function AdminPage() {
   const session = await auth();
@@ -18,12 +19,12 @@ export default async function AdminPage() {
           <p className="text-gray-600 text-sm mb-4">
             Import daily CSV extracts from Vista DMS.
           </p>
-          <a
+          <Link
             href="/admin/upload-extracts"
             className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700"
           >
             Go to Upload
-          </a>
+          </Link>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow">
@@ -31,12 +32,12 @@ export default async function AdminPage() {
           <p className="text-gray-600 text-sm mb-4">
             Manage consumable materials and paint inventory.
           </p>
-          <a
+          <Link
             href="/admin/edit-materials"
             className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700"
           >
             Go to Materials
-          </a>
+          </Link>
         </div>
       </div>
     </div>

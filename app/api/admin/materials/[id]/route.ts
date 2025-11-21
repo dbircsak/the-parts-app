@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
 
@@ -13,18 +13,19 @@ export async function PATCH(
   }
 
   try {
+    const { id } = await params;
     const body = await request.json();
 
     const material = await prisma.material.update({
-      where: { id: params.id },
+      where: { id },
       data: {
-        name: body.name,
-        category: body.category,
-        quantity: body.quantity,
-        unit: body.unit,
-        reorderLevel: body.reorderLevel,
-        supplier: body.supplier,
-        cost: body.cost,
+        ...(body.partNumber && { partNumber: body.partNumber }),
+        ...(body.description && { description: body.description }),
+        ...(body.orderedQty !== undefined && { orderedQty: body.orderedQty }),
+        ...(body.orderedDate && { orderedDate: new Date(body.orderedDate) }),
+        ...(body.unitType && { unitType: body.unitType }),
+        ...(body.receivedQty !== undefined && { receivedQty: body.receivedQty }),
+        ...(body.receivedDate && { receivedDate: new Date(body.receivedDate) }),
       },
     });
 
@@ -39,8 +40,8 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
 
@@ -49,8 +50,9 @@ export async function DELETE(
   }
 
   try {
+    const { id } = await params;
     await prisma.material.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });

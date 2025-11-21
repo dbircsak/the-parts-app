@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import PartNumberLink from "./part-number-link";
-import { getPartStatus } from "@/lib/part-status";
+import { getPartStatus, PART_STATUS_CONFIG } from "@/lib/part-status";
 
 interface Part {
   id: number;
@@ -105,12 +105,13 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
     }
   };
 
-  const statusOptions: { value: string; label: string; color?: string }[] = [
+  const statusOptions = [
     { value: "all", label: "All Statuses" },
-    { value: "not_ordered", label: "🔴 Not Ordered", color: "bg-pink-500" },
-    { value: "on_order", label: "🟡 Ordered", color: "bg-yellow-500" },
-    { value: "received", label: "🟢 Received", color: "bg-green-300" },
-    { value: "returned", label: "🔵 Returned", color: "bg-blue-300" },
+    ...Object.values(PART_STATUS_CONFIG).map((config) => ({
+      value: config.type,
+      label: `${config.emoji} ${config.label}`,
+      color: config.color,
+    })),
   ];
 
   const SortIcon = ({ field }: { field: SortField }) => {

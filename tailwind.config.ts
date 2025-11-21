@@ -5,15 +5,15 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: [
+    'bg-red-500',
+    'bg-yellow-500',
+    'bg-green-500',
+    'bg-blue-500',
+  ],
   theme: {
     extend: {},
   },
-  safelist: [
-    'bg-blue-300',
-    'bg-green-300',
-    'bg-yellow-500',
-    'bg-pink-500',
-  ],
   plugins: [],
 }
 

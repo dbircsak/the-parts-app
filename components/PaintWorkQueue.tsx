@@ -48,9 +48,7 @@ export default function PaintWorkQueue({
   const [availableCars, setAvailableCars] = useState(initialAvailableCars);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      distance: 8,
-    })
+    useSensor(PointerSensor)
   );
 
   // Organize by status

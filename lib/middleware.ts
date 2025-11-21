@@ -10,7 +10,7 @@ export async function requireAuth(request: NextRequest) {
 }
 
 export async function requireRole(
-  request: NextRequest,
+  _: NextRequest,
   allowedRoles: string[]
 ) {
   const session = await auth();

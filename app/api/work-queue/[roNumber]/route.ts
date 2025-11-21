@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { roNumber: string } }
+  { params }: { params: Promise<{ roNumber: string }> }
 ) {
   const session = await auth();
   if (!session) {
@@ -39,8 +39,8 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { roNumber: string } }
+  _: NextRequest,
+  { params }: { params: Promise<{ roNumber: string }> }
 ) {
   const session = await auth();
   if (!session) {
