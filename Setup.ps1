@@ -174,7 +174,7 @@ function Setup-Database-Schema {
     Write-Prompt "`n=== Setting Up Database Schema ==="
     
     Write-Info "Pushing schema to database..."
-    npx prisma db push
+    npm run db:push
     
     if ($LASTEXITCODE -ne 0) {
         Write-Error-Custom "Failed to push schema to database"
@@ -184,7 +184,7 @@ function Setup-Database-Schema {
     Write-Success "Schema pushed successfully"
     
     Write-Info "Generating Prisma client..."
-    npx prisma generate
+    npm run prisma:generate
     
     if ($LASTEXITCODE -ne 0) {
         Write-Error-Custom "Failed to generate Prisma client"
@@ -204,6 +204,7 @@ function Seed-Database {
     if ($LASTEXITCODE -ne 0) {
         Write-Error-Custom "Failed to seed database"
         Write-Info "You can run 'npm run db:seed' manually later"
+        Write-Info "This is non-critical - the app will still start, but you won't have the default admin account"
     } else {
         Write-Success "Database seeded successfully"
     }
