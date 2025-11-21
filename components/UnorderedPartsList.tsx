@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import PartNumberLink from "./part-number-link";
+import VehicleStatusFilter from "./VehicleStatusFilter";
+import { VehicleStatus } from "@/lib/vehicle-status-filter";
 
 interface EnrichedPart {
     id: number;
@@ -35,8 +37,6 @@ interface EnrichedPart {
         updatedAt: string;
     };
 }
-
-type VehicleStatus = "all" | "in-shop" | "pre-order";
 
 export default function UnorderedPartsList({
     parts,
@@ -185,26 +185,12 @@ export default function UnorderedPartsList({
                 />
 
                 <div className="flex gap-2 flex-wrap items-center">
-                    <div className="flex gap-2 flex-wrap">
-                        {(["all", "in-shop", "pre-order"] as const).map((status) => (
-                            <button
-                                key={status}
-                                onClick={() => setVehicleStatusFilter(status)}
-                                className={`px-3 py-2 rounded-lg font-medium text-sm transition-colors ${vehicleStatusFilter === status
-                                        ? "bg-blue-500 text-white"
-                                        : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                                    }`}
-                            >
-                                {status === "all"
-                                    ? "All Cars"
-                                    : status === "in-shop"
-                                        ? "In Shop"
-                                        : "Pre-Order"}
-                            </button>
-                        ))}
-                    </div>
+                    <VehicleStatusFilter
+                        value={vehicleStatusFilter}
+                        onChange={setVehicleStatusFilter}
+                    />
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 ml-auto">
                         <button
                             onClick={expandAll}
                             className="px-3 py-2 rounded-lg font-medium text-sm bg-green-500 text-white hover:bg-green-600 transition-colors"

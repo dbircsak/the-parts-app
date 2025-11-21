@@ -9,8 +9,22 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Fetch all parts
+    // Fetch all cars first
+    const cars = await prisma.dailyOut.findMany();
+
+    // Create a map of cars for quick lookup
+    const carMap = new Map(cars.map((car) => [car.roNumber, car]));
+
+    // Fetch all parts that have matching daily_out entries and a vendor name
     const parts = await prisma.partsStatus.findMany({
+      where: {
+        roNumber: {
+          in: Array.from(carMap.keys()),
+        },
+        vendorName: {
+          not: "",
+        },
+      },
       orderBy: [
         { roNumber: "asc" },
         { vendorName: "asc" },
@@ -18,37 +32,58 @@ export async function GET() {
       ],
     });
 
-    // Fetch all cars
-    const cars = await prisma.dailyOut.findMany();
-
-    // Create a map of cars for quick lookup
-    const carMap = new Map(cars.map((car) => [car.roNumber, car]));
-
     // Build car view: group by roNumber, then vendor, then parts
-    const carViewMap = new Map();
+    const carViewMap = new Map<
+      number,
+      {
+        roNumber: number;
+        owner: string;
+        vehicle: string;
+        bodyTechnician: string;
+        estimator: string;
+        vehicleIn: string;
+        currentPhase: string;
+        vendors: Map<
+          string,
+          {
+            vendorName: string;
+            parts: {
+              partDescription: string;
+              partNumber: string;
+              receivedQty: number;
+              invoiceDate: string | null;
+            }[];
+          }
+        >;
+      }
+    >();
+
     parts.forEach((part) => {
       const car = carMap.get(part.roNumber);
-      const key = part.roNumber;
-      if (!carViewMap.has(key)) {
-        carViewMap.set(key, {
+      const carKey = part.roNumber;
+
+      if (!carViewMap.has(carKey)) {
+        carViewMap.set(carKey, {
           roNumber: part.roNumber,
           owner: car?.owner || "",
           vehicle: car?.vehicle || "",
           bodyTechnician: car?.bodyTechnician || "",
           estimator: car?.estimator || "",
-          vendors: {},
+          vehicleIn: car?.vehicleIn.toISOString() || "",
+          currentPhase: car?.currentPhase || "",
+          vendors: new Map(),
         });
       }
 
-      const carData = carViewMap.get(key);
-      if (!carData.vendors[part.vendorName]) {
-        carData.vendors[part.vendorName] = {
+      const carData = carViewMap.get(carKey)!;
+      if (!carData.vendors.has(part.vendorName)) {
+        carData.vendors.set(part.vendorName, {
           vendorName: part.vendorName,
           parts: [],
-        };
+        });
       }
 
-      carData.vendors[part.vendorName].parts.push({
+      carData.vendors.get(part.vendorName)!.parts.push({
         partDescription: part.partDescription,
         partNumber: part.partNumber,
         receivedQty: part.receivedQty,
@@ -56,38 +91,66 @@ export async function GET() {
       });
     });
 
-    // Convert vendors object to array
-    const carView = Array.from(carViewMap.values()).map((car: any) => ({
+    // Convert vendors map to array
+    const carView = Array.from(carViewMap.values()).map((car) => ({
       ...car,
-      vendors: Object.values(car.vendors),
+      vendors: Array.from(car.vendors.values()),
     }));
 
     // Build vendor view: group by vendorName, then roNumber, then parts
-    const vendorViewMap = new Map();
+    const vendorViewMap = new Map<
+      string,
+      {
+        vendorName: string;
+        cars: Map<
+          number,
+          {
+            roNumber: number;
+            owner: string;
+            vehicle: string;
+            bodyTechnician: string;
+            estimator: string;
+            vehicleIn: string;
+            currentPhase: string;
+            parts: {
+              partDescription: string;
+              partNumber: string;
+              receivedQty: number;
+              invoiceDate: string | null;
+            }[];
+          }
+        >;
+      }
+    >();
+
     parts.forEach((part) => {
       const car = carMap.get(part.roNumber);
       const vendorKey = part.vendorName;
+
       if (!vendorViewMap.has(vendorKey)) {
         vendorViewMap.set(vendorKey, {
           vendorName: part.vendorName,
-          cars: {},
+          cars: new Map(),
         });
       }
 
-      const vendor = vendorViewMap.get(vendorKey);
+      const vendor = vendorViewMap.get(vendorKey)!;
       const carKey = part.roNumber;
-      if (!vendor.cars[carKey]) {
-        vendor.cars[carKey] = {
+
+      if (!vendor.cars.has(carKey)) {
+        vendor.cars.set(carKey, {
           roNumber: part.roNumber,
           owner: car?.owner || "",
           vehicle: car?.vehicle || "",
           bodyTechnician: car?.bodyTechnician || "",
           estimator: car?.estimator || "",
+          vehicleIn: car?.vehicleIn.toISOString() || "",
+          currentPhase: car?.currentPhase || "",
           parts: [],
-        };
+        });
       }
 
-      vendor.cars[carKey].parts.push({
+      vendor.cars.get(carKey)!.parts.push({
         partDescription: part.partDescription,
         partNumber: part.partNumber,
         receivedQty: part.receivedQty,
@@ -95,17 +158,17 @@ export async function GET() {
       });
     });
 
-    // Convert cars object to array and sort by roNumber
-    const vendorView = Array.from(vendorViewMap.values()).map((vendor: any) => ({
+    // Convert cars map to array and sort by roNumber
+    const vendorView = Array.from(vendorViewMap.values()).map((vendor) => ({
       ...vendor,
-      cars: Object.values(vendor.cars).sort(
-        (a: any, b: any) => a.roNumber - b.roNumber
+      cars: Array.from(vendor.cars.values()).sort(
+        (a, b) => a.roNumber - b.roNumber
       ),
     }));
 
     return NextResponse.json({
-      carView,
-      vendorView,
+      carView: { cars: carView },
+      vendorView: { vendors: vendorView },
     });
   } catch (error) {
     console.error("Failed to fetch deliveries:", error);

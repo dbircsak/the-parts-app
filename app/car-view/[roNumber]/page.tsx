@@ -24,10 +24,6 @@ export default async function CarViewPage({
     where: { roNumber },
   });
 
-  if (!roHeader) {
-    notFound();
-  }
-
   // Fetch all parts for this RO from parts_status
   const parts = await prisma.partsStatus.findMany({
     where: { 
@@ -37,44 +33,56 @@ export default async function CarViewPage({
     orderBy: { line: "asc" },
   });
 
+  // If no header and no parts, show 404
+  if (!roHeader && parts.length === 0) {
+    notFound();
+  }
+
   return (
     <div className="p-4 md:p-8">
       <h1 className="text-3xl font-bold mb-6">Car View - RO {roNumber}</h1>
 
       {/* RO Header Section */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        {/* Row 1: Owner, Vehicle Color, Estimator, Vehicle In */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <div>
-            <p className="text-sm"><span className="text-gray-600">Owner:</span> <span className="font-medium">{roHeader.owner}</span></p>
+      {roHeader && (
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          {/* Row 1: Owner, Vehicle Color, Estimator, Vehicle In */}
+          <div className="grid grid-cols-4 gap-4 mb-6">
+            <div>
+              <p className="text-sm"><span className="text-gray-600">Owner:</span> <span className="font-medium">{roHeader.owner}</span></p>
+            </div>
+            <div>
+              <p className="text-sm"><span className="text-gray-600">Vehicle Color:</span> <span className="font-medium">{roHeader.vehicleColor}</span></p>
+            </div>
+            <div>
+              <p className="text-sm"><span className="text-gray-600">Estimator:</span> <span className="font-medium">{roHeader.estimator}</span></p>
+            </div>
+            <div>
+              <p className="text-sm"><span className="text-gray-600">Vehicle In:</span> <span className="font-medium">{roHeader.vehicleIn.toLocaleDateString()}</span></p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm"><span className="text-gray-600">Vehicle Color:</span> <span className="font-medium">{roHeader.vehicleColor}</span></p>
-          </div>
-          <div>
-            <p className="text-sm"><span className="text-gray-600">Estimator:</span> <span className="font-medium">{roHeader.estimator}</span></p>
-          </div>
-          <div>
-            <p className="text-sm"><span className="text-gray-600">Vehicle In:</span> <span className="font-medium">{roHeader.vehicleIn.toLocaleDateString()}</span></p>
-          </div>
-        </div>
 
-        {/* Row 2: Vehicle, License Plate, Body Technician, Scheduled Out */}
-        <div className="grid grid-cols-4 gap-4">
-          <div>
-            <p className="text-sm"><span className="text-gray-600">Vehicle:</span> <span className="font-medium">{roHeader.vehicle}</span></p>
-          </div>
-          <div>
-            <p className="text-sm"><span className="text-gray-600">License Plate:</span> <span className="font-medium">{roHeader.licensePlateNumber}</span></p>
-          </div>
-          <div>
-            <p className="text-sm"><span className="text-gray-600">Body Technician:</span> <span className="font-medium">{roHeader.bodyTechnician}</span></p>
-          </div>
-          <div>
-            <p className="text-sm"><span className="text-gray-600">Scheduled Out:</span> <span className="font-medium">{roHeader.scheduledOut?.toLocaleDateString() || "-"}</span></p>
+          {/* Row 2: Vehicle, License Plate, Body Technician, Scheduled Out */}
+          <div className="grid grid-cols-4 gap-4">
+            <div>
+              <p className="text-sm"><span className="text-gray-600">Vehicle:</span> <span className="font-medium">{roHeader.vehicle}</span></p>
+            </div>
+            <div>
+              <p className="text-sm"><span className="text-gray-600">License Plate:</span> <span className="font-medium">{roHeader.licensePlateNumber}</span></p>
+            </div>
+            <div>
+              <p className="text-sm"><span className="text-gray-600">Body Technician:</span> <span className="font-medium">{roHeader.bodyTechnician}</span></p>
+            </div>
+            <div>
+              <p className="text-sm"><span className="text-gray-600">Scheduled Out:</span> <span className="font-medium">{roHeader.scheduledOut?.toLocaleDateString() || "-"}</span></p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+      {!roHeader && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+          <p className="text-yellow-800">No RO data found in database.</p>
+        </div>
+      )}
 
       {/* Parts List Section */}
       <div className="bg-white rounded-lg shadow p-6">
