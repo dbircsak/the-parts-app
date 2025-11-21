@@ -30,7 +30,10 @@ export default async function CarViewPage({
 
   // Fetch all parts for this RO from parts_status
   const parts = await prisma.partsStatus.findMany({
-    where: { roNumber },
+    where: { 
+      roNumber,
+      roQty: { gt: 0 },
+    },
     orderBy: { line: "asc" },
   });
 

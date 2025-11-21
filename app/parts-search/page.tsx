@@ -10,6 +10,9 @@ export default async function PartsSearchPage() {
   }
 
   const parts = await prisma.partsStatus.findMany({
+    where: {
+      roQty: { gt: 0 },
+    },
     take: 1000,
   });
 
