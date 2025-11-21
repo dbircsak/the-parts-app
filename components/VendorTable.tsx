@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Vendor {
   vendorName: string;
@@ -18,10 +18,13 @@ interface Vendor {
 type SortField = keyof Vendor;
 type SortDirection = "asc" | "desc";
 
+const ITEMS_PER_PAGE = 30;
+
 export default function VendorTable({ vendors }: { vendors: Vendor[] }) {
   const [searchFilter, setSearchFilter] = useState("");
   const [sortField, setSortField] = useState<SortField>("vendorName");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredAndSortedVendors = useMemo(() => {
     let filtered = vendors;
@@ -63,7 +66,13 @@ export default function VendorTable({ vendors }: { vendors: Vendor[] }) {
       setSortField(field);
       setSortDirection("asc");
     }
+    setCurrentPage(1);
   };
+
+  const totalPages = Math.ceil(filteredAndSortedVendors.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedVendors = filteredAndSortedVendors.slice(startIndex, endIndex);
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return null;
@@ -91,11 +100,14 @@ export default function VendorTable({ vendors }: { vendors: Vendor[] }) {
           type="text"
           placeholder="Filter vendors by name, city, or state..."
           value={searchFilter}
-          onChange={(e) => setSearchFilter(e.target.value)}
+          onChange={(e) => {
+            setSearchFilter(e.target.value);
+            setCurrentPage(1);
+          }}
           className="px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <p className="text-sm text-gray-600">
-          Showing {filteredAndSortedVendors.length} of {vendors.length} vendors
+          Showing {startIndex + 1}-{Math.min(endIndex, filteredAndSortedVendors.length)} of {filteredAndSortedVendors.length} vendors (Page {currentPage} of {totalPages})
         </p>
       </div>
 
@@ -115,7 +127,7 @@ export default function VendorTable({ vendors }: { vendors: Vendor[] }) {
             </tr>
           </thead>
           <tbody>
-            {filteredAndSortedVendors.map((vendor) => (
+            {paginatedVendors.map((vendor) => (
               <tr key={vendor.vendorName} className="border-b hover:bg-gray-50">
                 <td className="px-4 py-3">{vendor.vendorName}</td>
                 <td className="px-4 py-3">{vendor.primaryPhone || "-"}</td>
@@ -130,6 +142,82 @@ export default function VendorTable({ vendors }: { vendors: Vendor[] }) {
             ))}
           </tbody>
         </table>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="bg-gray-50 px-4 py-3 border-t flex items-center justify-center gap-2">
+            <button
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+              className="flex items-center gap-1 px-2 py-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            
+            <div className="flex gap-1">
+              {(() => {
+                const pageNumbers = [];
+                const windowSize = 5;
+                const halfWindow = Math.floor(windowSize / 2);
+                
+                let startPage = Math.max(1, currentPage - halfWindow);
+                let endPage = Math.min(totalPages, currentPage + halfWindow);
+                
+                if (endPage - startPage + 1 < windowSize) {
+                  if (startPage === 1) {
+                    endPage = Math.min(totalPages, windowSize);
+                  } else {
+                    startPage = Math.max(1, endPage - windowSize + 1);
+                  }
+                }
+                
+                if (startPage > 1) {
+                  pageNumbers.push(1);
+                  if (startPage > 2) {
+                    pageNumbers.push('...');
+                  }
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                  pageNumbers.push(i);
+                }
+                
+                if (endPage < totalPages) {
+                  if (endPage < totalPages - 1) {
+                    pageNumbers.push('...');
+                  }
+                  pageNumbers.push(totalPages);
+                }
+                
+                return pageNumbers.map((page, idx) => (
+                  page === '...' ? (
+                    <span key={`ellipsis-${idx}`} className="px-2 py-2">…</span>
+                  ) : (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page as number)}
+                      className={`px-3 py-2 rounded transition-colors ${
+                        currentPage === page
+                          ? "bg-blue-500 text-white"
+                          : "border hover:bg-gray-100"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                ));
+              })()}
+            </div>
+            
+            <button
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+              className="flex items-center gap-1 px-2 py-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
 
       {filteredAndSortedVendors.length === 0 && (
