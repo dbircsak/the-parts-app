@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { GripVertical } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -60,13 +61,15 @@ export default function PaintQueueCard({ car }: { car: Car }) {
           </div>
         )}
         <div className="flex-1 min-w-0">
-           <p className="font-bold text-lg text-gray-900">RO {car.roNumber}</p>
-           <p className="text-sm font-semibold text-gray-700">{car.vehicle}</p>
-           <p className="text-xs text-gray-600">{car.owner}</p>
-           <p className="text-xs text-gray-500 mt-1">
-             Tech: {car.bodyTechnician} | Estimator: {car.estimator}
-           </p>
-         </div>
+          <Link href={`/car-view/${car.roNumber}`} className="hover:opacity-75 transition">
+            <p className="font-bold text-lg text-blue-600 hover:underline">RO {car.roNumber}</p>
+          </Link>
+          <p className="text-sm font-semibold text-gray-700">{car.vehicle}</p>
+          <p className="text-xs text-gray-600">{car.owner}</p>
+          <p className="text-xs text-gray-500 mt-1">
+            Tech: {car.bodyTechnician} | Estimator: {car.estimator}
+          </p>
+        </div>
       </div>
     </div>
   );
