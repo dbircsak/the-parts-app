@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import PartNumberLink from "./part-number-link";
 import { getPartStatus, PART_STATUS_CONFIG } from "@/lib/part-status";
+import { filterDisplayableParts } from "@/lib/count-parts-by-status";
 import { usePagination } from "@/lib/usePagination";
 import PaginationControls from "./PaginationControls";
 
@@ -37,7 +38,8 @@ export default function CarViewPartsList({ parts: initialParts }: { parts: Part[
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
   const sortedParts = useMemo(() => {
-    const filtered = initialParts.filter((part) => part.partType !== "Sublet");
+    // Use shared filtering logic (roQty > 0 and not Sublet)
+    const filtered = filterDisplayableParts(initialParts);
     
     return [...filtered].sort((a, b) => {
       let comparison = 0;
