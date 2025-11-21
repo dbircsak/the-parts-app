@@ -145,6 +145,7 @@ model Vendor {
 
 model Material {
   id              String    @id @default(cuid())
+  bodyTechnician  String
   partNumber      String
   description     String
   orderedQty      Int

@@ -1,4 +1,4 @@
-﻿-- CreateEnum
+-- CreateEnum
 CREATE TYPE "Role" AS ENUM ('ADMIN', 'ESTIMATOR', 'TECHNICIAN');
 
 -- CreateEnum
@@ -134,6 +134,7 @@ CREATE TABLE "vendors" (
 -- CreateTable
 CREATE TABLE "materials" (
     "id" TEXT NOT NULL,
+    "bodyTechnician" TEXT NOT NULL,
     "partNumber" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "orderedQty" INTEGER NOT NULL,

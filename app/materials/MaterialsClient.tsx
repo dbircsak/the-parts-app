@@ -5,6 +5,7 @@ import { ChevronUp, ChevronDown } from "lucide-react";
 
 interface Material {
   id: string;
+  bodyTechnician: string;
   partNumber: string;
   description: string;
   orderedQty: number;
@@ -16,15 +17,18 @@ interface Material {
 
 interface MaterialsClientProps {
   initialMaterials: Material[];
+  bodyTechnicians: string[];
 }
 
-export default function MaterialsClient({ initialMaterials }: MaterialsClientProps) {
+export default function MaterialsClient({ initialMaterials, bodyTechnicians }: MaterialsClientProps) {
   const [materials, setMaterials] = useState<Material[]>(initialMaterials);
   const [showForm, setShowForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [sortField, setSortField] = useState<keyof Material>("orderedDate");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [selectedBodyTechnician, setSelectedBodyTechnician] = useState<string>("");
   const [formData, setFormData] = useState({
+    bodyTechnician: "",
     partNumber: "",
     description: "",
     orderedQty: "",
@@ -48,31 +52,40 @@ export default function MaterialsClient({ initialMaterials }: MaterialsClientPro
     }
   };
 
-  const getSortedMaterials = () => {
-    const sorted = [...materials].sort((a, b) => {
+  const getFilteredAndSortedMaterials = () => {
+    let filtered = materials;
+    if (selectedBodyTechnician) {
+      filtered = materials.filter(m => m.bodyTechnician === selectedBodyTechnician);
+    }
+
+    const sorted = [...filtered].sort((a, b) => {
       const aValue = a[sortField];
       const bValue = b[sortField];
 
+      if (aValue === null && bValue === null) return a.id.localeCompare(b.id);
       if (aValue === null) return 1;
       if (bValue === null) return -1;
 
       if (typeof aValue === "string") {
-        return sortDirection === "asc"
+        const comparison = sortDirection === "asc"
           ? aValue.localeCompare(bValue as string)
           : (bValue as string).localeCompare(aValue);
+        return comparison !== 0 ? comparison : a.id.localeCompare(b.id);
       }
 
       if (typeof aValue === "number") {
-        return sortDirection === "asc" ? (aValue as number) - (bValue as number) : (bValue as number) - (aValue as number);
+        const comparison = sortDirection === "asc" ? (aValue as number) - (bValue as number) : (bValue as number) - (aValue as number);
+        return comparison !== 0 ? comparison : a.id.localeCompare(b.id);
       }
 
       if (aValue instanceof Date && bValue instanceof Date) {
-        return sortDirection === "asc"
+        const comparison = sortDirection === "asc"
           ? aValue.getTime() - bValue.getTime()
           : bValue.getTime() - aValue.getTime();
+        return comparison !== 0 ? comparison : a.id.localeCompare(b.id);
       }
 
-      return 0;
+      return a.id.localeCompare(b.id);
     });
     return sorted;
   };
@@ -109,6 +122,7 @@ export default function MaterialsClient({ initialMaterials }: MaterialsClientPro
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          bodyTechnician: formData.bodyTechnician,
           partNumber: formData.partNumber,
           description: formData.description,
           orderedQty: parseInt(formData.orderedQty) || 0,
@@ -128,7 +142,9 @@ export default function MaterialsClient({ initialMaterials }: MaterialsClientPro
 
       const newMaterial = data;
       setMaterials((prev) => [newMaterial, ...prev]);
+      setSelectedBodyTechnician("");
       setFormData({
+        bodyTechnician: "",
         partNumber: "",
         description: "",
         orderedQty: "",
@@ -137,7 +153,6 @@ export default function MaterialsClient({ initialMaterials }: MaterialsClientPro
         receivedQty: "",
         receivedDate: "",
       });
-      setShowForm(false);
     } catch (error) {
       console.error("Error adding material:", error);
       alert(error instanceof Error ? error.message : "Failed to add material");
@@ -158,75 +173,130 @@ export default function MaterialsClient({ initialMaterials }: MaterialsClientPro
         </button>
       </div>
 
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Filter by Body Technician
+        </label>
+        <select
+          value={selectedBodyTechnician}
+          onChange={(e) => setSelectedBodyTechnician(e.target.value)}
+          className="px-3 py-2 border rounded-md w-full md:w-64"
+        >
+          <option value="">All Body Technicians</option>
+          {bodyTechnicians.map((bodyTechnician) => (
+            <option key={bodyTechnician} value={bodyTechnician}>
+              {bodyTechnician}
+            </option>
+          ))}
+        </select>
+      </div>
+    
+      {materials.length === 0 && (
+        <p className="text-gray-500">No materials on order.</p>
+      )}
+
       {showForm && (
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <h2 className="text-xl font-bold mb-4">Add New Material</h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              name="partNumber"
-              placeholder="Part Number"
-              value={formData.partNumber}
-              onChange={handleInputChange}
-              required
-              className="px-3 py-2 border rounded-md"
-            />
-            <input
-              type="text"
-              name="description"
-              placeholder="Description"
-              value={formData.description}
-              onChange={handleInputChange}
-              required
-              className="px-3 py-2 border rounded-md"
-            />
-            <input
-              type="number"
-              name="orderedQty"
-              placeholder="Ordered Qty"
-              value={formData.orderedQty}
-              onChange={handleInputChange}
-              max="2147483647"
-              required
-              className="px-3 py-2 border rounded-md"
-            />
-            <input
-              type="date"
-              name="orderedDate"
-              value={formData.orderedDate}
-              onChange={handleInputChange}
-              className="px-3 py-2 border rounded-md"
-            />
-            <input
-              type="text"
-              name="unitType"
-              placeholder="Unit Type"
-              value={formData.unitType}
-              onChange={handleInputChange}
-              required
-              className="px-3 py-2 border rounded-md"
-            />
-            <input
-              type="number"
-              name="receivedQty"
-              placeholder="Received Qty"
-              value={formData.receivedQty}
-              onChange={handleInputChange}
-              max="2147483647"
-              required
-              className="px-3 py-2 border rounded-md"
-            />
-            <input
-              type="date"
-              name="receivedDate"
-              value={formData.receivedDate}
-              onChange={handleInputChange}
-              className="px-3 py-2 border rounded-md"
-            />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700 w-40">Body Technician</label>
+              <select
+                name="bodyTechnician"
+                value={formData.bodyTechnician}
+                onChange={handleInputChange}
+                required
+                className="flex-1 px-3 py-2 border rounded-md"
+              >
+                <option value="">Select Body Technician</option>
+                {bodyTechnicians.map((bodyTechnician) => (
+                  <option key={bodyTechnician} value={bodyTechnician}>
+                    {bodyTechnician}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700 w-40">Part Number</label>
+              <input
+                type="text"
+                name="partNumber"
+                value={formData.partNumber}
+                onChange={handleInputChange}
+                required
+                className="flex-1 px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700 w-40">Description</label>
+              <input
+                type="text"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                required
+                className="flex-1 px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700 w-40">Ordered Qty</label>
+              <input
+                type="number"
+                name="orderedQty"
+                value={formData.orderedQty}
+                onChange={handleInputChange}
+                max="2147483647"
+                required
+                className="flex-1 px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700 w-40">Ordered Date</label>
+              <input
+                type="date"
+                name="orderedDate"
+                value={formData.orderedDate}
+                onChange={handleInputChange}
+                className="flex-1 px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700 w-40">Unit Type</label>
+              <input
+                type="text"
+                name="unitType"
+                value={formData.unitType}
+                onChange={handleInputChange}
+                required
+                className="flex-1 px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700 w-40">Received Qty</label>
+              <input
+                type="number"
+                name="receivedQty"
+                value={formData.receivedQty}
+                onChange={handleInputChange}
+                max="2147483647"
+                required
+                className="flex-1 px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700 w-40">Received Date</label>
+              <input
+                type="date"
+                name="receivedDate"
+                value={formData.receivedDate}
+                onChange={handleInputChange}
+                className="flex-1 px-3 py-2 border rounded-md"
+              />
+            </div>
             <button
               type="submit"
               disabled={isLoading}
-              className="md:col-span-2 bg-green-600 text-white px-4 py-2 rounded-md font-medium hover:bg-green-700 disabled:bg-gray-400"
+              className="bg-green-600 text-white px-4 py-2 rounded-md font-medium hover:bg-green-700 disabled:bg-gray-400"
             >
               {isLoading ? "Adding..." : "Add Material"}
             </button>
@@ -239,6 +309,7 @@ export default function MaterialsClient({ initialMaterials }: MaterialsClientPro
           <table className="w-full">
             <thead className="bg-gray-100">
               <tr>
+                <SortHeader field="bodyTechnician" label="Body Technician" />
                 <SortHeader field="partNumber" label="Part Number" />
                 <SortHeader field="description" label="Description" />
                 <SortHeader field="orderedQty" label="Ordered Qty" />
@@ -249,8 +320,11 @@ export default function MaterialsClient({ initialMaterials }: MaterialsClientPro
               </tr>
             </thead>
             <tbody>
-              {getSortedMaterials().map((material) => (
+              {getFilteredAndSortedMaterials().map((material) => (
                 <tr key={material.id} className="border-b hover:bg-gray-50">
+                  <td className="px-4 py-2 text-sm font-medium">
+                    {material.bodyTechnician}
+                  </td>
                   <td className="px-4 py-2 text-sm font-medium">
                     {material.partNumber}
                   </td>
@@ -271,9 +345,6 @@ export default function MaterialsClient({ initialMaterials }: MaterialsClientPro
         </div>
       </div>
 
-      {materials.length === 0 && (
-        <p className="text-gray-500">No materials on order.</p>
-      )}
     </div>
   );
 }

@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
 
     const material = await prisma.material.create({
       data: {
+        bodyTechnician: body.bodyTechnician,
         partNumber: body.partNumber,
         description: body.description,
         orderedQty: body.orderedQty,

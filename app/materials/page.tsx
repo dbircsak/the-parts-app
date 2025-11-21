@@ -6,5 +6,15 @@ export default async function MaterialsPage() {
     orderBy: { orderedDate: "desc" },
   });
 
-  return <MaterialsClient initialMaterials={materials} />;
+  const bodyTechnicians = await prisma.dailyOut.findMany({
+    select: { bodyTechnician: true },
+    distinct: ["bodyTechnician"],
+    orderBy: { bodyTechnician: "asc" },
+  });
+
+  const uniqueBodyTechnicians = bodyTechnicians
+    .map(b => b.bodyTechnician)
+    .filter((name) => name && name.trim() !== "");
+
+  return <MaterialsClient initialMaterials={materials} bodyTechnicians={uniqueBodyTechnicians} />;
 }
