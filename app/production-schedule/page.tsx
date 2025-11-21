@@ -82,19 +82,17 @@ export default function ProductionSchedulePage() {
 
                 if (!matchesSearch) return false;
 
-                // Vehicle status filter (only in estimator view)
-                if (groupMode === "estimator") {
-                    if (vehicleStatusFilter === "all") return true;
-                    const now = new Date();
-                    const scheduledOut = car.scheduledOut ? new Date(car.scheduledOut) : null;
-                    const isInPast = scheduledOut ? scheduledOut < now : false;
+                // Vehicle status filter
+                if (vehicleStatusFilter === "all") return true;
+                const now = new Date();
+                const scheduledOut = car.scheduledOut ? new Date(car.scheduledOut) : null;
+                const isInPast = scheduledOut ? scheduledOut < now : false;
 
-                    if (vehicleStatusFilter === "in-shop") {
-                        return isInPast;
-                    }
-                    if (vehicleStatusFilter === "pre-order") {
-                        return !isInPast;
-                    }
+                if (vehicleStatusFilter === "in-shop") {
+                    return isInPast;
+                }
+                if (vehicleStatusFilter === "pre-order") {
+                    return !isInPast;
                 }
 
                 return true;
