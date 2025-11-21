@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, ExternalLink } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
 import { countPartsByStatus, calculatePartsReceivedPercentage } from "@/lib/count-parts-by-status";
 import { getPartStatus } from "@/lib/part-status";

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Search } from "lucide-react";
+import { Search, ChevronUp, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import VehicleStatusFilter from "@/components/VehicleStatusFilter";
 import { VehicleStatus } from "@/lib/vehicle-status-filter";
 
 type GroupMode = "estimator" | "technician";
-type SortMode = "dueDate" | "partsCompletion" | "none";
+type SortMode = "dueDate" | "partsPercent" | "none";
 
 interface CarData {
   roNumber: number;
@@ -34,6 +34,7 @@ export default function ProductionSchedulePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [vehicleStatusFilter, setVehicleStatusFilter] = useState<VehicleStatus>("all");
   const [sortMode, setSortMode] = useState<SortMode>("none");
+  const [sortDescending, setSortDescending] = useState(false);
   const [groupedData, setGroupedData] = useState<GroupedData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
@@ -104,15 +105,18 @@ export default function ProductionSchedulePage() {
         group.cars.sort((a, b) => {
           const dateA = a.scheduledOut ? new Date(a.scheduledOut).getTime() : Infinity;
           const dateB = b.scheduledOut ? new Date(b.scheduledOut).getTime() : Infinity;
-          return dateA - dateB;
+          const comparison = dateA - dateB;
+          return sortDescending ? -comparison : comparison;
         });
-      } else if (sortMode === "partsCompletion") {
-        group.cars.sort((a, b) => b.partsReceivedPct - a.partsReceivedPct);
+      } else if (sortMode === "partsPercent") {
+        const comparison = (a: typeof group.cars[0], b: typeof group.cars[0]) =>
+          a.partsReceivedPct - b.partsReceivedPct;
+        group.cars.sort((a, b) => (sortDescending ? comparison(a, b) : comparison(b, a)));
       }
     });
 
     return filtered;
-  }, [groupedData, searchTerm, vehicleStatusFilter, sortMode, groupMode]);
+  }, [groupedData, searchTerm, vehicleStatusFilter, sortMode, sortDescending, groupMode]);
 
   if (loading) {
     return (
@@ -152,39 +156,63 @@ export default function ProductionSchedulePage() {
             Group by Technicians
           </button>
 
-          {/* Vehicle Status Filter - Only in Estimator View */}
-          {groupMode === "estimator" && (
-            <VehicleStatusFilter
-              value={vehicleStatusFilter}
-              onChange={setVehicleStatusFilter}
-            />
-          )}
+          {/* Vehicle Status Filter */}
+          <VehicleStatusFilter
+            value={vehicleStatusFilter}
+            onChange={setVehicleStatusFilter}
+          />
 
           <div className="flex gap-2 ml-auto">
-            {/* Sort by Due Date Button */}
+            {/* Due Date Button - Sort by Scheduled Out Date */}
             <button
-              onClick={() => setSortMode(sortMode === "dueDate" ? "none" : "dueDate")}
-              className={`px-3 py-2 rounded-lg font-medium text-sm transition ${
+              onClick={() => {
+                if (sortMode === "dueDate") {
+                  setSortDescending(!sortDescending);
+                } else {
+                  setSortMode("dueDate");
+                  setSortDescending(false);
+                }
+              }}
+              className={`px-3 py-2 rounded-lg font-medium text-sm transition flex items-center gap-1 ${
                 sortMode === "dueDate"
                   ? "bg-green-600 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >
-              Due
+              Due Date
+              {sortMode === "dueDate" && (
+                sortDescending ? (
+                  <ChevronDown className="w-4 h-4" />
+                ) : (
+                  <ChevronUp className="w-4 h-4" />
+                )
+              )}
             </button>
 
-            {/* Sort by Parts Completion Button */}
+            {/* Parts % Button - Sort by Parts Completion % */}
             <button
-              onClick={() =>
-                setSortMode(sortMode === "partsCompletion" ? "none" : "partsCompletion")
-              }
-              className={`px-3 py-2 rounded-lg font-medium text-sm transition ${
-                sortMode === "partsCompletion"
+              onClick={() => {
+                if (sortMode === "partsPercent") {
+                  setSortDescending(!sortDescending);
+                } else {
+                  setSortMode("partsPercent");
+                  setSortDescending(false);
+                }
+              }}
+              className={`px-3 py-2 rounded-lg font-medium text-sm transition flex items-center gap-1 ${
+                sortMode === "partsPercent"
                   ? "bg-green-600 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >
-              Sort
+              Parts %
+              {sortMode === "partsPercent" && (
+                sortDescending ? (
+                  <ChevronDown className="w-4 h-4" />
+                ) : (
+                  <ChevronUp className="w-4 h-4" />
+                )
+              )}
             </button>
           </div>
         </div>

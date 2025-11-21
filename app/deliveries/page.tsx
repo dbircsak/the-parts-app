@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Search } from "lucide-react";
 import Link from "next/link";
 import PartNumberLink from "@/components/part-number-link";
 import VehicleStatusFilter from "@/components/VehicleStatusFilter";
@@ -56,6 +56,7 @@ export default function DeliveriesPage() {
     const [data, setData] = useState<GroupedData | null>(null);
     const [loading, setLoading] = useState(true);
     const [vehicleStatusFilter, setVehicleStatusFilter] = useState<VehicleStatus>("all");
+    const [searchTerm, setSearchTerm] = useState("");
     const [expandedCars, setExpandedCars] = useState<Set<number>>(new Set());
     const [expandedVendorsInCar, setExpandedVendorsInCar] = useState<Set<string>>(
         new Set()
@@ -218,6 +219,18 @@ export default function DeliveriesPage() {
                         </button>
                     </div>
                 </div>
+
+                {/* Search Bar */}
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                        type="text"
+                        placeholder="Search by owner, vehicle, RO, technician, estimator, or vendor..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
             </div>
 
             {/* Car View */}
@@ -225,7 +238,20 @@ export default function DeliveriesPage() {
                 <div className="space-y-4">
                     {(() => {
                         const now = new Date();
+                        const searchLower = searchTerm.toLowerCase();
                         const filteredCars = data.carView.cars.filter((car) => {
+                            // Search filter
+                            const matchesSearch =
+                              car.owner.toLowerCase().includes(searchLower) ||
+                              car.vehicle.toLowerCase().includes(searchLower) ||
+                              car.roNumber.toString().includes(searchLower) ||
+                              car.bodyTechnician.toLowerCase().includes(searchLower) ||
+                              car.estimator.toLowerCase().includes(searchLower) ||
+                              car.vendors.some((v) => v.vendorName.toLowerCase().includes(searchLower));
+
+                            if (!matchesSearch) return false;
+
+                            // Vehicle status filter
                             if (vehicleStatusFilter === "all") return true;
                             const vehicleIn = new Date(car.vehicleIn);
                             const isInPast = vehicleIn < now;
@@ -369,10 +395,29 @@ export default function DeliveriesPage() {
             {/* Vendor View */}
             {groupMode === "vendor" && (
                 <div className="space-y-4">
-                    {data.vendorView.vendors.length === 0 ? (
-                        <p className="text-gray-500">No deliveries found.</p>
-                    ) : (
-                        data.vendorView.vendors.map((vendor) => {
+                    {(() => {
+                        const searchLower = searchTerm.toLowerCase();
+                        const filteredVendors = data.vendorView.vendors
+                            .map((vendor) => ({
+                                ...vendor,
+                                cars: vendor.cars.filter((car) => {
+                                    const matchesSearch =
+                                      car.owner.toLowerCase().includes(searchLower) ||
+                                      car.vehicle.toLowerCase().includes(searchLower) ||
+                                      car.roNumber.toString().includes(searchLower) ||
+                                      car.bodyTechnician.toLowerCase().includes(searchLower) ||
+                                      car.estimator.toLowerCase().includes(searchLower) ||
+                                      vendor.vendorName.toLowerCase().includes(searchLower);
+                                    return matchesSearch;
+                                })
+                            }))
+                            .filter((vendor) => vendor.cars.length > 0);
+
+                        if (filteredVendors.length === 0) {
+                            return <p className="text-gray-500">No deliveries found.</p>;
+                        }
+
+                        return filteredVendors.map((vendor) => {
                             const isVendorExpanded = expandedVendors.has(vendor.vendorName);
                             return (
                                 <div key={vendor.vendorName} className="border rounded-lg bg-white">
@@ -490,8 +535,8 @@ export default function DeliveriesPage() {
                                     )}
                                 </div>
                             );
-                        })
-                    )}
+                        });
+                    })()}
                 </div>
             )}
         </div>

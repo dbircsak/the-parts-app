@@ -17,13 +17,9 @@ export interface PartStatusCount {
  * 
  * Used by: car-view, production-schedule, and any other part display
  */
-export function filterDisplayableParts(
-  parts: Array<{
-    roQty: number;
-    partType: string;
-    [key: string]: any;
-  }>
-): typeof parts {
+export function filterDisplayableParts<T extends { roQty: number; partType: string }>(
+  parts: T[]
+): T[] {
   return parts.filter((part) => part.roQty > 0 && part.partType !== "Sublet");
 }
 
