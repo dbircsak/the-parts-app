@@ -39,10 +39,12 @@ export default function PaintWorkQueue({
   queuedCars,
   availableCars: initialAvailableCars,
   allTechnicians = [],
+  isGuest = false,
 }: {
   queuedCars: QueuedCar[];
   availableCars: AvailableCar[];
   allTechnicians?: string[];
+  isGuest?: boolean;
 }) {
   const [cars, setCars] = useState(queuedCars);
   const [availableCars, setAvailableCars] = useState(initialAvailableCars);
@@ -373,14 +375,16 @@ export default function PaintWorkQueue({
                           </div>
                           <div className="flex-1 flex items-start gap-2">
                             <AvailableCarCard car={car} />
-                            <button
-                              onClick={() => addCarToQueue(car)}
-                              className="mt-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2 whitespace-nowrap text-sm font-medium transition-colors"
-                              title="Add car to Not Started queue"
-                            >
-                              <Plus className="w-4 h-4" />
-                              Add
-                            </button>
+                            {!isGuest && (
+                              <button
+                                onClick={() => addCarToQueue(car)}
+                                className="mt-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2 whitespace-nowrap text-sm font-medium transition-colors"
+                                title="Add car to Not Started queue"
+                              >
+                                <Plus className="w-4 h-4" />
+                                Add
+                              </button>
+                            )}
                           </div>
                         </div>
                       ))}

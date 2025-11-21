@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { countPartsByStatus, calculatePartsReceivedPercentage, filterDisplayableParts } from "@/lib/count-parts-by-status";
@@ -25,11 +24,6 @@ interface GroupedData {
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     // Get all repair orders
     const cars = await prisma.dailyOut.findMany({
       orderBy: { vehicleIn: "desc" },

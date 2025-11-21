@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import PartNumberLink from "./part-number-link";
 import VehicleStatusFilter from "./VehicleStatusFilter";
@@ -290,7 +291,10 @@ export default function UnorderedPartsList({
                                                             )}
                                                             <div className="text-left flex-1">
                                                                 <p className="font-semibold">
-                                                                    RO {car.roNumber} • {car.owner} • {car.vehicle}
+                                                                    <Link href={`/car-view/${car.roNumber}`} className="text-blue-600 hover:underline">
+                                                                        RO {car.roNumber}
+                                                                    </Link>
+                                                                    {" "} • {car.owner} • {car.vehicle}
                                                                 </p>
                                                             </div>
                                                             <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">

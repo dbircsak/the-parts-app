@@ -6,10 +6,11 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 interface NavbarProps {
-  role?: string;
+  role?: string | null;
+  isGuest?: boolean;
 }
 
-export default function Navbar({ role = "TECHNICIAN" }: NavbarProps) {
+export default function Navbar({ role = "TECHNICIAN", isGuest = false }: NavbarProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -97,12 +98,21 @@ export default function Navbar({ role = "TECHNICIAN" }: NavbarProps) {
               </div>
             )}
 
-            <button
-              onClick={() => signOut()}
-              className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
-            >
-              Sign Out
-            </button>
+            {isGuest ? (
+              <Link
+                href="/login"
+                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+              >
+                Log In
+              </Link>
+            ) : (
+              <button
+                onClick={() => signOut()}
+                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+              >
+                Sign Out
+              </button>
+            )}
           </div>
         </div>
 
@@ -141,12 +151,21 @@ export default function Navbar({ role = "TECHNICIAN" }: NavbarProps) {
               </>
             )}
 
-            <button
-              onClick={() => signOut()}
-              className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
-            >
-              Sign Out
-            </button>
+            {isGuest ? (
+              <Link
+                href="/login"
+                className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
+              >
+                Log In
+              </Link>
+            ) : (
+              <button
+                onClick={() => signOut()}
+                className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
+              >
+                Sign Out
+              </button>
+            )}
           </div>
         )}
       </div>

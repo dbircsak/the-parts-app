@@ -1,14 +1,7 @@
-import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
 import UnorderedPartsList from "@/components/UnorderedPartsList";
 
 export default async function UnorderedPartsPage() {
-  const session = await auth();
-  if (!session) {
-    redirect("/login");
-  }
-
   // Fetch unordered parts: ordered_qty = 0 AND received_qty = 0
   // Exclude: Sublet work, Aftermarket, Remanufactured
   const parts = await prisma.partsStatus.findMany({

@@ -133,6 +133,7 @@ export default function UserManagement() {
       email: user.email,
       name: user.name,
       password: "",
+      passwordConfirm: "",
       role: user.role,
     });
     setShowForm(true);

@@ -5,13 +5,16 @@ export async function middleware(request: NextRequest) {
   const session = await auth();
   const pathname = request.nextUrl.pathname;
 
-  const publicPages = ["/login", "/vendors"];
-  const isPublicPage = publicPages.some((page) => pathname.startsWith(page));
+  // Admin pages require authentication with ADMIN role
+  const adminPages = ["/admin"];
+  const isAdminPage = adminPages.some((page) => pathname.startsWith(page));
 
-  if (!session && !isPublicPage) {
+  // Redirect to login only for admin pages without session
+  if (!session && isAdminPage) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // Redirect logged-in users away from login page
   if (session && pathname === "/login") {
     return NextResponse.redirect(new URL("/", request.url));
   }

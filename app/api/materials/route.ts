@@ -2,6 +2,22 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function GET() {
+  try {
+    const materials = await prisma.material.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    return NextResponse.json(materials);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("Error fetching materials:", errorMessage);
+    return NextResponse.json(
+      { error: errorMessage },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await auth();

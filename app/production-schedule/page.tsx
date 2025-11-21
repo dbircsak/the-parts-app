@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Search, ChevronUp, ChevronDown } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import VehicleStatusFilter from "@/components/VehicleStatusFilter";
 import { VehicleStatus } from "@/lib/vehicle-status-filter";

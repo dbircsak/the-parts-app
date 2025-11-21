@@ -1,6 +1,5 @@
-import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import CarViewPartsList from "@/components/car-view-parts-list";
 
 export default async function CarViewPage({
@@ -8,11 +7,6 @@ export default async function CarViewPage({
 }: {
   params: Promise<{ roNumber: string }>;
 }) {
-  const session = await auth();
-  if (!session) {
-    redirect("/login");
-  }
-
   const { roNumber: roNumberStr } = await params;
   const roNumber = parseInt(roNumberStr, 10);
   if (isNaN(roNumber)) {

@@ -18,9 +18,10 @@ interface Material {
 interface MaterialsClientProps {
   initialMaterials: Material[];
   bodyTechnicians: string[];
+  isGuest?: boolean;
 }
 
-export default function MaterialsClient({ initialMaterials, bodyTechnicians }: MaterialsClientProps) {
+export default function MaterialsClient({ initialMaterials, bodyTechnicians, isGuest = false }: MaterialsClientProps) {
   const [materials, setMaterials] = useState<Material[]>(initialMaterials);
   const [showForm, setShowForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -165,12 +166,14 @@ export default function MaterialsClient({ initialMaterials, bodyTechnicians }: M
     <div className="p-4 md:p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Materials</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700"
-        >
-          {showForm ? "Cancel" : "Add Material"}
-        </button>
+        {!isGuest && (
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700"
+          >
+            {showForm ? "Cancel" : "Add Material"}
+          </button>
+        )}
       </div>
 
       <div className="mb-6">
@@ -195,7 +198,7 @@ export default function MaterialsClient({ initialMaterials, bodyTechnicians }: M
         <p className="text-gray-500">No materials on order.</p>
       )}
 
-      {showForm && (
+      {showForm && !isGuest && (
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <h2 className="text-xl font-bold mb-4">Add New Material</h2>
           <form onSubmit={handleSubmit} className="space-y-4">

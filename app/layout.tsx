@@ -19,7 +19,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-gray-50">
         <div className="flex flex-col min-h-screen">
-          {session && <Navbar role={(session.user as any)?.role} />}
+          <Navbar role={session ? (session.user as any)?.role : null} isGuest={!session} />
           <main className="flex-1">
             {children}
           </main>

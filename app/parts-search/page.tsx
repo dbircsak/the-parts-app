@@ -1,14 +1,7 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import PartsSearchClient from "@/components/parts-search-client";
 
 export default async function PartsSearchPage() {
-  const session = await auth();
-  if (!session) {
-    redirect("/login");
-  }
-
   const parts = await prisma.partsStatus.findMany({
     where: {
       roQty: { gt: 0 },

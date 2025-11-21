@@ -1,13 +1,10 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
 import PaintWorkQueue from "@/components/PaintWorkQueue";
 
 export default async function PaintListPage() {
   const session = await auth();
-  if (!session) {
-    redirect("/login");
-  }
+  const isGuest = !session;
 
   // Fetch cars in paint queue, ordered by status and priority
   const paintQueue = await prisma.workQueue.findMany({
@@ -75,6 +72,7 @@ export default async function PaintListPage() {
         queuedCars={queueData} 
         availableCars={availableData}
         allTechnicians={allTechnicians.map((t) => t.bodyTechnician).filter((t) => t)}
+        isGuest={isGuest}
       />
     </div>
   );
