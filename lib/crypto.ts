@@ -58,3 +58,12 @@ export async function comparePasswords(
   const computed = await pbkdf2(password, salt, 100000, 64);
   return bytesToHex(computed) === hashHex;
 }
+
+export function validatePassword(
+  password: string
+): { valid: boolean; error?: string } {
+  if (password.length < 8) {
+    return { valid: false, error: "Password must be at least 8 characters" };
+  }
+  return { valid: true };
+}

@@ -76,6 +76,12 @@ export default function Navbar({ role = "TECHNICIAN" }: NavbarProps) {
                 </button>
                 <div className="hidden group-hover:block absolute right-0 mt-0 w-48 bg-white shadow-lg rounded-md z-10">
                   <Link
+                    href="/admin/users"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left border-b"
+                  >
+                    Manage Users
+                  </Link>
+                  <Link
                     href="/admin/upload-extracts"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left border-b"
                   >
@@ -114,6 +120,12 @@ export default function Navbar({ role = "TECHNICIAN" }: NavbarProps) {
 
             {isAdmin && (
               <>
+                <Link
+                  href="/admin/users"
+                  className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
+                >
+                  Admin - Manage Users
+                </Link>
                 <Link
                   href="/admin/upload-extracts"
                   className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"

@@ -26,19 +26,6 @@ export default async function AdminPage() {
             Go to Upload
           </Link>
         </div>
-
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-2">Edit Materials</h2>
-          <p className="text-gray-600 text-sm mb-4">
-            Manage consumable materials and paint inventory.
-          </p>
-          <Link
-            href="/admin/edit-materials"
-            className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700"
-          >
-            Go to Materials
-          </Link>
-        </div>
       </div>
     </div>
   );
