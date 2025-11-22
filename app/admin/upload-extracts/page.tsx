@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Button from "@/components/Button";
+import Card from "@/components/Card";
+import Alert from "@/components/Alert";
 
 interface ImportResult {
   imported: number;
@@ -73,7 +76,7 @@ export default function UploadExtractsPage() {
     <div className="p-4 md:p-8">
       <h1 className="text-3xl font-bold mb-6">Upload Extracts</h1>
 
-      <div className="bg-white rounded-lg shadow p-6 max-w-2xl">
+      <Card className="p-6 max-w-2xl">
         <form ref={formRef} onSubmit={handleFileUpload} className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">
@@ -112,39 +115,39 @@ export default function UploadExtractsPage() {
           </div>
 
           <div className="flex gap-2">
-            <button
+            <Button
               type="submit"
               disabled={isLoading}
-              className="flex-1 bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50"
+              variant="primary"
+              className="flex-1"
             >
               {isLoading ? "Uploading..." : "Upload Files"}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={handleClearFiles}
               disabled={isLoading}
-              className="flex-1 bg-gray-400 text-white py-2 rounded-md font-medium hover:bg-gray-500 disabled:opacity-50"
+              variant="secondary"
+              className="flex-1"
             >
               Clear Files
-            </button>
+            </Button>
           </div>
         </form>
 
         {error && (
-          <div className="mt-6 p-4 bg-red-100 text-red-700 rounded-md">
-            {error}
+          <div className="mt-6">
+            <Alert type="error">{error}</Alert>
           </div>
         )}
 
         {result && (
           <div className="mt-6 space-y-4">
-            <div className="p-4 bg-green-100 text-green-700 rounded-md">
-              {result.message}
-            </div>
+            <Alert type="success">{result.message}</Alert>
 
             {result.dailyOut && (
-              <div
-                className={`p-4 border rounded-md ${
+              <Card
+                className={`p-4 border ${
                   result.dailyOut.errors > 0
                     ? "bg-yellow-50 border-yellow-200"
                     : "bg-blue-50 border-blue-200"
@@ -177,12 +180,12 @@ export default function UploadExtractsPage() {
                       </ul>
                     </div>
                   )}
-              </div>
+              </Card>
             )}
 
             {result.partsStatus && (
-              <div
-                className={`p-4 border rounded-md ${
+              <Card
+                className={`p-4 border ${
                   result.partsStatus.errors > 0
                     ? "bg-yellow-50 border-yellow-200"
                     : "bg-blue-50 border-blue-200"
@@ -215,12 +218,12 @@ export default function UploadExtractsPage() {
                       </ul>
                     </div>
                   )}
-              </div>
+              </Card>
             )}
 
             {result.vendors && (
-              <div
-                className={`p-4 border rounded-md ${
+              <Card
+                className={`p-4 border ${
                   result.vendors.errors > 0
                     ? "bg-yellow-50 border-yellow-200"
                     : "bg-blue-50 border-blue-200"
@@ -253,11 +256,11 @@ export default function UploadExtractsPage() {
                       </ul>
                     </div>
                   )}
-              </div>
+              </Card>
             )}
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

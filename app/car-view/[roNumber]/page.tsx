@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import CarViewPartsList from "@/components/car-view-parts-list";
+import Card from "@/components/Card";
+import Alert from "@/components/Alert";
 
 export default async function CarViewPage({
   params,
@@ -38,7 +40,7 @@ export default async function CarViewPage({
 
       {/* RO Header Section */}
       {roHeader && (
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <Card className="mb-6">
           {/* Row 1: Owner, Vehicle Color, Estimator, Vehicle In */}
           <div className="grid grid-cols-4 gap-4 mb-6">
             <div>
@@ -70,19 +72,19 @@ export default async function CarViewPage({
               <p className="text-sm"><span className="text-gray-600">Scheduled Out:</span> <span className="font-medium">{roHeader.scheduledOut?.toLocaleDateString() || "-"}</span></p>
             </div>
           </div>
-        </div>
+        </Card>
       )}
       {!roHeader && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-          <p className="text-yellow-800">No RO data found in database.</p>
-        </div>
+        <Alert type="warning" className="mb-6">
+          No RO data found in database.
+        </Alert>
       )}
 
       {/* Parts List Section */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <Card>
         <h2 className="text-lg font-semibold mb-4">Parts List ({parts.length})</h2>
         <CarViewPartsList parts={parts} />
-      </div>
+      </Card>
     </div>
   );
 }

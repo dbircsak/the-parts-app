@@ -5,6 +5,10 @@ import Link from "next/link";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import PartNumberLink from "./part-number-link";
 import VehicleStatusFilter from "./VehicleStatusFilter";
+import Button from "./Button";
+import Input from "./Input";
+import Badge from "./Badge";
+import Table from "./Table";
 import { VehicleStatus } from "@/lib/vehicle-status-filter";
 
 interface EnrichedPart {
@@ -177,12 +181,11 @@ export default function UnorderedPartsList({
     return (
         <>
             <div className="mb-6 flex flex-col gap-3">
-                <input
+                <Input
                     type="text"
                     placeholder="Search by RO, part number, description, vehicle, or owner..."
                     value={searchFilter}
                     onChange={(e) => setSearchFilter(e.target.value)}
-                    className="px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
 
                 <div className="flex gap-2 flex-wrap items-center">
@@ -192,18 +195,20 @@ export default function UnorderedPartsList({
                     />
 
                     <div className="flex gap-2 ml-auto">
-                        <button
+                        <Button
                             onClick={expandAll}
-                            className="px-3 py-2 rounded-lg font-medium text-sm bg-green-500 text-white hover:bg-green-600 transition-colors"
+                            variant="success"
+                            size="sm"
                         >
                             Expand All
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={collapseAll}
-                            className="px-3 py-2 rounded-lg font-medium text-sm bg-orange-500 text-white hover:bg-orange-600 transition-colors"
+                            variant="warning"
+                            size="sm"
                         >
                             Collapse All
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -297,63 +302,48 @@ export default function UnorderedPartsList({
                                                                     {" "} • {car.owner} • {car.vehicle}
                                                                 </p>
                                                             </div>
-                                                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                                            <Badge color="blue">
                                                                 {car.parts.filter((part) => part.partNumber.trim()).length} part
                                                                 {car.parts.filter((part) => part.partNumber.trim()).length !== 1 ? "s" : ""}
-                                                            </span>
+                                                            </Badge>
                                                         </button>
 
                                                         {/* Parts under this car */}
                                                         {isCarExpanded && (
-                                                            <div className="bg-white">
-                                                                <table className="w-full text-sm">
-                                                                    <thead className="bg-gray-50 border-t">
-                                                                        <tr>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Part Number
-                                                                            </th>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Description
-                                                                            </th>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Line
-                                                                            </th>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Qty
-                                                                            </th>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Order Date
-                                                                            </th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        {car.parts
-                                                                            .filter((part) => part.partNumber.trim())
-                                                                            .map((part) => (
-                                                                                <tr
-                                                                                    key={part.id}
-                                                                                    className="border-t hover:bg-blue-50"
-                                                                                >
-                                                                                    <td className="px-6 py-2 font-mono text-sm">
-                                                                                        <PartNumberLink partNumber={part.partNumber} />
-                                                                                    </td>
-                                                                                    <td className="px-6 py-2 text-sm">
-                                                                                        {part.partDescription}
-                                                                                    </td>
-                                                                                    <td className="px-6 py-2 text-sm">{part.line}</td>
-                                                                                    <td className="px-6 py-2 text-sm font-semibold">
-                                                                                        {part.roQty}
-                                                                                    </td>
-                                                                                    <td className="px-6 py-2 text-sm">
-                                                                                        {part.orderedDate
-                                                                                            ? new Date(part.orderedDate).toLocaleDateString()
-                                                                                            : "-"}
-                                                                                    </td>
-                                                                                </tr>
-                                                                            ))}
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
+                                                            <Table className="bg-white">
+                                                                <Table.Head>
+                                                                    <Table.Row>
+                                                                        <Table.Cell header>Part Number</Table.Cell>
+                                                                        <Table.Cell header>Description</Table.Cell>
+                                                                        <Table.Cell header>Line</Table.Cell>
+                                                                        <Table.Cell header>Qty</Table.Cell>
+                                                                        <Table.Cell header>Order Date</Table.Cell>
+                                                                    </Table.Row>
+                                                                </Table.Head>
+                                                                <Table.Body>
+                                                                    {car.parts
+                                                                        .filter((part) => part.partNumber.trim())
+                                                                        .map((part) => (
+                                                                            <Table.Row key={part.id}>
+                                                                                <Table.Cell className="font-mono">
+                                                                                    <PartNumberLink partNumber={part.partNumber} />
+                                                                                </Table.Cell>
+                                                                                <Table.Cell>
+                                                                                    {part.partDescription}
+                                                                                </Table.Cell>
+                                                                                <Table.Cell>{part.line}</Table.Cell>
+                                                                                <Table.Cell className="font-semibold">
+                                                                                    {part.roQty}
+                                                                                </Table.Cell>
+                                                                                <Table.Cell>
+                                                                                    {part.orderedDate
+                                                                                        ? new Date(part.orderedDate).toLocaleDateString()
+                                                                                        : "-"}
+                                                                                </Table.Cell>
+                                                                            </Table.Row>
+                                                                        ))}
+                                                                </Table.Body>
+                                                            </Table>
                                                         )}
                                                     </div>
                                                 );

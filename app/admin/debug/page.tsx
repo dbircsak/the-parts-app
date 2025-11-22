@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { Search } from "lucide-react";
+import Button from "@/components/Button";
+import Card from "@/components/Card";
+import Alert from "@/components/Alert";
+import Input from "@/components/Input";
 
 export const dynamic = "force-dynamic";
 import Link from "next/link";
@@ -69,29 +73,28 @@ export default function DebugPage() {
 
       {/* Search Input */}
       <div className="mb-6 flex gap-2">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
+        <div className="flex-1 max-w-md">
+          <Input
             type="number"
             placeholder="Enter RO number..."
             value={roNumber}
             onChange={(e) => setRoNumber(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            icon={<Search className="w-4 h-4" />}
           />
         </div>
-        <button
+        <Button
           onClick={handleSearch}
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+          variant="primary"
         >
           {loading ? "Loading..." : "Search"}
-        </button>
+        </Button>
       </div>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-          {error}
+        <div className="mb-6">
+          <Alert type="error">{error}</Alert>
         </div>
       )}
 
@@ -110,7 +113,7 @@ export default function DebugPage() {
           </div>
 
           {/* Summary */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <Card className="bg-blue-50 border border-blue-200 p-4">
             <h2 className="text-xl font-bold mb-3">Summary</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
@@ -152,32 +155,32 @@ export default function DebugPage() {
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+              )}
+              </Card>
 
           {/* Daily Out Data */}
           {data.dailyOut && (
-            <div className="bg-white border rounded-lg p-4">
+            <Card className="p-4">
               <h2 className="text-xl font-bold mb-3">Daily Out (Car)</h2>
               <pre className="bg-gray-50 p-3 rounded text-xs overflow-auto max-h-96">
                 {JSON.stringify(data.dailyOut, null, 2)}
               </pre>
-            </div>
+            </Card>
           )}
 
           {/* Work Queue Data */}
           {data.workQueue && (
-            <div className="bg-white border rounded-lg p-4">
+            <Card className="p-4">
               <h2 className="text-xl font-bold mb-3">Work Queue</h2>
               <pre className="bg-gray-50 p-3 rounded text-xs overflow-auto max-h-96">
                 {JSON.stringify(data.workQueue, null, 2)}
               </pre>
-            </div>
+            </Card>
           )}
 
           {/* Parts Table */}
           {data.parts.length > 0 && (
-            <div className="bg-white border rounded-lg p-4">
+            <Card className="p-4">
               <h2 className="text-xl font-bold mb-3">Parts ({data.parts.length})</h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
@@ -218,17 +221,17 @@ export default function DebugPage() {
                     })}
                   </tbody>
                 </table>
-              </div>
-            </div>
-          )}
+                </div>
+                </Card>
+                )}
 
-          {/* Raw JSON Data */}
-          <div className="bg-white border rounded-lg p-4">
-            <h2 className="text-xl font-bold mb-3">Raw JSON (Full Response)</h2>
-            <pre className="bg-gray-50 p-3 rounded text-xs overflow-auto max-h-96">
-              {JSON.stringify(data, null, 2)}
-            </pre>
-          </div>
+                {/* Raw JSON Data */}
+                <Card className="p-4">
+                <h2 className="text-xl font-bold mb-3">Raw JSON (Full Response)</h2>
+                <pre className="bg-gray-50 p-3 rounded text-xs overflow-auto max-h-96">
+                {JSON.stringify(data, null, 2)}
+                </pre>
+                </Card>
         </div>
       )}
 

@@ -48,7 +48,7 @@ async function seedMaterials() {
           reject(error);
         }
       },
-      error: (error) => {
+      error: (error: unknown) => {
         reject(error);
       },
     });

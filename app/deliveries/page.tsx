@@ -1,10 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronRight, Search } from "lucide-react";
+import { Search, ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import PartNumberLink from "@/components/part-number-link";
 import VehicleStatusFilter from "@/components/VehicleStatusFilter";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import Badge from "@/components/Badge";
+import Table from "@/components/Table";
 import { VehicleStatus } from "@/lib/vehicle-status-filter";
 
 type GroupMode = "car" | "vendor";
@@ -19,40 +23,40 @@ interface PartData {
 
 
 interface GroupedData {
-  carView: {
-    cars: {
-      roNumber: number;
-      owner: string;
-      vehicle: string;
-      bodyTechnician: string;
-      estimator: string;
-      vehicleIn: string;
-      currentPhase: string;
-      vendors: {
-        vendorName: string;
-        parts: PartData[];
-      }[];
-    }[];
-  };
-  vendorView: {
-    vendors: {
-      vendorName: string;
-      cars: {
-        roNumber: number;
-        owner: string;
-        vehicle: string;
-        bodyTechnician: string;
-        estimator: string;
-        vehicleIn: string;
-        currentPhase: string;
-        parts: PartData[];
-      }[];
-    }[];
-  };
+    carView: {
+        cars: {
+            roNumber: number;
+            owner: string;
+            vehicle: string;
+            bodyTechnician: string;
+            estimator: string;
+            vehicleIn: string;
+            currentPhase: string;
+            vendors: {
+                vendorName: string;
+                parts: PartData[];
+            }[];
+        }[];
+    };
+    vendorView: {
+        vendors: {
+            vendorName: string;
+            cars: {
+                roNumber: number;
+                owner: string;
+                vehicle: string;
+                bodyTechnician: string;
+                estimator: string;
+                vehicleIn: string;
+                currentPhase: string;
+                parts: PartData[];
+            }[];
+        }[];
+    };
 }
 
 export default function DeliveriesPage() {
-  const [groupMode, setGroupMode] = useState<GroupMode>("car");
+    const [groupMode, setGroupMode] = useState<GroupMode>("car");
     const [data, setData] = useState<GroupedData | null>(null);
     const [loading, setLoading] = useState(true);
     const [vehicleStatusFilter, setVehicleStatusFilter] = useState<VehicleStatus>("all");
@@ -141,7 +145,7 @@ export default function DeliveriesPage() {
     };
 
     const expandAll = () => {
-      if (groupMode === "car") {
+        if (groupMode === "car") {
             const allCars = new Set(data.carView.cars.map((c) => c.roNumber));
             setExpandedCars(allCars);
             const allVendors = new Set<string>();
@@ -179,24 +183,18 @@ export default function DeliveriesPage() {
             <div className="mb-6 flex flex-col gap-3">
                 <div className="flex gap-2 flex-wrap items-center">
                     <div className="flex gap-2">
-                        <button
+                        <Button
                             onClick={() => setGroupMode("car")}
-                            className={`px-4 py-2 rounded-lg font-medium transition ${groupMode === "car"
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                                }`}
+                            variant={groupMode === "car" ? "primary" : "secondary"}
                         >
                             Group by Car
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={() => setGroupMode("vendor")}
-                            className={`px-4 py-2 rounded-lg font-medium transition ${groupMode === "vendor"
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                                }`}
+                            variant={groupMode === "vendor" ? "primary" : "secondary"}
                         >
                             Group by Vendor
-                        </button>
+                        </Button>
                     </div>
 
                     <VehicleStatusFilter
@@ -205,32 +203,31 @@ export default function DeliveriesPage() {
                     />
 
                     <div className="flex gap-2 ml-auto">
-                        <button
+                        <Button
                             onClick={expandAll}
-                            className="px-3 py-2 rounded-lg font-medium text-sm bg-green-500 text-white hover:bg-green-600 transition-colors"
+                            variant="success"
+                            size="sm"
                         >
                             Expand All
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={collapseAll}
-                            className="px-3 py-2 rounded-lg font-medium text-sm bg-orange-500 text-white hover:bg-orange-600 transition-colors"
+                            variant="warning"
+                            size="sm"
                         >
                             Collapse All
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
                 {/* Search Bar */}
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Search by owner, vehicle, RO, technician, estimator, or vendor..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
+                <Input
+                    type="text"
+                    placeholder="Search by owner, vehicle, RO, technician, estimator, or vendor..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    icon={<Search className="w-4 h-4" />}
+                />
             </div>
 
             {/* Car View */}
@@ -242,12 +239,12 @@ export default function DeliveriesPage() {
                         const filteredCars = data.carView.cars.filter((car) => {
                             // Search filter
                             const matchesSearch =
-                              car.owner.toLowerCase().includes(searchLower) ||
-                              car.vehicle.toLowerCase().includes(searchLower) ||
-                              car.roNumber.toString().includes(searchLower) ||
-                              car.bodyTechnician.toLowerCase().includes(searchLower) ||
-                              car.estimator.toLowerCase().includes(searchLower) ||
-                              car.vendors.some((v) => v.vendorName.toLowerCase().includes(searchLower));
+                                car.owner.toLowerCase().includes(searchLower) ||
+                                car.vehicle.toLowerCase().includes(searchLower) ||
+                                car.roNumber.toString().includes(searchLower) ||
+                                car.bodyTechnician.toLowerCase().includes(searchLower) ||
+                                car.estimator.toLowerCase().includes(searchLower) ||
+                                car.vendors.some((v) => v.vendorName.toLowerCase().includes(searchLower));
 
                             if (!matchesSearch) return false;
 
@@ -297,9 +294,9 @@ export default function DeliveriesPage() {
                                                 {car.bodyTechnician} • {car.estimator}
                                             </p>
                                         </div>
-                                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                        <Badge color="blue">
                                             {car.vendors.length} vendor{car.vendors.length !== 1 ? "s" : ""}
-                                        </span>
+                                        </Badge>
                                     </button>
 
                                     {/* Vendors under this car */}
@@ -326,59 +323,42 @@ export default function DeliveriesPage() {
                                                                     {vendor.vendorName}
                                                                 </p>
                                                             </div>
-                                                            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                                                            <Badge color="green">
                                                                 {vendor.parts.length} part
                                                                 {vendor.parts.length !== 1 ? "s" : ""}
-                                                            </span>
+                                                            </Badge>
                                                         </button>
 
                                                         {/* Parts under this vendor */}
                                                         {isVendorExpanded && (
-                                                            <div className="bg-white">
-                                                                <table className="w-full text-sm">
-                                                                    <thead className="bg-gray-50 border-t">
-                                                                        <tr>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Part Number
-                                                                            </th>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Description
-                                                                            </th>
-                                                                            <th className="px-6 py-2 text-center font-semibold text-sm">
-                                                                                Received Qty
-                                                                            </th>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Invoice Date
-                                                                            </th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        {vendor.parts.map((part, idx) => (
-                                                                            <tr
-                                                                                key={idx}
-                                                                                className="border-t hover:bg-blue-50"
-                                                                            >
-                                                                                <td className="px-6 py-2 font-mono text-sm">
-                                                                                    <PartNumberLink partNumber={part.partNumber} />
-                                                                                </td>
-                                                                                <td className="px-6 py-2 text-sm">
-                                                                                    {part.partDescription}
-                                                                                </td>
-                                                                                <td className="px-6 py-2 text-center font-semibold">
-                                                                                    {part.receivedQty}
-                                                                                </td>
-                                                                                <td className="px-6 py-2 text-sm">
-                                                                                    {part.invoiceDate
-                                                                                        ? new Date(
-                                                                                            part.invoiceDate
-                                                                                        ).toLocaleDateString()
-                                                                                        : "-"}
-                                                                                </td>
-                                                                            </tr>
-                                                                        ))}
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
+                                                            <Table className="bg-white">
+                                                                <Table.Head>
+                                                                    <Table.Row>
+                                                                        <Table.Cell header>Part Number</Table.Cell>
+                                                                        <Table.Cell header>Description</Table.Cell>
+                                                                        <Table.Cell header className="text-center">Received Qty</Table.Cell>
+                                                                        <Table.Cell header>Invoice Date</Table.Cell>
+                                                                    </Table.Row>
+                                                                </Table.Head>
+                                                                <Table.Body>
+                                                                    {vendor.parts.map((part, idx) => (
+                                                                        <Table.Row key={idx}>
+                                                                            <Table.Cell className="font-mono">
+                                                                                <PartNumberLink partNumber={part.partNumber} />
+                                                                            </Table.Cell>
+                                                                            <Table.Cell>{part.partDescription}</Table.Cell>
+                                                                            <Table.Cell className="text-center font-semibold">{part.receivedQty}</Table.Cell>
+                                                                            <Table.Cell>
+                                                                                {part.invoiceDate
+                                                                                    ? new Date(
+                                                                                        part.invoiceDate
+                                                                                    ).toLocaleDateString()
+                                                                                    : "-"}
+                                                                            </Table.Cell>
+                                                                        </Table.Row>
+                                                                    ))}
+                                                                </Table.Body>
+                                                            </Table>
                                                         )}
                                                     </div>
                                                 );
@@ -402,12 +382,12 @@ export default function DeliveriesPage() {
                                 ...vendor,
                                 cars: vendor.cars.filter((car) => {
                                     const matchesSearch =
-                                      car.owner.toLowerCase().includes(searchLower) ||
-                                      car.vehicle.toLowerCase().includes(searchLower) ||
-                                      car.roNumber.toString().includes(searchLower) ||
-                                      car.bodyTechnician.toLowerCase().includes(searchLower) ||
-                                      car.estimator.toLowerCase().includes(searchLower) ||
-                                      vendor.vendorName.toLowerCase().includes(searchLower);
+                                        car.owner.toLowerCase().includes(searchLower) ||
+                                        car.vehicle.toLowerCase().includes(searchLower) ||
+                                        car.roNumber.toString().includes(searchLower) ||
+                                        car.bodyTechnician.toLowerCase().includes(searchLower) ||
+                                        car.estimator.toLowerCase().includes(searchLower) ||
+                                        vendor.vendorName.toLowerCase().includes(searchLower);
                                     return matchesSearch;
                                 })
                             }))
@@ -436,9 +416,9 @@ export default function DeliveriesPage() {
                                                 {vendor.vendorName}
                                             </h3>
                                         </div>
-                                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                        <Badge color="blue">
                                             {vendor.cars.length} car{vendor.cars.length !== 1 ? "s" : ""}
-                                        </span>
+                                        </Badge>
                                     </button>
 
                                     {/* Cars under this vendor */}
@@ -474,59 +454,42 @@ export default function DeliveriesPage() {
                                                                     {car.bodyTechnician} • {car.estimator}
                                                                 </p>
                                                             </div>
-                                                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                                            <Badge color="blue">
                                                                 {car.parts.length} part
                                                                 {car.parts.length !== 1 ? "s" : ""}
-                                                            </span>
+                                                            </Badge>
                                                         </button>
 
                                                         {/* Parts under this car */}
                                                         {isCarExpanded && (
-                                                            <div className="bg-white">
-                                                                <table className="w-full text-sm">
-                                                                    <thead className="bg-gray-50 border-t">
-                                                                        <tr>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Part Number
-                                                                            </th>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Description
-                                                                            </th>
-                                                                            <th className="px-6 py-2 text-center font-semibold text-sm">
-                                                                                Received Qty
-                                                                            </th>
-                                                                            <th className="px-6 py-2 text-left font-semibold text-sm">
-                                                                                Invoice Date
-                                                                            </th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        {car.parts.map((part, idx) => (
-                                                                            <tr
-                                                                                key={idx}
-                                                                                className="border-t hover:bg-blue-50"
-                                                                            >
-                                                                                <td className="px-6 py-2 font-mono text-sm">
-                                                                                    <PartNumberLink partNumber={part.partNumber} />
-                                                                                </td>
-                                                                                <td className="px-6 py-2 text-sm">
-                                                                                    {part.partDescription}
-                                                                                </td>
-                                                                                <td className="px-6 py-2 text-center font-semibold">
-                                                                                    {part.receivedQty}
-                                                                                </td>
-                                                                                <td className="px-6 py-2 text-sm">
-                                                                                    {part.invoiceDate
-                                                                                        ? new Date(
-                                                                                            part.invoiceDate
-                                                                                        ).toLocaleDateString()
-                                                                                        : "-"}
-                                                                                </td>
-                                                                            </tr>
-                                                                        ))}
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
+                                                            <Table className="bg-white">
+                                                                <Table.Head>
+                                                                    <Table.Row>
+                                                                        <Table.Cell header>Part Number</Table.Cell>
+                                                                        <Table.Cell header>Description</Table.Cell>
+                                                                        <Table.Cell header className="text-center">Received Qty</Table.Cell>
+                                                                        <Table.Cell header>Invoice Date</Table.Cell>
+                                                                    </Table.Row>
+                                                                </Table.Head>
+                                                                <Table.Body>
+                                                                    {car.parts.map((part, idx) => (
+                                                                        <Table.Row key={idx}>
+                                                                            <Table.Cell className="font-mono">
+                                                                                <PartNumberLink partNumber={part.partNumber} />
+                                                                            </Table.Cell>
+                                                                            <Table.Cell>{part.partDescription}</Table.Cell>
+                                                                            <Table.Cell className="text-center font-semibold">{part.receivedQty}</Table.Cell>
+                                                                            <Table.Cell>
+                                                                                {part.invoiceDate
+                                                                                    ? new Date(
+                                                                                        part.invoiceDate
+                                                                                    ).toLocaleDateString()
+                                                                                    : "-"}
+                                                                            </Table.Cell>
+                                                                        </Table.Row>
+                                                                    ))}
+                                                                </Table.Body>
+                                                            </Table>
                                                         )}
                                                     </div>
                                                 );

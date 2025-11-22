@@ -3,6 +3,8 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Card from "@/components/Card";
+import Button from "@/components/Button";
 
 export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
@@ -48,7 +50,7 @@ export default function VerifyEmailPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white rounded-lg shadow p-8">
+      <Card className="max-w-md w-full p-8">
         {status === "loading" && (
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -61,11 +63,10 @@ export default function VerifyEmailPage() {
             <div className="text-5xl mb-4">✅</div>
             <h1 className="text-2xl font-bold text-green-600 mb-2">Email Verified!</h1>
             <p className="text-gray-600 mb-6">Your email has been verified successfully.</p>
-            <Link
-              href="/login"
-              className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
-            >
-              Go to Login
+            <Link href="/login">
+              <Button variant="primary" className="w-full">
+                Go to Login
+              </Button>
             </Link>
           </div>
         )}
@@ -75,15 +76,14 @@ export default function VerifyEmailPage() {
             <div className="text-5xl mb-4">❌</div>
             <h1 className="text-2xl font-bold text-red-600 mb-2">Verification Failed</h1>
             <p className="text-gray-600 mb-6">{message}</p>
-            <Link
-              href="/login"
-              className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
-            >
-              Back to Login
+            <Link href="/login">
+              <Button variant="primary" className="w-full">
+                Back to Login
+              </Button>
             </Link>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import Card from "@/components/Card";
+import Alert from "@/components/Alert";
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -99,41 +103,33 @@ export default function ProfilePage() {
       </div>
 
       {message && (
-        <div
-          className={`mb-6 p-4 rounded-lg ${
-            message.type === "success"
-              ? "bg-green-50 border border-green-200 text-green-800"
-              : "bg-red-50 border border-red-200 text-red-800"
-          }`}
-        >
+        <Alert type={message.type} className="mb-6">
           {message.text}
-        </div>
+        </Alert>
       )}
 
       <div className="grid gap-8 max-w-2xl">
         {/* Profile Info */}
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <Card className="p-6">
           <h2 className="text-xl font-bold mb-4">Account Information</h2>
 
           <div className="space-y-4 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
+              <Input
                 type="email"
                 value={session.user?.email || ""}
                 disabled
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
               />
               <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-              <input
+              <Input
                 type="text"
                 value={(session.user as any)?.role || ""}
                 disabled
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
               />
             </div>
           </div>
@@ -141,26 +137,25 @@ export default function ProfilePage() {
           <form onSubmit={handleUpdateProfile} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-              <input
+              <Input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={loading || name === session.user?.name}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              variant="primary"
             >
               {loading ? "Updating..." : "Update Name"}
-            </button>
+            </Button>
           </form>
-        </div>
+        </Card>
 
         {/* Change Password */}
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <Card className="p-6">
           <h2 className="text-xl font-bold mb-4">Change Password</h2>
 
           <form onSubmit={handleChangePassword} className="space-y-4">
@@ -168,24 +163,22 @@ export default function ProfilePage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Current Password
               </label>
-              <input
+              <Input
                 type="password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-              <input
+              <Input
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 minLength={8}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
             </div>
@@ -194,25 +187,24 @@ export default function ProfilePage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Confirm New Password
               </label>
-              <input
+              <Input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={8}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={loading || !currentPassword || !newPassword || !confirmPassword}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              variant="success"
             >
               {loading ? "Changing..." : "Change Password"}
-            </button>
+            </Button>
           </form>
-        </div>
+        </Card>
       </div>
     </div>
   );
