@@ -2,6 +2,8 @@
 
 A comprehensive parts and repair order workflow management system designed for automotive repair shops. Streamline your operations with production scheduling, parts tracking, vendor management, and delivery coordination.
 
+[![Demo Video](https://img.youtube.com/vi/l_h2s7hEg1Y/0.jpg)](https://youtu.be/l_h2s7hEg1Y?si=qsbj4jPo0c1upjUq)
+
 ## Features
 
 - **Production Schedule** - View repair orders grouped by estimators or technicians with real-time parts status
