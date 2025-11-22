@@ -128,7 +128,7 @@ export default function ProductionSchedulePage() {
         });
 
         return filtered;
-        }, [groupedData, searchTerm, vehicleStatusFilter, sortState, groupMode]);
+        }, [groupedData, searchTerm, vehicleStatusFilter, sortState]);
 
     if (loading) {
         return (

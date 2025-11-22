@@ -106,12 +106,24 @@ export default function Navbar({ role = "TECHNICIAN", isGuest = false }: NavbarP
                 Log In
               </Link>
             ) : (
-              <button
-                onClick={() => signOut()}
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
-              >
-                Sign Out
-              </button>
+              <>
+                <Link
+                  href="/profile"
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                    isActive("/profile")
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+                >
+                  Sign Out
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -159,12 +171,20 @@ export default function Navbar({ role = "TECHNICIAN", isGuest = false }: NavbarP
                 Log In
               </Link>
             ) : (
-              <button
-                onClick={() => signOut()}
-                className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
-              >
-                Sign Out
-              </button>
+              <>
+                <Link
+                  href="/profile"
+                  className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
+                >
+                  Sign Out
+                </button>
+              </>
             )}
           </div>
         )}
