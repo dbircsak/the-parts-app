@@ -91,7 +91,21 @@ estimator_names = ['Sarah', 'John', 'Linda', 'Robert', 'Jennifer', 'Michael', 'P
 for i in range(80):
     ro_num = 1001 + i
     vehicle_in = datetime(2024, 1, 1) + timedelta(days=random.randint(-30, 15))
-    scheduled_out = vehicle_in + timedelta(days=random.randint(2, 10))
+    
+    # Generate test data for three filter categories:
+    # First 27 cars: in-shop (scheduled_out in the past)
+    # Next 27 cars: pre-order (scheduled_out in the future)
+    # Last 26 cars: mixed dates
+    today = datetime.now()
+    if i < 27:
+        # In-shop: scheduled out dates are in the past
+        scheduled_out = today - timedelta(days=random.randint(1, 20))
+    elif i < 54:
+        # Pre-order: scheduled out dates are in the future
+        scheduled_out = today + timedelta(days=random.randint(1, 30))
+    else:
+        # Mixed: some past, some future
+        scheduled_out = vehicle_in + timedelta(days=random.randint(2, 10))
     
     make = random.choice(list(vehicle_makes))
     model = random.choice(vehicle_models[make])
@@ -273,9 +287,22 @@ for daily_out_record in daily_out:
 
 with open(os.path.join(script_dir, 'materials_sample.csv'), 'w', newline='') as f:
     fieldnames = ['bodyTechnician', 'partNumber', 'description', 'orderedQty', 'orderedDate', 'unitType', 'receivedQty', 'receivedDate']
+    # Rename keys in materials to match the proper header names
+    materials_renamed = []
+    for row in materials:
+        materials_renamed.append({
+            'bodyTechnician': row['body_technician'],
+            'partNumber': row['part_number'],
+            'description': row['description'],
+            'orderedQty': row['ordered_qty'],
+            'orderedDate': row['ordered_date'],
+            'unitType': row['unit_type'],
+            'receivedQty': row['received_qty'],
+            'receivedDate': row['received_date']
+        })
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
-    writer.writerows(materials)
+    writer.writerows(materials_renamed)
 
 print(f"Generated {len(materials)} materials records")
 

@@ -166,11 +166,13 @@ export default function ProductionSchedulePage() {
                         Group by Technicians
                     </FilterButton>
 
-                    {/* Vehicle Status Filter */}
-                    <VehicleStatusFilter
-                        value={vehicleStatusFilter}
-                        onChange={setVehicleStatusFilter}
-                    />
+                    {/* Vehicle Status Filter - Hidden when grouping by technicians */}
+                    {groupMode === "estimator" && (
+                        <VehicleStatusFilter
+                            value={vehicleStatusFilter}
+                            onChange={setVehicleStatusFilter}
+                        />
+                    )}
 
                     <div className="flex gap-2 ml-auto">
                         {/* Due Date Button - Sort by Scheduled Out Date */}

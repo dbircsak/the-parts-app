@@ -393,22 +393,38 @@ export default function DeliveriesPage() {
             {groupMode === "vendor" && (
                 <div className="space-y-4">
                     {(() => {
-                        const searchLower = searchTerm.toLowerCase();
-                        const filteredVendors = data.vendorView.vendors
-                            .map((vendor) => ({
-                                ...vendor,
-                                cars: vendor.cars.filter((car) => {
-                                    const matchesSearch =
-                                        car.owner.toLowerCase().includes(searchLower) ||
-                                        car.vehicle.toLowerCase().includes(searchLower) ||
-                                        car.roNumber.toString().includes(searchLower) ||
-                                        car.bodyTechnician.toLowerCase().includes(searchLower) ||
-                                        car.estimator.toLowerCase().includes(searchLower) ||
-                                        vendor.vendorName.toLowerCase().includes(searchLower);
-                                    return matchesSearch;
-                                })
-                            }))
-                            .filter((vendor) => vendor.cars.length > 0);
+                         const now = new Date();
+                         const searchLower = searchTerm.toLowerCase();
+                         const filteredVendors = data.vendorView.vendors
+                             .map((vendor) => ({
+                                 ...vendor,
+                                 cars: vendor.cars.filter((car) => {
+                                     const matchesSearch =
+                                         car.owner.toLowerCase().includes(searchLower) ||
+                                         car.vehicle.toLowerCase().includes(searchLower) ||
+                                         car.roNumber.toString().includes(searchLower) ||
+                                         car.bodyTechnician.toLowerCase().includes(searchLower) ||
+                                         car.estimator.toLowerCase().includes(searchLower) ||
+                                         vendor.vendorName.toLowerCase().includes(searchLower);
+
+                                     if (!matchesSearch) return false;
+
+                                     // Vehicle status filter
+                                     if (vehicleStatusFilter === "all") return true;
+                                     const vehicleIn = new Date(car.vehicleIn);
+                                     const isInPast = vehicleIn < now;
+                                     const isNotScheduled = car.currentPhase !== "[Scheduled]";
+
+                                     if (vehicleStatusFilter === "in-shop") {
+                                         return isInPast && isNotScheduled;
+                                     }
+                                     if (vehicleStatusFilter === "pre-order") {
+                                         return !isInPast;
+                                     }
+                                     return true;
+                                 })
+                             }))
+                             .filter((vendor) => vendor.cars.length > 0);
 
                         if (filteredVendors.length === 0) {
                             return <p className="text-gray-500">No deliveries found.</p>;
