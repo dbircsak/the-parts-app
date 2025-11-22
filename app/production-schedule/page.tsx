@@ -51,13 +51,16 @@ export default function ProductionSchedulePage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("/api/production-schedule");
-                const data = await response.json();
-                // Set the data based on current group mode
-                const newData = groupMode === "estimator" ? data.estimator : data.technician;
-                setGroupedData(newData);
+                const response = await fetch(`/api/production-schedule?groupBy=${groupMode}`);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || "Failed to fetch production schedule");
+                }
+                
+                setGroupedData(result.data);
                 // Reset selected group when switching modes
-                setSelectedGroup(newData.length > 0 ? newData[0].name : null);
+                setSelectedGroup(result.data.length > 0 ? result.data[0].name : null);
             } catch (error) {
                 console.error("Failed to fetch production schedule:", error);
             } finally {

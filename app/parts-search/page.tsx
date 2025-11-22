@@ -1,35 +1,12 @@
-import { prisma } from "@/lib/prisma";
+"use client";
+
 import PartsSearchClient from "@/components/parts-search-client";
 
-export default async function PartsSearchPage() {
-  const parts = await prisma.partsStatus.findMany({
-    where: {
-      roQty: { gt: 0 },
-    },
-    take: 1000,
-  });
-
-  // Fetch daily_out data to get owner information
-  const dailyOutMap = await prisma.dailyOut.findMany().then((records) => {
-    const map = new Map();
-    records.forEach((record) => {
-      map.set(record.roNumber, record.owner);
-    });
-    return map;
-  });
-
-  // Enrich parts with owner data and filter out parts without owners
-  const enrichedParts = parts
-    .map((part) => ({
-      ...part,
-      owner: dailyOutMap.get(part.roNumber),
-    }))
-    .filter((part) => part.owner !== undefined);
-
+export default function PartsSearchPage() {
   return (
     <div className="p-4 md:p-8">
       <h1 className="text-3xl font-bold mb-6">Parts Search</h1>
-      <PartsSearchClient initialParts={enrichedParts} />
+      <PartsSearchClient />
     </div>
   );
 }

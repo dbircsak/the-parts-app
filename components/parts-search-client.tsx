@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import PartNumberLink from "./part-number-link";
 import { getPartStatus, PART_STATUS_CONFIG } from "@/lib/part-status";
-import { usePagination } from "@/lib/usePagination";
 import PaginationControls from "./PaginationControls";
 import Input from "./Input";
 import Table from "./Table";
@@ -42,29 +41,50 @@ const getStatusSortValue = (part: Part): number => {
     return order[status.type] ?? 0;
 };
 
-export default function PartsSearchClient({ initialParts }: { initialParts: Part[] }) {
+export default function PartsSearchClient() {
+    const [parts, setParts] = useState<Part[]>([]);
+    const [loading, setLoading] = useState(true);
     const [searchFilter, setSearchFilter] = useState("");
     const [sortField, setSortField] = useState<SortField>("roNumber");
     const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
     const [selectedStatus, setSelectedStatus] = useState<string>("all");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [error, setError] = useState<string | null>(null);
+
+    // Fetch parts data
+    useEffect(() => {
+        const fetchParts = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const params = new URLSearchParams();
+                if (searchFilter.trim()) params.append("q", searchFilter);
+                params.append("page", currentPage.toString());
+
+                const response = await fetch(`/api/parts/search?${params}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch parts");
+                }
+                const result = await response.json();
+                setParts(result.data || []);
+                setTotalPages(result.pagination.totalPages);
+            } catch (err) {
+                console.error("Failed to fetch parts:", err);
+                setError("Failed to load parts");
+                setParts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchParts();
+    }, [searchFilter, currentPage]);
 
     const filteredAndSortedParts = useMemo(() => {
-        let filtered = initialParts;
+        // Apply status filter (search filter is done server-side)
+        let filtered = parts;
 
-        // Apply text filter
-        if (searchFilter.trim()) {
-            const lowerFilter = searchFilter.toLowerCase();
-            filtered = initialParts.filter(
-                (part) =>
-                    part.roNumber.toString().includes(lowerFilter) ||
-                    part.owner.toLowerCase().includes(lowerFilter) ||
-                    part.partNumber.toLowerCase().includes(lowerFilter) ||
-                    part.partDescription.toLowerCase().includes(lowerFilter) ||
-                    part.vendorName.toLowerCase().includes(lowerFilter)
-            );
-        }
-
-        // Apply status filter
         if (selectedStatus !== "all") {
             filtered = filtered.filter((part) => {
                 const status = getPartStatus(part.roQty, part.orderedQty, part.receivedQty, part.returnedQty);
@@ -98,17 +118,9 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
 
             return sortDirection === "asc" ? comparison : -comparison;
         });
-    }, [initialParts, searchFilter, sortField, sortDirection, selectedStatus]);
+    }, [parts, sortField, sortDirection, selectedStatus]);
 
-    const {
-        currentPage,
-        totalPages,
-        startIndex,
-        endIndex,
-        paginatedItems: paginatedParts,
-        setCurrentPage,
-        resetPage,
-    } = usePagination(filteredAndSortedParts);
+    const paginatedParts = filteredAndSortedParts;
 
     const handleSort = (field: SortField) => {
         if (sortField === field) {
@@ -117,7 +129,6 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
             setSortField(field);
             setSortDirection("asc");
         }
-        resetPage();
     };
 
     const statusOptions = [
@@ -154,11 +165,11 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
                 <div className="flex gap-3">
                     <Input
                         type="text"
-                        placeholder="Filter by RO, owner, part number, description, or vendor..."
+                        placeholder="Search by RO, owner, part number, description, or vendor..."
                         value={searchFilter}
                         onChange={(e) => {
                             setSearchFilter(e.target.value);
-                            resetPage();
+                            setCurrentPage(1);
                         }}
                         className="flex-1"
                     />
@@ -166,7 +177,6 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
                         value={selectedStatus}
                         onChange={(e) => {
                             setSelectedStatus(e.target.value);
-                            resetPage();
                         }}
                         className="px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
@@ -178,9 +188,13 @@ export default function PartsSearchClient({ initialParts }: { initialParts: Part
                     </select>
                 </div>
 
-                <p className="text-sm text-gray-600">
-                    Showing {startIndex + 1}-{Math.min(endIndex, filteredAndSortedParts.length)} of {filteredAndSortedParts.length} parts (Page {currentPage} of {totalPages})
-                </p>
+                {loading && <p className="text-sm text-gray-600">Loading...</p>}
+                {error && <p className="text-sm text-red-600">{error}</p>}
+                {!loading && !error && (
+                    <p className="text-sm text-gray-600">
+                        Showing {paginatedParts.length} parts (Page {currentPage} of {totalPages})
+                    </p>
+                )}
             </div>
 
             {filteredAndSortedParts.length === 0 && (

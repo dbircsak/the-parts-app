@@ -22,8 +22,19 @@ interface GroupedData {
   cars: CarData[];
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const groupBy = searchParams.get("groupBy") || "estimator";
+
+    // Validate groupBy parameter
+    if (!["estimator", "technician"].includes(groupBy)) {
+      return NextResponse.json(
+        { error: "Invalid groupBy parameter. Must be 'estimator' or 'technician'" },
+        { status: 400 }
+      );
+    }
+
     // Get all repair orders
     const cars = await prisma.dailyOut.findMany({
       orderBy: { vehicleIn: "desc" },
@@ -69,40 +80,40 @@ export async function GET() {
       };
     });
 
-    // Group by estimator
-    const byEstimator = new Map<string, CarData[]>();
-    carsWithPartStatus.forEach((car) => {
-      const estimator = car.estimator || "Unassigned";
-      if (!byEstimator.has(estimator)) {
-        byEstimator.set(estimator, []);
-      }
-      byEstimator.get(estimator)!.push(car);
-    });
+    let groupedData: GroupedData[];
 
-    // Group by technician
-    const byTechnician = new Map<string, CarData[]>();
-    carsWithPartStatus.forEach((car) => {
-      const tech = car.bodyTechnician || "Unassigned";
-      if (!byTechnician.has(tech)) {
-        byTechnician.set(tech, []);
-      }
-      byTechnician.get(tech)!.push(car);
-    });
+    if (groupBy === "estimator") {
+      // Group by estimator
+      const byEstimator = new Map<string, CarData[]>();
+      carsWithPartStatus.forEach((car) => {
+        const estimator = car.estimator || "Unassigned";
+        if (!byEstimator.has(estimator)) {
+          byEstimator.set(estimator, []);
+        }
+        byEstimator.get(estimator)!.push(car);
+      });
 
-    // Convert maps to sorted arrays
-    const estimatorView: GroupedData[] = Array.from(byEstimator.entries())
-      .map(([name, cars]) => ({ name, cars }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      groupedData = Array.from(byEstimator.entries())
+        .map(([name, cars]) => ({ name, cars }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+      // Group by technician
+      const byTechnician = new Map<string, CarData[]>();
+      carsWithPartStatus.forEach((car) => {
+        const tech = car.bodyTechnician || "Unassigned";
+        if (!byTechnician.has(tech)) {
+          byTechnician.set(tech, []);
+        }
+        byTechnician.get(tech)!.push(car);
+      });
 
-    const technicianView: GroupedData[] = Array.from(byTechnician.entries())
-      .map(([name, cars]) => ({ name, cars }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      groupedData = Array.from(byTechnician.entries())
+        .map(([name, cars]) => ({ name, cars }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    }
 
-    // Return both views (client will use based on selected mode)
-    return NextResponse.json({
-      estimator: estimatorView,
-      technician: technicianView,
-    });
+    // Return only the requested view
+    return NextResponse.json({ data: groupedData });
   } catch (error) {
     console.error("Failed to fetch production schedule:", error);
     return NextResponse.json(

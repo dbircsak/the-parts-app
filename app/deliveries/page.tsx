@@ -73,9 +73,26 @@ export default function DeliveriesPage() {
     useEffect(() => {
         const fetchDeliveries = async () => {
             try {
-                const response = await fetch("/api/deliveries");
-                const data = await response.json();
-                setData(data);
+                const response = await fetch(`/api/deliveries?groupBy=${groupMode}`);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || "Failed to fetch deliveries");
+                }
+                
+                // Format response to match expected structure
+                const formattedData: GroupedData = {
+                    carView: { cars: [] },
+                    vendorView: { vendors: [] },
+                };
+                
+                if (groupMode === "car") {
+                    formattedData.carView.cars = result.cars || [];
+                } else {
+                    formattedData.vendorView.vendors = result.vendors || [];
+                }
+                
+                setData(formattedData);
             } catch (error) {
                 console.error("Failed to fetch deliveries:", error);
             } finally {
@@ -84,7 +101,7 @@ export default function DeliveriesPage() {
         };
 
         fetchDeliveries();
-    }, []);
+    }, [groupMode]);
 
     if (loading) {
         return (
