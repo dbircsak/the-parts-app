@@ -1,0 +1,18 @@
+bodyTechnician,partNumber,description,orderedQty,orderedDate,unitType,receivedQty,receivedDate
+Chris,BT-001,Front Bumper,1,2024-01-03T00:00:00Z,piece,0,
+Chris,BT-002,Left Door Panel,1,2024-01-05T00:00:00Z,piece,1,2024-01-08T00:00:00Z
+Chris,BT-003,Windshield Trim,2,2024-01-04T00:00:00Z,piece,2,2024-01-06T00:00:00Z
+Dan,BT-004,Rear Bumper,1,2024-01-02T00:00:00Z,piece,1,2024-01-05T00:00:00Z
+Dan,BT-005,Hood Latch,3,2024-01-04T00:00:00Z,piece,2,2024-01-07T00:00:00Z
+Kevin,BT-006,Side Mirror,2,2024-01-03T00:00:00Z,piece,1,2024-01-09T00:00:00Z
+Kevin,BT-007,Headlight Assembly,1,2024-01-05T00:00:00Z,piece,0,
+Tom,BT-008,Door Handle,4,2024-01-04T00:00:00Z,piece,3,2024-01-08T00:00:00Z
+Tom,BT-009,Weatherstripping,10,2024-01-03T00:00:00Z,meter,8,2024-01-07T00:00:00Z
+Steve,BT-010,Wheel Rim,4,2024-01-02T00:00:00Z,piece,2,2024-01-10T00:00:00Z
+Steve,BT-011,Antenna,1,2024-01-05T00:00:00Z,piece,1,2024-01-09T00:00:00Z
+Steve,BT-012,Grille,1,2024-01-04T00:00:00Z,piece,0,
+Rob,BT-013,Tailgate,1,2024-01-03T00:00:00Z,piece,1,2024-01-06T00:00:00Z
+Rob,BT-014,Quarter Panel,2,2024-01-05T00:00:00Z,piece,1,2024-01-11T00:00:00Z
+Joe,BT-015,Headliner,1,2024-01-04T00:00:00Z,piece,0,
+Mike,BT-016,Seat Frame,2,2024-01-02T00:00:00Z,piece,2,2024-01-08T00:00:00Z
+Mike,BT-017,Dashboard Pad,1,2024-01-05T00:00:00Z,piece,1,2024-01-10T00:00:00Z

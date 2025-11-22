@@ -231,8 +231,57 @@ with open(os.path.join(script_dir, 'parts_status_sample.csv'), 'w', newline='') 
 
 print(f"Generated {len(parts_status)} parts status records")
 
+# Generate materials (extract from daily_out and create material records)
+print("Generating materials records...")
+materials = []
+unit_types = ['piece', 'meter', 'liter', 'kg', 'pack']
+part_descriptions = ['Front Bumper', 'Left Door Panel', 'Windshield Trim', 'Rear Bumper', 'Hood Latch', 
+                     'Side Mirror', 'Headlight Assembly', 'Door Handle', 'Weatherstripping', 'Wheel Rim',
+                     'Antenna', 'Grille', 'Tailgate', 'Quarter Panel', 'Headliner', 'Seat Frame', 'Dashboard Pad',
+                     'Window Regulator', 'Brake Caliper', 'Suspension Arm', 'Control Arm', 'CV Joint', 
+                     'Door Lock', 'Window Motor', 'Fuel Pump', 'Alternator', 'Radiator', 'Condenser']
+
+material_counter = 0
+materials_per_tech = 2  # 2-3 materials per technician
+
+for daily_out_record in daily_out:
+    body_tech = daily_out_record['body_technician']
+    num_materials = random.randint(materials_per_tech, materials_per_tech + 1)
+    
+    for mat_idx in range(num_materials):
+        ordered_date = datetime(2024, 1, 1) + timedelta(days=random.randint(-20, 5))
+        
+        # 70% received, 30% not yet received
+        if random.random() < 0.7:
+            received_date = ordered_date + timedelta(days=random.randint(2, 8))
+            received_qty = random.randint(1, 4)
+        else:
+            received_date = None
+            received_qty = 0
+        
+        materials.append({
+            'body_technician': body_tech,
+            'part_number': f"BT-{material_counter + 1:03d}",
+            'description': random.choice(part_descriptions),
+            'ordered_qty': random.randint(1, 5),
+            'ordered_date': ordered_date.isoformat() + 'Z',
+            'unit_type': random.choice(unit_types),
+            'received_qty': received_qty,
+            'received_date': received_date.isoformat() + 'Z' if received_date else ''
+        })
+        material_counter += 1
+
+with open(os.path.join(script_dir, 'materials_sample.csv'), 'w', newline='') as f:
+    fieldnames = ['bodyTechnician', 'partNumber', 'description', 'orderedQty', 'orderedDate', 'unitType', 'receivedQty', 'receivedDate']
+    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(materials)
+
+print(f"Generated {len(materials)} materials records")
+
 print("\nAll sample files generated successfully!")
 print(f"  - daily_out_sample.csv: 80 rows")
 print(f"  - parts_status_sample.csv: 1000 rows")
 print(f"  - vendors_sample.csv: 300 rows")
-print(f"\nAll data is associated through ro_number (1001-1080)")
+print(f"  - materials_sample.csv: {len(materials)} rows")
+print(f"\nAll data is associated through ro_number (1001-1080) and body technician names")
