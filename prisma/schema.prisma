@@ -19,9 +19,6 @@ model User {
   
   accounts      Account[]
   sessions      Session[]
-  tasks         Task[]
-  auditEvents   AuditEvent[]
-  notifications Notification[]
 }
 
 model Account {
@@ -161,86 +158,6 @@ model Material {
   @@map("materials")
 }
 
-model Task {
-  id              String   @id @default(cuid())
-  roNumber        Int
-  title           String
-  description     String?
-  assignedTo      String?
-  assignedUser    User?    @relation(fields: [assignedTo], references: [id])
-  status          TaskStatus @default(PENDING)
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  completedAt     DateTime?
-  
-  @@index([roNumber])
-  @@index([assignedTo])
-}
 
-enum TaskStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-}
 
-model Delivery {
-  id              String   @id @default(cuid())
-  roNumber        Int
-  vendorName      String
-  expectedDate    DateTime
-  actualDate      DateTime?
-  status          DeliveryStatus @default(PENDING)
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  @@index([roNumber])
-}
 
-enum DeliveryStatus {
-  PENDING
-  ARRIVED
-  LATE
-}
-
-model AuditEvent {
-  id              String   @id @default(cuid())
-  userId          String
-  user            User     @relation(fields: [userId], references: [id])
-  action          String
-  targetEntity    String
-  targetId        String
-  details         String?
-  
-  createdAt       DateTime @default(now())
-  
-  @@index([userId])
-  @@index([createdAt])
-}
-
-model Notification {
-  id              String   @id @default(cuid())
-  userId          String
-  user            User     @relation(fields: [userId], references: [id])
-  type            NotificationType
-  message         String
-  relatedEntity   String?
-  relatedId       String?
-  read            Boolean  @default(false)
-  
-  createdAt       DateTime @default(now())
-  
-  @@index([userId])
-  @@index([read])
-}
-
-enum NotificationType {
-  PART_ARRIVED
-  DELIVERY_DUE
-  UNORDERED_PARTS
-  TASK_ASSIGNED
-  STATUS_CHANGED
-  IMPORT_COMPLETE
-  IMPORT_ERROR
-}

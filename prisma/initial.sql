@@ -4,15 +4,6 @@ CREATE TYPE "Role" AS ENUM ('ADMIN', 'ESTIMATOR', 'TECHNICIAN');
 -- CreateEnum
 CREATE TYPE "WorkQueueStatus" AS ENUM ('NOT_STARTED', 'UNDERWAY', 'COMPLETED');
 
--- CreateEnum
-CREATE TYPE "TaskStatus" AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED');
-
--- CreateEnum
-CREATE TYPE "DeliveryStatus" AS ENUM ('PENDING', 'ARRIVED', 'LATE');
-
--- CreateEnum
-CREATE TYPE "NotificationType" AS ENUM ('PART_ARRIVED', 'DELIVERY_DUE', 'UNORDERED_PARTS', 'TASK_ASSIGNED', 'STATUS_CHANGED', 'IMPORT_COMPLETE', 'IMPORT_ERROR');
-
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -148,62 +139,6 @@ CREATE TABLE "materials" (
     CONSTRAINT "materials_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "Task" (
-    "id" TEXT NOT NULL,
-    "roNumber" INTEGER NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT,
-    "assignedTo" TEXT,
-    "status" "TaskStatus" NOT NULL DEFAULT 'PENDING',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "completedAt" TIMESTAMP(3),
-
-    CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Delivery" (
-    "id" TEXT NOT NULL,
-    "roNumber" INTEGER NOT NULL,
-    "vendorName" TEXT NOT NULL,
-    "expectedDate" TIMESTAMP(3) NOT NULL,
-    "actualDate" TIMESTAMP(3),
-    "status" "DeliveryStatus" NOT NULL DEFAULT 'PENDING',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Delivery_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "AuditEvent" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "action" TEXT NOT NULL,
-    "targetEntity" TEXT NOT NULL,
-    "targetId" TEXT NOT NULL,
-    "details" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "AuditEvent_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Notification" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "type" "NotificationType" NOT NULL,
-    "message" TEXT NOT NULL,
-    "relatedEntity" TEXT,
-    "relatedId" TEXT,
-    "read" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -225,27 +160,6 @@ CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationTok
 -- CreateIndex
 CREATE UNIQUE INDEX "work_queue_roNumber_key" ON "work_queue"("roNumber");
 
--- CreateIndex
-CREATE INDEX "Task_roNumber_idx" ON "Task"("roNumber");
-
--- CreateIndex
-CREATE INDEX "Task_assignedTo_idx" ON "Task"("assignedTo");
-
--- CreateIndex
-CREATE INDEX "Delivery_roNumber_idx" ON "Delivery"("roNumber");
-
--- CreateIndex
-CREATE INDEX "AuditEvent_userId_idx" ON "AuditEvent"("userId");
-
--- CreateIndex
-CREATE INDEX "AuditEvent_createdAt_idx" ON "AuditEvent"("createdAt");
-
--- CreateIndex
-CREATE INDEX "Notification_userId_idx" ON "Notification"("userId");
-
--- CreateIndex
-CREATE INDEX "Notification_read_idx" ON "Notification"("read");
-
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -254,13 +168,3 @@ ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "work_queue" ADD CONSTRAINT "work_queue_roNumber_fkey" FOREIGN KEY ("roNumber") REFERENCES "daily_out"("roNumber") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Task" ADD CONSTRAINT "Task_assignedTo_fkey" FOREIGN KEY ("assignedTo") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "AuditEvent" ADD CONSTRAINT "AuditEvent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
