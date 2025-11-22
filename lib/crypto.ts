@@ -1,3 +1,6 @@
+import { webcrypto } from "crypto";
+const crypto = webcrypto;
+
 const SALT_LENGTH = 16;
 
 async function pbkdf2(
