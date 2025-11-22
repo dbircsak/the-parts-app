@@ -92,13 +92,12 @@ export default function ProductionSchedulePage() {
                 if (vehicleStatusFilter === "all") return true;
                 const now = new Date();
                 const scheduledOut = car.scheduledOut ? new Date(car.scheduledOut) : null;
-                const isInPast = scheduledOut ? scheduledOut < now : false;
 
                 if (vehicleStatusFilter === "in-shop") {
-                    return isInPast;
+                    return scheduledOut !== null && scheduledOut < now;
                 }
                 if (vehicleStatusFilter === "pre-order") {
-                    return !isInPast;
+                    return scheduledOut === null || scheduledOut >= now;
                 }
 
                 return true;

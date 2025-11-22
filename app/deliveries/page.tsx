@@ -266,18 +266,17 @@ export default function DeliveriesPage() {
                             if (!matchesSearch) return false;
 
                             // Vehicle status filter
-                            if (vehicleStatusFilter === "all") return true;
-                            const vehicleIn = new Date(car.vehicleIn);
-                            const isInPast = vehicleIn < now;
-                            const isNotScheduled = car.currentPhase !== "[Scheduled]";
+                             if (vehicleStatusFilter === "all") return true;
+                             const vehicleIn = car.vehicleIn ? new Date(car.vehicleIn) : null;
+                             const isNotScheduled = car.currentPhase !== "[Scheduled]";
 
-                            if (vehicleStatusFilter === "in-shop") {
-                                return isInPast && isNotScheduled;
-                            }
-                            if (vehicleStatusFilter === "pre-order") {
-                                return !isInPast;
-                            }
-                            return true;
+                             if (vehicleStatusFilter === "in-shop") {
+                                 return vehicleIn !== null && vehicleIn < now && isNotScheduled;
+                             }
+                             if (vehicleStatusFilter === "pre-order") {
+                                 return vehicleIn === null || vehicleIn >= now;
+                             }
+                             return true;
                         });
 
                         if (filteredCars.length === 0) {
@@ -411,15 +410,14 @@ export default function DeliveriesPage() {
 
                                      // Vehicle status filter
                                      if (vehicleStatusFilter === "all") return true;
-                                     const vehicleIn = new Date(car.vehicleIn);
-                                     const isInPast = vehicleIn < now;
+                                     const vehicleIn = car.vehicleIn ? new Date(car.vehicleIn) : null;
                                      const isNotScheduled = car.currentPhase !== "[Scheduled]";
 
                                      if (vehicleStatusFilter === "in-shop") {
-                                         return isInPast && isNotScheduled;
+                                         return vehicleIn !== null && vehicleIn < now && isNotScheduled;
                                      }
                                      if (vehicleStatusFilter === "pre-order") {
-                                         return !isInPast;
+                                         return vehicleIn === null || vehicleIn >= now;
                                      }
                                      return true;
                                  })

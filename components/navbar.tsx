@@ -89,6 +89,35 @@ export default function Navbar({ role = "TECHNICIAN", isGuest = false }: NavbarP
                 >
                   Profile
                 </Link>
+
+                {isAdmin && (
+                  <div className="relative group">
+                    <button className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+                      Admin
+                    </button>
+                    <div className="hidden group-hover:block absolute right-0 mt-0 w-48 bg-white shadow-lg rounded-md z-10">
+                      <Link
+                        href="/admin/users"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left border-b"
+                      >
+                        Manage Users
+                      </Link>
+                      <Link
+                        href="/admin/upload-extracts"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left border-b"
+                      >
+                        Upload Extracts
+                      </Link>
+                      <Link
+                        href="/admin/debug"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                      >
+                        Debug RO
+                      </Link>
+                    </div>
+                  </div>
+                )}
+
                 <button
                   onClick={() => signOut()}
                   className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
@@ -96,34 +125,6 @@ export default function Navbar({ role = "TECHNICIAN", isGuest = false }: NavbarP
                   Sign Out
                 </button>
               </>
-            )}
-
-            {isAdmin && (
-              <div className="relative group">
-                <button className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
-                  Admin
-                </button>
-                <div className="hidden group-hover:block absolute right-0 mt-0 w-48 bg-white shadow-lg rounded-md z-10">
-                  <Link
-                    href="/admin/users"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left border-b"
-                  >
-                    Manage Users
-                  </Link>
-                  <Link
-                    href="/admin/upload-extracts"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left border-b"
-                  >
-                    Upload Extracts
-                  </Link>
-                  <Link
-                    href="/admin/debug"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                  >
-                    Debug RO
-                  </Link>
-                </div>
-              </div>
             )}
           </div>
         </div>
@@ -140,29 +141,6 @@ export default function Navbar({ role = "TECHNICIAN", isGuest = false }: NavbarP
               </Link>
             ))}
 
-            {isAdmin && (
-              <>
-                <Link
-                  href="/admin/users"
-                  className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
-                >
-                  Admin - Manage Users
-                </Link>
-                <Link
-                  href="/admin/upload-extracts"
-                  className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
-                >
-                  Admin - Upload Extracts
-                </Link>
-                <Link
-                  href="/admin/debug"
-                  className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
-                >
-                  Admin - Debug RO
-                </Link>
-              </>
-            )}
-
             {isGuest ? (
               <Link
                 href="/login"
@@ -178,6 +156,30 @@ export default function Navbar({ role = "TECHNICIAN", isGuest = false }: NavbarP
                 >
                   Profile
                 </Link>
+
+                {isAdmin && (
+                  <>
+                    <Link
+                      href="/admin/users"
+                      className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
+                    >
+                      Admin - Manage Users
+                    </Link>
+                    <Link
+                      href="/admin/upload-extracts"
+                      className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
+                    >
+                      Admin - Upload Extracts
+                    </Link>
+                    <Link
+                      href="/admin/debug"
+                      className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"
+                    >
+                      Admin - Debug RO
+                    </Link>
+                  </>
+                )}
+
                 <button
                   onClick={() => signOut()}
                   className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 w-full text-left"

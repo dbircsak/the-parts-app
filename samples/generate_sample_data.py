@@ -90,21 +90,23 @@ estimator_names = ['Sarah', 'John', 'Linda', 'Robert', 'Jennifer', 'Michael', 'P
 
 for i in range(80):
     ro_num = 1001 + i
-    vehicle_in = datetime(2024, 1, 1) + timedelta(days=random.randint(-30, 15))
+    today = datetime.now()
     
     # Generate test data for three filter categories:
-    # First 27 cars: in-shop (scheduled_out in the past)
-    # Next 27 cars: pre-order (scheduled_out in the future)
+    # First 27 cars: in-shop (vehicle_in in the past, scheduled_out in the past)
+    # Next 27 cars: pre-order (vehicle_in in the future, scheduled_out in the future)
     # Last 26 cars: mixed dates
-    today = datetime.now()
     if i < 27:
-        # In-shop: scheduled out dates are in the past
+        # In-shop: vehicle already arrived (past), scheduled to leave in past
+        vehicle_in = today - timedelta(days=random.randint(5, 30))
         scheduled_out = today - timedelta(days=random.randint(1, 20))
     elif i < 54:
-        # Pre-order: scheduled out dates are in the future
-        scheduled_out = today + timedelta(days=random.randint(1, 30))
+        # Pre-order: vehicle not yet arrived (future), scheduled to arrive in future
+        vehicle_in = today + timedelta(days=random.randint(1, 30))
+        scheduled_out = vehicle_in + timedelta(days=random.randint(2, 10))
     else:
-        # Mixed: some past, some future
+        # Mixed: random dates
+        vehicle_in = datetime(2024, 1, 1) + timedelta(days=random.randint(-30, 15))
         scheduled_out = vehicle_in + timedelta(days=random.randint(2, 10))
     
     make = random.choice(list(vehicle_makes))
