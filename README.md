@@ -88,15 +88,26 @@ The script will:
    ```
 
 3. **Configure environment variables**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` and set:
-   - `DATABASE_URL` - PostgreSQL connection string
-   - `NEXTAUTH_URL` - Application URL (default: http://localhost:3000)
-   - `NEXTAUTH_SECRET` - Generate with: `openssl rand -base64 32`
-   - `RESEND_API_KEY` - Your Resend API key (optional for email features)
+    ```bash
+    cp .env.example .env
+    ```
+    
+    Edit `.env` and set:
+    - `DATABASE_URL` - PostgreSQL connection string
+    - `NEXTAUTH_URL` - Application URL (default: http://localhost:3000)
+    - `NEXTAUTH_SECRET` - Generate with: `openssl rand -base64 32`
+    - `RESEND_API_KEY` - Your Resend API key (optional for email features)
+    
+    **Email Setup (Resend):**
+    
+    The app uses [Resend](https://resend.com) for sending transactional emails (password resets, notifications, etc.).
+    
+    - Create a free account at [resend.com](https://resend.com)
+    - Generate an API key from your Resend dashboard
+    - Add the API key to `RESEND_API_KEY` in your `.env` file
+    - Configure your sender email domain in Resend settings
+    
+    If `RESEND_API_KEY` is not set, email features will be disabled but the app will continue to function normally.
 
 4. **Setup database**
    ```bash
@@ -139,13 +150,10 @@ The app uses Prisma with PostgreSQL. Key models include:
 
 - **User** - Authentication and role management
 - **DailyOut** - Repair orders
+- **WorkQueue** - Work queue management with status tracking
 - **PartsStatus** - Part tracking and status
-- **WorkQueue** - Work queue management
 - **Vendor** - Vendor information
 - **Material** - Technician material orders
-- **Delivery** - Parts delivery tracking
-- **Task** - Work tasks
-- **Notification** - User notifications
 
 See `prisma/schema.prisma` for complete schema.
 

@@ -18,7 +18,6 @@ interface DebugData {
   dailyOut: any;
   parts: any[];
   workQueue: any;
-  tasks: any[];
   summary: {
     totalParts: number;
     partsWithRoQty: number;

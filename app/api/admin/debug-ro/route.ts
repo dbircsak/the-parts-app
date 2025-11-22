@@ -37,17 +37,11 @@ export async function GET(request: Request) {
       where: { roNumber: roNum },
     });
 
-    // Fetch any tasks
-    const tasks = await prisma.task.findMany({
-      where: { roNumber: roNum },
-    });
-
     return NextResponse.json({
       roNumber: roNum,
       dailyOut,
       parts,
       workQueue,
-      tasks,
       summary: {
         totalParts: parts.length,
         partsWithRoQty: parts.filter((p) => p.roQty > 0).length,
