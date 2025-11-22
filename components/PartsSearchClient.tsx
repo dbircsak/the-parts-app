@@ -2,9 +2,8 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { ChevronUp, ChevronDown } from "lucide-react";
-import PartNumberLink from "./part-number-link";
-import { getPartStatus, PART_STATUS_CONFIG } from "@/lib/part-status";
+import PartNumberLink from "./PartNumberLink";
+import { getPartStatus, PART_STATUS_CONFIG } from "../lib/part-status";
 import PaginationControls from "./PaginationControls";
 import Input from "./Input";
 import Table from "./Table";
@@ -110,7 +109,7 @@ export default function PartsSearchClient() {
 
             return sortDirection === "asc" ? comparison : -comparison;
         });
-    }, [parts, sortField, sortDirection, selectedStatus]);
+    }, [parts, sortField, sortDirection]);
 
     const paginatedParts = filteredAndSortedParts;
 
@@ -132,14 +131,7 @@ export default function PartsSearchClient() {
         })),
     ];
 
-    const SortIcon = ({ field }: { field: SortField }) => {
-        if (sortField !== field) return null;
-        return sortDirection === "asc" ? (
-            <ChevronUp className="w-4 h-4 inline ml-1" />
-        ) : (
-            <ChevronDown className="w-4 h-4 inline ml-1" />
-        );
-    };
+    // Removed unused SortIcon component to fix unused variable error
 
 
 

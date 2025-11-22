@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-function getPartStatus(roQty: number, orderedQty: number, receivedQty: number, returnedQty: number): string {
+function getPartStatus(_roQty: number, orderedQty: number, receivedQty: number, returnedQty: number): string {
   if (returnedQty > 0 && returnedQty === receivedQty) {
     return "returned";
   }

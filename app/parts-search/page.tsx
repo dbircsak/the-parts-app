@@ -1,6 +1,6 @@
 "use client";
 
-import PartsSearchClient from "@/components/parts-search-client";
+import PartsSearchClient from "@/components/PartsSearchClient";
 
 export default function PartsSearchPage() {
   return (

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Search, ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import PartNumberLink from "@/components/part-number-link";
+import PartNumberLink from "@/components/PartNumberLink";
 import VehicleStatusFilter from "@/components/VehicleStatusFilter";
 import Button from "@/components/Button";
 import Input from "@/components/Input";

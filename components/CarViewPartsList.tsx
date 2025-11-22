@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import PartNumberLink from "./part-number-link";
+import PartNumberLink from "./PartNumberLink";
 import { getPartStatus, PART_STATUS_CONFIG } from "@/lib/part-status";
 import { filterDisplayableParts } from "@/lib/count-parts-by-status";
 import { usePagination } from "@/lib/usePagination";

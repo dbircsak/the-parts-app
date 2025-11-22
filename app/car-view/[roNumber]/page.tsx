@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import CarViewPartsList from "@/components/car-view-parts-list";
+import CarViewPartsList from "@/components/CarViewPartsList";
 import Card from "@/components/Card";
 import Alert from "@/components/Alert";
 

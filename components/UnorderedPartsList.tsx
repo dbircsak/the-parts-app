@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import PartNumberLink from "./part-number-link";
+import PartNumberLink from "./PartNumberLink";
 import VehicleStatusFilter from "./VehicleStatusFilter";
 import Button from "./Button";
 import Input from "./Input";
