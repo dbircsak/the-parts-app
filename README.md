@@ -33,7 +33,48 @@ A comprehensive parts and repair order workflow management system designed for a
 - npm or yarn
 - PostgreSQL 12+
 
+#### Linux: Install Prerequisites
+
+```bash
+sudo apt update
+sudo apt install nodejs npm postgresql
+```
+
 ### Setup
+
+#### Linux/macOS: Set PostgreSQL password (required before running setup script)
+
+If you haven't already set a password for the default PostgreSQL `postgres` user, run:
+
+```bash
+sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'your_password';"
+```
+
+#### Windows/All Platforms: Automated Setup
+
+The easiest way to set up the app is to use the provided setup script:
+
+**Windows:**
+```powershell
+.\Setup.ps1
+```
+
+**Linux/macOS:**
+```bash
+./setup.sh
+```
+
+The script will:
+- Check prerequisites (Node.js, npm, PostgreSQL)
+- Create the database
+- Install dependencies
+- Generate environment variables
+- Set up the database schema
+- Seed initial data
+
+---
+
+#### Manual Setup
 
 1. **Clone the repository**
    ```bash
@@ -115,6 +156,8 @@ The app uses NextAuth.js with three role levels:
 - **ADMIN** - Full access to admin features, user management
 - **ESTIMATOR** - Can create/edit repair orders, manage parts
 - **TECHNICIAN** - View assigned work, update materials
+
+The application provides read-only access for guest users. Authentication is required only for write operations and administrative functions.
 
 ## Contributing
 

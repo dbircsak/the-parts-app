@@ -158,6 +158,7 @@ setup_environment() {
 DATABASE_URL="$DATABASE_URL"
 NEXTAUTH_URL="$APP_URL"
 NEXTAUTH_SECRET="$SECRET"
+RESEND_API_KEY="your-resend-api-key-here"
 EOF
     
     print_success ".env file created with:"
@@ -243,6 +244,11 @@ main() {
     print_info "  User: $DATABASE_USER"
     print_info "  Port: $DATABASE_PORT"
     print_info "  Name: $DATABASE_NAME"
+    
+    # Prompt for password
+    print_prompt "\nEnter PostgreSQL password for user '$DATABASE_USER':"
+    read -sp "" DATABASE_PASSWORD
+    echo ""
     
     # Check if running as root (not recommended but need sudo for some postgres operations)
     if [ "$EUID" -eq 0 ]; then

@@ -159,6 +159,7 @@ function Setup-Environment {
 DATABASE_URL="$databaseUrl"
 NEXTAUTH_URL="$AppUrl"
 NEXTAUTH_SECRET="$secret"
+RESEND_API_KEY="your-resend-api-key-here"
 "@ | Out-File -FilePath $envFile -Encoding UTF8
     
     Write-Success ".env file created with:"
