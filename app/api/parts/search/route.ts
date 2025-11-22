@@ -1,11 +1,24 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+function getPartStatus(roQty: number, orderedQty: number, receivedQty: number, returnedQty: number): string {
+  if (returnedQty > 0 && returnedQty === receivedQty) {
+    return "returned";
+  }
+  if (receivedQty > 0) {
+    return "received";
+  }
+  if (orderedQty > 0 && receivedQty === 0) {
+    return "on_order";
+  }
+  return "not_ordered";
+}
+
 export async function GET(request: NextRequest) {
   const q = request.nextUrl.searchParams.get("q");
+  const status = request.nextUrl.searchParams.get("status");
   const page = parseInt(request.nextUrl.searchParams.get("page") || "1");
   const pageSize = 50;
-  const skip = (page - 1) * pageSize;
 
   try {
     let where: any = {
@@ -41,8 +54,8 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // Fetch parts with owner data (join via roNumber)
-    const parts = await prisma.partsStatus.findMany({
+    // Fetch all matching parts (without pagination yet, to apply status filter)
+    const allParts = await prisma.partsStatus.findMany({
       where,
       select: {
         id: true,
@@ -61,12 +74,23 @@ export async function GET(request: NextRequest) {
         returnedQty: true,
       },
       orderBy: { roNumber: "asc" },
-      skip,
-      take: pageSize,
     });
 
+    // Apply status filter in-memory (handles complex comparisons like returnedQty === receivedQty)
+    let filteredParts = allParts;
+    if (status && status !== "all") {
+      filteredParts = allParts.filter(
+        (part) => getPartStatus(part.roQty, part.orderedQty, part.receivedQty, part.returnedQty) === status
+      );
+    }
+
+    // Now apply pagination
+    const total = filteredParts.length;
+    const skip = (page - 1) * pageSize;
+    const paginatedParts = filteredParts.slice(skip, skip + pageSize);
+
     // Batch fetch owner data for these parts
-    const roNumbers = [...new Set(parts.map((p) => p.roNumber))];
+    const roNumbers = [...new Set(paginatedParts.map((p) => p.roNumber))];
     const dailyOutRecords = await prisma.dailyOut.findMany({
       where: { roNumber: { in: roNumbers } },
       select: { roNumber: true, owner: true },
@@ -75,13 +99,10 @@ export async function GET(request: NextRequest) {
     const ownerMap = new Map(dailyOutRecords.map((r) => [r.roNumber, r.owner]));
 
     // Enrich parts with owner data
-    const enrichedParts = parts.map((part) => ({
+    const enrichedParts = paginatedParts.map((part) => ({
       ...part,
       owner: ownerMap.get(part.roNumber) || "Unknown",
     }));
-
-    // Get total count for pagination
-    const total = await prisma.partsStatus.count({ where });
 
     return NextResponse.json({
       data: enrichedParts,

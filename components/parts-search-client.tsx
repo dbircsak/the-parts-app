@@ -61,6 +61,7 @@ export default function PartsSearchClient() {
                 const params = new URLSearchParams();
                 if (searchFilter.trim()) params.append("q", searchFilter);
                 params.append("page", currentPage.toString());
+                params.append("status", selectedStatus);
 
                 const response = await fetch(`/api/parts/search?${params}`);
                 if (!response.ok) {
@@ -79,21 +80,11 @@ export default function PartsSearchClient() {
         };
 
         fetchParts();
-    }, [searchFilter, currentPage]);
+    }, [searchFilter, currentPage, selectedStatus]);
 
     const filteredAndSortedParts = useMemo(() => {
-        // Apply status filter (search filter is done server-side)
-        let filtered = parts;
-
-        if (selectedStatus !== "all") {
-            filtered = filtered.filter((part) => {
-                const status = getPartStatus(part.roQty, part.orderedQty, part.receivedQty, part.returnedQty);
-                return status.type === selectedStatus;
-            });
-        }
-
-        // Apply sort
-        return [...filtered].sort((a, b) => {
+        // Apply sort (status filter is done server-side)
+        return [...parts].sort((a, b) => {
             let comparison = 0;
 
             if (sortField === "status") {
@@ -177,6 +168,7 @@ export default function PartsSearchClient() {
                         value={selectedStatus}
                         onChange={(e) => {
                             setSelectedStatus(e.target.value);
+                            setCurrentPage(1);
                         }}
                         className="px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
