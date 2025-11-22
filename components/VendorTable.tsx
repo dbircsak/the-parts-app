@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronUp, ChevronDown } from "lucide-react";
 import { usePagination } from "@/lib/usePagination";
 import PaginationControls from "./PaginationControls";
 import Input from "./Input";
 import Table from "./Table";
+import TableHeader from "./TableHeader";
 
 interface Vendor {
     vendorName: string;
@@ -80,24 +80,7 @@ export default function VendorTable({ vendors }: { vendors: Vendor[] }) {
         resetPage();
     };
 
-    const SortIcon = ({ field }: { field: SortField }) => {
-        if (sortField !== field) return null;
-        return sortDirection === "asc" ? (
-            <ChevronUp className="w-4 h-4 inline ml-1" />
-        ) : (
-            <ChevronDown className="w-4 h-4 inline ml-1" />
-        );
-    };
 
-    const ColumnHeader = ({ field, label }: { field: SortField; label: string }) => (
-        <th
-            className="px-4 py-3 text-left font-semibold cursor-pointer hover:bg-gray-200 transition-colors"
-            onClick={() => handleSort(field)}
-        >
-            {label}
-            <SortIcon field={field} />
-        </th>
-    );
 
     return (
         <div>
@@ -119,15 +102,15 @@ export default function VendorTable({ vendors }: { vendors: Vendor[] }) {
             <Table>
                 <Table.Head>
                     <Table.Row>
-                        <ColumnHeader field="vendorName" label="Vendor Name" />
-                        <ColumnHeader field="primaryPhone" label="Phone" />
-                        <ColumnHeader field="fax" label="Fax" />
-                        <ColumnHeader field="address" label="Address" />
-                        <ColumnHeader field="city" label="City" />
-                        <ColumnHeader field="state" label="State" />
-                        <ColumnHeader field="zip" label="Zip" />
-                        <ColumnHeader field="preferred" label="Preferred" />
-                        <ColumnHeader field="electronic" label="Electronic" />
+                        <TableHeader field="vendorName" label="Vendor Name" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="primaryPhone" label="Phone" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="fax" label="Fax" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="address" label="Address" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="city" label="City" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="state" label="State" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="zip" label="Zip" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="preferred" label="Preferred" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="electronic" label="Electronic" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
                     </Table.Row>
                 </Table.Head>
                 <Table.Body>

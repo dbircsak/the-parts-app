@@ -39,11 +39,11 @@ function TableHead({ children }: TableHeadProps) {
 }
 
 function TableBody({ children }: TableBodyProps) {
-  return <tbody>{children}</tbody>;
+  return <tbody className="[&_tr:nth-child(odd)]:bg-white [&_tr:nth-child(even)]:bg-gray-50 [&_tr:hover]:bg-gray-100">{children}</tbody>;
 }
 
 function TableRow({ children, className = "" }: TableRowProps) {
-  return <tr className={`border-b hover:bg-gray-50 ${className}`}>{children}</tr>;
+  return <tr className={`border-b ${className}`}>{children}</tr>;
 }
 
 function TableCell({ children, header = false, className = "" }: TableCellProps) {

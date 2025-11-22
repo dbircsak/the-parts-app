@@ -6,6 +6,7 @@ import Button from "@/components/Button";
 import Card from "@/components/Card";
 import Alert from "@/components/Alert";
 import Input from "@/components/Input";
+import Table from "@/components/Table";
 
 export const dynamic = "force-dynamic";
 import Link from "next/link";
@@ -180,50 +181,45 @@ export default function DebugPage() {
 
           {/* Parts Table */}
           {data.parts.length > 0 && (
-            <Card className="p-4">
-              <h2 className="text-xl font-bold mb-3">Parts ({data.parts.length})</h2>
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs">
-                  <thead className="bg-gray-100 border-b">
-                    <tr>
-                      <th className="px-3 py-2 text-left">Line</th>
-                      <th className="px-3 py-2 text-left">Part #</th>
-                      <th className="px-3 py-2 text-left">Description</th>
-                      <th className="px-3 py-2 text-center">RO Qty</th>
-                      <th className="px-3 py-2 text-center">Ord Qty</th>
-                      <th className="px-3 py-2 text-center">Rcv Qty</th>
-                      <th className="px-3 py-2 text-center">Ret Qty</th>
-                      <th className="px-3 py-2 text-left">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.parts.map((part, idx) => {
-                      const status = getPartStatus(
-                        part.roQty,
-                        part.orderedQty,
-                        part.receivedQty,
-                        part.returnedQty
-                      );
-                      return (
-                        <tr key={idx} className="border-b hover:bg-gray-50">
-                          <td className="px-3 py-2">{part.line}</td>
-                          <td className="px-3 py-2 font-mono">{part.partNumber}</td>
-                          <td className="px-3 py-2 text-xs">{part.partDescription}</td>
-                          <td className="px-3 py-2 text-center font-semibold">{part.roQty}</td>
-                          <td className="px-3 py-2 text-center">{part.orderedQty}</td>
-                          <td className="px-3 py-2 text-center">{part.receivedQty}</td>
-                          <td className="px-3 py-2 text-center">{part.returnedQty}</td>
-                          <td className={`px-3 py-2 font-semibold ${status.color} text-white rounded`}>
-                            {status.label}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                </div>
-                </Card>
-                )}
+            <Table>
+              <Table.Head>
+                <Table.Row>
+                  <th className="px-4 py-2 text-left text-sm font-medium">Line</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium">Part #</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium">Description</th>
+                  <th className="px-4 py-2 text-center text-sm font-medium">RO Qty</th>
+                  <th className="px-4 py-2 text-center text-sm font-medium">Ord Qty</th>
+                  <th className="px-4 py-2 text-center text-sm font-medium">Rcv Qty</th>
+                  <th className="px-4 py-2 text-center text-sm font-medium">Ret Qty</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium">Status</th>
+                </Table.Row>
+              </Table.Head>
+              <Table.Body>
+                {data.parts.map((part, idx) => {
+                  const status = getPartStatus(
+                    part.roQty,
+                    part.orderedQty,
+                    part.receivedQty,
+                    part.returnedQty
+                  );
+                  return (
+                    <Table.Row key={idx}>
+                      <Table.Cell>{part.line}</Table.Cell>
+                      <Table.Cell className="font-mono">{part.partNumber}</Table.Cell>
+                      <Table.Cell className="text-xs">{part.partDescription}</Table.Cell>
+                      <Table.Cell className="text-center font-semibold">{part.roQty}</Table.Cell>
+                      <Table.Cell className="text-center">{part.orderedQty}</Table.Cell>
+                      <Table.Cell className="text-center">{part.receivedQty}</Table.Cell>
+                      <Table.Cell className="text-center">{part.returnedQty}</Table.Cell>
+                      <Table.Cell className={`font-semibold ${status.color} text-white rounded`}>
+                        {status.label}
+                      </Table.Cell>
+                    </Table.Row>
+                  );
+                })}
+              </Table.Body>
+            </Table>
+          )}
 
                 {/* Raw JSON Data */}
                 <Card className="p-4">

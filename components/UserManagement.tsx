@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Trash2, Plus, Edit2, ChevronUp, ChevronDown } from "lucide-react";
+import { Trash2, Plus, Edit2 } from "lucide-react";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Card from "@/components/Card";
 import Alert from "@/components/Alert";
+import Table from "@/components/Table";
+import TableHeader from "@/components/TableHeader";
 
 interface User {
   id: string;
@@ -197,24 +199,7 @@ export default function UserManagement() {
     return sorted;
   }, [users, sortField, sortDirection]);
 
-  const SortIcon = ({ field }: { field: SortField }) => {
-    if (sortField !== field) return null;
-    return sortDirection === "asc" ? (
-      <ChevronUp className="w-4 h-4 inline ml-1" />
-    ) : (
-      <ChevronDown className="w-4 h-4 inline ml-1" />
-    );
-  };
 
-  const ColumnHeader = ({ field, label }: { field: SortField; label: string }) => (
-    <th
-      className="px-4 py-3 text-left font-semibold cursor-pointer hover:bg-gray-200 transition-colors"
-      onClick={() => handleSort(field)}
-    >
-      {label}
-      <SortIcon field={field} />
-    </th>
-  );
 
   if (loading) {
     return <div className="text-gray-500">Loading users...</div>;
@@ -339,53 +324,51 @@ export default function UserManagement() {
       )}
 
       {/* Users Table */}
-      <Card className="overflow-x-auto p-0">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-100 border-b">
-            <tr>
-              <ColumnHeader field="email" label="Email" />
-              <ColumnHeader field="name" label="Name" />
-              <ColumnHeader field="role" label="Role" />
-              <ColumnHeader field="createdAt" label="Created" />
-              <th className="px-4 py-3 text-left font-semibold">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedUsers.map((user) => (
-              <tr key={user.id} className="border-b hover:bg-gray-50">
-                <td className="px-4 py-3">{user.email}</td>
-                <td className="px-4 py-3">{user.name}</td>
-                <td className="px-4 py-3">
-                  <span className="px-2 py-1 rounded text-xs font-semibold bg-blue-100 text-blue-800">
-                    {user.role}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-xs text-gray-600">
-                  {new Date(user.createdAt).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => handleEditUser(user)}
-                      className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 transition"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteUser(user.id)}
-                      className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 transition"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+      <Table>
+        <Table.Head>
+          <Table.Row>
+            <TableHeader field="email" label="Email" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+            <TableHeader field="name" label="Name" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+            <TableHeader field="role" label="Role" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+            <TableHeader field="createdAt" label="Created" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+            <th className="px-4 py-3 text-left font-semibold">Actions</th>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {sortedUsers.map((user) => (
+            <Table.Row key={user.id}>
+              <Table.Cell>{user.email}</Table.Cell>
+              <Table.Cell>{user.name}</Table.Cell>
+              <Table.Cell>
+                <span className="px-2 py-1 rounded text-xs font-semibold bg-blue-100 text-blue-800">
+                  {user.role}
+                </span>
+              </Table.Cell>
+              <Table.Cell className="text-xs text-gray-600">
+                {new Date(user.createdAt).toLocaleDateString()}
+              </Table.Cell>
+              <Table.Cell>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => handleEditUser(user)}
+                    className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 transition"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteUser(user.id)}
+                    className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 transition"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </button>
+                </div>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
 
       {sortedUsers.length === 0 && (
         <p className="text-gray-500 text-center py-8">No users found.</p>

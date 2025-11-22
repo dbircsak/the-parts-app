@@ -8,6 +8,7 @@ import { getPartStatus, PART_STATUS_CONFIG } from "@/lib/part-status";
 import PaginationControls from "./PaginationControls";
 import Input from "./Input";
 import Table from "./Table";
+import TableHeader from "./TableHeader";
 
 interface Part {
     id: number;
@@ -140,15 +141,7 @@ export default function PartsSearchClient() {
         );
     };
 
-    const ColumnHeader = ({ field, label }: { field: SortField; label: string }) => (
-        <th
-            className="px-4 py-2 text-left text-sm font-medium cursor-pointer hover:bg-gray-200 transition-colors"
-            onClick={() => handleSort(field)}
-        >
-            {label}
-            <SortIcon field={field} />
-        </th>
-    );
+
 
     return (
         <>
@@ -198,32 +191,26 @@ export default function PartsSearchClient() {
                     <Table>
                         <Table.Head>
                             <Table.Row>
-                                <th
-                                    className="px-4 py-2 text-left text-sm font-medium w-12 cursor-pointer hover:bg-gray-200 transition-colors"
-                                    onClick={() => handleSort("status")}
-                                    title="Part Status"
-                                >
-                                    Status
-                                    {sortField === "status" && (
-                                        sortDirection === "asc" ? (
-                                            <ChevronUp className="w-4 h-4 inline ml-1" />
-                                        ) : (
-                                            <ChevronDown className="w-4 h-4 inline ml-1" />
-                                        )
-                                    )}
-                                </th>
-                                <ColumnHeader field="roNumber" label="RO" />
-                                <ColumnHeader field="owner" label="Owner" />
-                                <ColumnHeader field="partNumber" label="Part Number" />
-                                <ColumnHeader field="partDescription" label="Description" />
-                                <ColumnHeader field="vendorName" label="Vendor" />
-                                <ColumnHeader field="roQty" label="Qty" />
-                                <ColumnHeader field="orderedQty" label="Ordered Qty" />
-                                <ColumnHeader field="orderedDate" label="Ordered Date" />
-                                <ColumnHeader field="expectedDelivery" label="Expected Delivery" />
-                                <ColumnHeader field="receivedQty" label="Received Qty" />
-                                <ColumnHeader field="invoiceDate" label="Invoice Date" />
-                                <ColumnHeader field="returnedQty" label="Returned Qty" />
+                                <TableHeader
+                                    field="status"
+                                    label="Status"
+                                    currentSortField={sortField}
+                                    sortDirection={sortDirection}
+                                    onSort={() => handleSort("status")}
+                                    className="w-12"
+                                />
+                                <TableHeader field="roNumber" label="RO" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="owner" label="Owner" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="partNumber" label="Part Number" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="partDescription" label="Description" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="vendorName" label="Vendor" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="roQty" label="Qty" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="orderedQty" label="Ordered Qty" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="orderedDate" label="Ordered Date" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="expectedDelivery" label="Expected Delivery" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="receivedQty" label="Received Qty" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="invoiceDate" label="Invoice Date" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                                <TableHeader field="returnedQty" label="Returned Qty" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
                             </Table.Row>
                         </Table.Head>
                         <Table.Body>

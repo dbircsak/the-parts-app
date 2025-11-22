@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronUp, ChevronDown } from "lucide-react";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Table from "@/components/Table";
 import Card from "@/components/Card";
+import TableHeader from "@/components/TableHeader";
 
 interface Material {
     id: string;
@@ -95,21 +95,7 @@ export default function MaterialsClient({ initialMaterials, bodyTechnicians, isG
         return sorted;
     };
 
-    const SortHeader = ({ field, label }: { field: keyof Material; label: string }) => (
-        <th
-            onClick={() => handleSort(field)}
-            className="px-4 py-2 text-left text-sm font-medium cursor-pointer hover:bg-gray-200 transition-colors"
-        >
-            {label}
-            {sortField === field && (
-                sortDirection === "asc" ? (
-                    <ChevronUp className="w-4 h-4 inline ml-1" />
-                ) : (
-                    <ChevronDown className="w-4 h-4 inline ml-1" />
-                )
-            )}
-        </th>
-    );
+
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -314,14 +300,14 @@ export default function MaterialsClient({ initialMaterials, bodyTechnicians, isG
             <Table>
                 <Table.Head>
                     <Table.Row>
-                        <SortHeader field="bodyTechnician" label="Body Technician" />
-                        <SortHeader field="partNumber" label="Part Number" />
-                        <SortHeader field="description" label="Description" />
-                        <SortHeader field="orderedQty" label="Ordered Qty" />
-                        <SortHeader field="orderedDate" label="Ordered Date" />
-                        <SortHeader field="unitType" label="Unit Type" />
-                        <SortHeader field="receivedQty" label="Received Qty" />
-                        <SortHeader field="receivedDate" label="Received Date" />
+                        <TableHeader field="bodyTechnician" label="Body Technician" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="partNumber" label="Part Number" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="description" label="Description" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="orderedQty" label="Ordered Qty" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="orderedDate" label="Ordered Date" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="unitType" label="Unit Type" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="receivedQty" label="Received Qty" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
+                        <TableHeader field="receivedDate" label="Received Date" currentSortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
                     </Table.Row>
                 </Table.Head>
                 <Table.Body>
