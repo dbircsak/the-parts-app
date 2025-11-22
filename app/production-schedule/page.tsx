@@ -7,6 +7,9 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import VehicleStatusFilter from "@/components/VehicleStatusFilter";
 import { VehicleStatus } from "@/lib/vehicle-status-filter";
+import FilterButton from "@/components/FilterButton";
+import Input from "@/components/Input";
+import Alert from "@/components/Alert";
 
 type GroupMode = "estimator" | "technician";
 
@@ -147,24 +150,18 @@ export default function ProductionSchedulePage() {
             <div className="mb-6 space-y-3">
                 {/* Group Mode Toggle */}
                 <div className="flex gap-2 flex-wrap items-center">
-                    <button
+                    <FilterButton
+                        active={groupMode === "estimator"}
                         onClick={() => setGroupMode("estimator")}
-                        className={`px-4 py-2 rounded-lg font-medium transition ${groupMode === "estimator"
-                                ? "bg-blue-600 text-white"
-                                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                            }`}
                     >
                         Group by Estimators
-                    </button>
-                    <button
+                    </FilterButton>
+                    <FilterButton
+                        active={groupMode === "technician"}
                         onClick={() => setGroupMode("technician")}
-                        className={`px-4 py-2 rounded-lg font-medium transition ${groupMode === "technician"
-                                ? "bg-blue-600 text-white"
-                                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                            }`}
                     >
                         Group by Technicians
-                    </button>
+                    </FilterButton>
 
                     {/* Vehicle Status Filter */}
                     <VehicleStatusFilter
@@ -174,7 +171,8 @@ export default function ProductionSchedulePage() {
 
                     <div className="flex gap-2 ml-auto">
                         {/* Due Date Button - Sort by Scheduled Out Date */}
-                        <button
+                        <FilterButton
+                            active={!!sortState.dueDate}
                             onClick={() => {
                                 setSortState((prev) => {
                                     const newState = { ...prev };
@@ -188,10 +186,7 @@ export default function ProductionSchedulePage() {
                                     return newState;
                                 });
                             }}
-                            className={`px-3 py-2 rounded-lg font-medium text-sm transition flex items-center gap-1 ${sortState.dueDate
-                                    ? "bg-green-600 text-white"
-                                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                                }`}
+                            className="flex items-center gap-1 px-3 py-2 text-sm"
                         >
                             Due Date
                             {sortState.dueDate && (
@@ -201,10 +196,11 @@ export default function ProductionSchedulePage() {
                                     <ChevronUp className="w-4 h-4" />
                                 )
                             )}
-                        </button>
+                        </FilterButton>
 
                         {/* Parts % Button - Sort by Parts Completion % */}
-                        <button
+                        <FilterButton
+                            active={!!sortState.partsPercent}
                             onClick={() => {
                                 setSortState((prev) => {
                                     const newState = { ...prev };
@@ -218,10 +214,7 @@ export default function ProductionSchedulePage() {
                                     return newState;
                                 });
                             }}
-                            className={`px-3 py-2 rounded-lg font-medium text-sm transition flex items-center gap-1 ${sortState.partsPercent
-                                    ? "bg-green-600 text-white"
-                                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                                }`}
+                            className="flex items-center gap-1 px-3 py-2 text-sm"
                         >
                             Parts %
                             {sortState.partsPercent && (
@@ -231,28 +224,25 @@ export default function ProductionSchedulePage() {
                                     <ChevronUp className="w-4 h-4" />
                                 )
                             )}
-                        </button>
+                        </FilterButton>
                     </div>
                 </div>
 
                 {/* Search Bar */}
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Search by owner, vehicle, RO, technician, estimator, or color..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
+                <Input
+                    type="text"
+                    placeholder="Search by owner, vehicle, RO, technician, estimator, or color..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    icon={<Search className="w-4 h-4" />}
+                />
             </div>
 
             {/* Sidebar Layout */}
             {filteredAndSortedData.length === 0 ? (
-                <div className="text-center py-12">
-                    <p className="text-gray-500">No cars found matching your filters.</p>
-                </div>
+                <Alert type="info">
+                    No cars found matching your filters.
+                </Alert>
             ) : (
                 <div className="flex gap-4">
                     {/* Left Sidebar - Estimators/Technicians */}
@@ -314,9 +304,9 @@ export default function ProductionSchedulePage() {
 
                                         {/* Part Status Bar or All Parts In */}
                                         {car.partsReceivedPct === 100 ? (
-                                            <div className="bg-green-100 border border-green-400 text-green-700 text-sm font-bold py-2 px-3 rounded text-center">
+                                            <Alert type="success" className="text-center">
                                                 All Parts In
-                                            </div>
+                                            </Alert>
                                         ) : (
                                             <div className="mb-3">
                                                 <div className="flex h-6 rounded-lg overflow-hidden bg-gray-100 border border-gray-300">
