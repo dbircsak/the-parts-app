@@ -1,5 +1,301 @@
-vendor_name,primary_phone,fax,address,city,state,zip,preferred,electronic
-ACE Auto Parts,555-0101,555-0102,123 Main Street,Springfield,IL,62701,true,true
-National Distributors,555-0201,555-0202,456 Oak Avenue,Chicago,IL,60601,true,true
-Apex Supplies,555-0301,555-0302,789 Pine Road,Joliet,IL,60432,false,false
-Midwest Parts Co,555-0401,555-0402,321 Elm Street,Aurora,IL,60505,true,false
+Vendor Name,Primary Phone,Fax,Address,City,State,Zip,Preferred,Electronic
+National Components,555-5012,555-4657,143 Oak Boulevard,Arlington Heights,IL,60356,false,Electronic
+ACE Motors,555-4811,555-9279,617 Main Lane,Aurora,IL,62932,false,Electronic
+Pro Express Components,555-1106,555-3615,715 Birch Road,Naperville,IL,60636,true,
+National Group,555-2584,555-6881,868 Cedar Lane,Naperville,IL,60177,false,Electronic
+Quality Hub,555-5803,555-6925,592 Elm Boulevard,Chicago,IL,60187,true,
+National Online Motors,555-2654,555-7227,285 Ash Boulevard,Evanston,IL,60666,false,
+Midwest Direct Components,555-2169,555-3803,547 Elm Avenue,Cicero,IL,61554,false,Electronic
+Elite Online Auto Parts,555-4752,555-1525,825 Cedar Drive,Naperville,IL,60271,true,
+Midwest Direct Solutions,555-7482,555-8517,147 Maple Avenue,Aurora,IL,62299,false,
+Superior Max Services,555-4593,555-3266,522 Ash Street,Springfield,IL,60449,true,Electronic
+Quality Express Distributors,555-7304,555-7252,611 Ash Lane,Naperville,IL,62266,true,Electronic
+Advanced Online Components,555-6573,555-2827,301 Birch Avenue,Cicero,IL,60013,false,Electronic
+Advanced Components,555-9317,555-4258,157 Cedar Avenue,Arlington Heights,IL,62172,true,
+Pro Distributors,555-6947,555-6038,246 Main Avenue,Rockford,IL,60322,true,
+National Online Hub,555-3060,555-3103,676 Ash Lane,Joliet,IL,61085,false,Electronic
+Advanced Online Motors,555-6107,555-7537,688 Cedar Drive,Arlington Heights,IL,61849,true,Electronic
+Midwest Services,555-1344,555-4770,603 Elm Street,Chicago,IL,62899,true,Electronic
+National Services,555-2160,555-9423,244 Maple Boulevard,Cicero,IL,60877,true,
+Midwest Online Solutions,555-7669,555-4119,97 Oak Boulevard,Waukegan,IL,61451,false,
+Pro Online Auto Parts,555-2612,555-1993,413 Cedar Street,Aurora,IL,60784,true,
+Apex Max Supplies,555-5563,555-8579,256 Oak Drive,Arlington Heights,IL,60401,true,Electronic
+National Online Motors #21,555-3724,555-7658,498 Ash Avenue,Waukegan,IL,60240,true,
+ACE Max Components,555-8454,555-5673,434 Ash Avenue,Aurora,IL,61215,true,Electronic
+Superior Direct Hub,555-1998,555-6138,59 Main Lane,Cicero,IL,62059,true,Electronic
+Advanced Supplies,555-2122,555-2113,692 Elm Drive,Chicago,IL,62333,true,Electronic
+Superior Group,555-9565,555-6183,958 Maple Avenue,Evanston,IL,60977,false,
+Apex Direct Components,555-8491,555-6180,952 Oak Street,Cicero,IL,62544,true,Electronic
+Advanced Plus Hub,555-5345,555-3170,956 Cedar Street,Aurora,IL,61513,false,Electronic
+Pro Online Hub,555-5956,555-9666,9 Maple Boulevard,Chicago,IL,60550,false,Electronic
+National Direct Hub,555-3546,555-5462,289 Elm Boulevard,Evanston,IL,60833,false,
+Premier Online Auto Parts,555-2512,555-7939,850 Maple Street,Springfield,IL,61366,true,
+Apex Direct Solutions,555-8007,555-1158,115 Oak Boulevard,Joliet,IL,62234,true,
+Superior Express Supplies,555-8041,555-3088,43 Maple Road,Springfield,IL,61465,true,Electronic
+National Pro Hub,555-7658,555-3532,948 Elm Avenue,Joliet,IL,61688,true,Electronic
+Elite Online Group,555-5065,555-5371,164 Oak Drive,Springfield,IL,61927,true,Electronic
+Pro Pro Components,555-4728,555-4652,25 Elm Drive,Evanston,IL,61141,true,
+Elite Direct Hub,555-7548,555-9785,340 Main Street,Naperville,IL,60731,false,Electronic
+National Express Group,555-6663,555-6139,447 Oak Drive,Rockford,IL,60778,false,Electronic
+Quality Hub #38,555-9821,555-4228,373 Birch Street,Evanston,IL,62552,false,Electronic
+Premier Express Components,555-7691,555-6344,413 Maple Lane,Joliet,IL,60785,false,
+Apex Express Center,555-5930,555-7653,562 Main Road,Naperville,IL,60860,false,
+Pro Max Solutions,555-4501,555-9375,485 Pine Boulevard,Chicago,IL,61162,false,Electronic
+Midwest Direct Components #42,555-4680,555-4262,151 Main Street,Aurora,IL,61946,true,
+Quality Direct Center,555-4185,555-7291,507 Birch Avenue,Joliet,IL,62687,true,Electronic
+Quality Plus Supplies,555-9486,555-8611,52 Elm Street,Cicero,IL,60546,false,
+Pro Express Hub,555-7991,555-9976,457 Pine Boulevard,Cicero,IL,61843,false,Electronic
+Premier Online Hub,555-8939,555-4919,282 Ash Street,Naperville,IL,60960,false,
+Elite Express Distributors,555-3267,555-3471,237 Birch Boulevard,Joliet,IL,62893,true,Electronic
+Quality Max Services,555-9890,555-8633,426 Main Avenue,Waukegan,IL,61595,true,
+Pro Services,555-5892,555-7389,874 Birch Lane,Arlington Heights,IL,62470,true,
+Midwest Pro Group,555-8956,555-1475,399 Cedar Boulevard,Waukegan,IL,62966,true,
+Apex Express Hub,555-1441,555-7455,607 Main Street,Waukegan,IL,60555,false,Electronic
+ACE Pro Group,555-6363,555-4467,466 Cedar Road,Waukegan,IL,61139,false,
+National Max Auto Parts,555-9837,555-1853,975 Cedar Avenue,Chicago,IL,62669,true,Electronic
+Midwest Plus Auto Parts,555-3496,555-4908,130 Ash Boulevard,Chicago,IL,62310,true,
+Premier Online Services,555-3749,555-2876,797 Pine Road,Chicago,IL,62370,true,
+Superior Direct Group,555-7498,555-4249,78 Elm Street,Naperville,IL,62802,true,Electronic
+Elite Express Group,555-7071,555-2129,519 Cedar Street,Waukegan,IL,62007,true,
+Elite Direct Solutions,555-3506,555-8135,181 Maple Lane,Arlington Heights,IL,61980,false,
+Superior Pro Services,555-5022,555-2419,286 Ash Avenue,Cicero,IL,62334,false,
+ACE Max Services,555-3979,555-8988,218 Cedar Road,Evanston,IL,61145,false,Electronic
+Advanced Plus Distributors,555-4954,555-7658,501 Elm Boulevard,Cicero,IL,62645,false,
+ACE Components,555-4630,555-7625,709 Elm Road,Rockford,IL,61511,false,
+Quality Direct Hub,555-6419,555-6764,720 Ash Road,Naperville,IL,61029,true,Electronic
+Midwest Pro Distributors,555-9779,555-4033,197 Elm Boulevard,Cicero,IL,61132,false,Electronic
+Midwest Pro Motors,555-6912,555-3939,310 Main Boulevard,Arlington Heights,IL,60518,false,Electronic
+ACE Express Components,555-3068,555-9042,106 Main Lane,Naperville,IL,61922,false,
+Elite Plus Auto Parts,555-5136,555-8827,117 Oak Drive,Cicero,IL,60303,true,Electronic
+Apex Online Center,555-5978,555-2395,255 Oak Lane,Waukegan,IL,62483,true,
+Pro Max Components,555-8025,555-6003,583 Main Lane,Chicago,IL,60851,true,
+National Plus Motors,555-3847,555-2229,161 Main Drive,Cicero,IL,62823,false,
+ACE Plus Components,555-5632,555-8438,73 Elm Road,Rockford,IL,62708,true,
+National Express Motors,555-3441,555-5352,847 Pine Street,Springfield,IL,60679,false,
+Pro Solutions,555-5982,555-7594,966 Maple Lane,Arlington Heights,IL,62022,false,Electronic
+Superior Group #74,555-6280,555-5102,27 Oak Avenue,Rockford,IL,62404,true,
+Superior Supplies,555-8708,555-9502,668 Ash Road,Joliet,IL,62397,false,
+National Max Services,555-7690,555-6460,329 Oak Avenue,Evanston,IL,61686,false,
+Quality Online Hub,555-1601,555-8451,91 Cedar Road,Evanston,IL,60474,false,Electronic
+Advanced Max Group,555-1888,555-4073,531 Cedar Lane,Cicero,IL,62561,false,Electronic
+Midwest Pro Hub,555-3146,555-5719,449 Ash Street,Springfield,IL,62580,true,Electronic
+Premier Express Auto Parts,555-7684,555-2527,231 Oak Drive,Chicago,IL,62653,true,
+Premier Express Components #81,555-7807,555-8905,484 Elm Drive,Arlington Heights,IL,60592,false,Electronic
+Superior Express Supplies #82,555-2143,555-5526,792 Birch Road,Arlington Heights,IL,61094,true,
+Premier Online Center,555-9022,555-3434,458 Ash Road,Evanston,IL,62260,false,
+Elite Online Motors,555-4912,555-7274,240 Birch Street,Evanston,IL,61937,false,
+Apex Max Auto Parts,555-3068,555-9229,989 Cedar Street,Cicero,IL,60408,false,Electronic
+Apex Max Supplies #86,555-2225,555-8692,801 Maple Road,Rockford,IL,62837,false,Electronic
+Elite Online Hub,555-7226,555-6188,642 Ash Lane,Springfield,IL,62529,true,Electronic
+Premier Plus Distributors,555-8110,555-2612,779 Oak Drive,Joliet,IL,62842,false,Electronic
+ACE Pro Auto Parts,555-5806,555-6873,384 Birch Avenue,Aurora,IL,62175,false,Electronic
+Apex Plus Distributors,555-7267,555-4945,510 Pine Avenue,Cicero,IL,62612,false,
+Premier Direct Auto Parts,555-8622,555-5712,694 Pine Street,Cicero,IL,61415,false,
+Premier Max Components,555-4263,555-7302,874 Ash Street,Aurora,IL,61562,false,
+Premier Group,555-5497,555-1132,580 Main Lane,Cicero,IL,61172,true,
+Midwest Direct Motors,555-5106,555-3240,644 Oak Boulevard,Springfield,IL,61265,false,Electronic
+Superior Pro Supplies,555-2476,555-5835,335 Birch Avenue,Aurora,IL,60541,false,
+Apex Pro Solutions,555-5835,555-6549,824 Oak Drive,Chicago,IL,60576,true,
+Advanced Pro Distributors,555-7464,555-1228,271 Oak Drive,Evanston,IL,62755,false,
+Elite Motors,555-8724,555-1410,635 Cedar Lane,Aurora,IL,62652,true,
+Premier Direct Group,555-2911,555-3290,47 Main Road,Cicero,IL,60475,true,Electronic
+Advanced Plus Group,555-8432,555-7078,687 Birch Lane,Joliet,IL,61699,true,
+Superior Max Components,555-1536,555-7070,223 Ash Drive,Aurora,IL,61485,true,
+Advanced Direct Services,555-1992,555-7523,283 Elm Street,Cicero,IL,60375,true,Electronic
+ACE Online Services,555-4990,555-3063,806 Elm Street,Arlington Heights,IL,60848,true,Electronic
+Elite Online Supplies,555-1046,555-5542,880 Pine Avenue,Arlington Heights,IL,61026,true,Electronic
+ACE Plus Auto Parts,555-6869,555-4898,603 Cedar Street,Joliet,IL,61086,true,Electronic
+Quality Express Distributors #106,555-2041,555-8802,460 Cedar Lane,Rockford,IL,60446,false,Electronic
+Superior Hub,555-5941,555-8504,659 Main Street,Cicero,IL,61645,false,Electronic
+Pro Direct Solutions,555-2204,555-2323,330 Pine Street,Joliet,IL,61126,false,
+Superior Express Components,555-8433,555-9282,620 Birch Street,Chicago,IL,62681,true,
+Pro Plus Group,555-6553,555-8430,409 Birch Boulevard,Chicago,IL,61280,false,
+Premier Pro Supplies,555-8770,555-2099,94 Oak Street,Waukegan,IL,60395,false,Electronic
+Advanced Center,555-6400,555-3002,421 Cedar Boulevard,Waukegan,IL,62953,true,
+Superior Pro Services #113,555-2697,555-9313,218 Pine Boulevard,Cicero,IL,60918,true,
+Advanced Pro Distributors #114,555-5564,555-4705,827 Birch Lane,Rockford,IL,62513,true,
+ACE Plus Components #115,555-6062,555-6567,360 Main Avenue,Joliet,IL,62319,false,Electronic
+Apex Direct Auto Parts,555-2503,555-9691,221 Birch Drive,Cicero,IL,61396,true,
+Premier Direct Services,555-2391,555-1861,160 Pine Lane,Springfield,IL,62760,true,
+Pro Direct Group,555-8957,555-8242,425 Maple Avenue,Arlington Heights,IL,60466,false,
+National Pro Center,555-8972,555-9633,684 Maple Street,Aurora,IL,61618,true,Electronic
+Midwest Pro Motors #120,555-3248,555-5186,297 Cedar Street,Springfield,IL,62037,false,Electronic
+Apex Max Hub,555-4770,555-9196,573 Cedar Street,Waukegan,IL,60173,false,Electronic
+Pro Services #122,555-8033,555-7626,727 Birch Road,Chicago,IL,61659,true,
+Apex Online Center #123,555-8538,555-6928,91 Birch Street,Aurora,IL,61784,false,Electronic
+Quality Online Components,555-6562,555-4630,342 Pine Street,Arlington Heights,IL,62593,true,Electronic
+Elite Pro Supplies,555-4871,555-2684,150 Maple Avenue,Joliet,IL,62467,true,Electronic
+Apex Online Solutions,555-8601,555-8354,698 Cedar Boulevard,Evanston,IL,60618,false,Electronic
+Pro Max Components #127,555-5500,555-1920,361 Oak Road,Cicero,IL,61851,true,Electronic
+Elite Online Components,555-2257,555-2479,630 Birch Drive,Rockford,IL,62270,true,
+Superior Direct Motors,555-6267,555-8792,514 Pine Street,Cicero,IL,60423,false,Electronic
+Advanced Direct Supplies,555-1641,555-5059,725 Ash Drive,Arlington Heights,IL,62141,true,
+Elite Pro Group,555-7697,555-6543,696 Main Boulevard,Evanston,IL,60269,false,Electronic
+Advanced Direct Group,555-5655,555-5128,742 Pine Road,Chicago,IL,62386,true,
+Premier Direct Group #133,555-3112,555-2388,318 Birch Boulevard,Evanston,IL,60523,true,
+Advanced Pro Auto Parts,555-6940,555-6060,185 Elm Road,Cicero,IL,60786,true,Electronic
+Apex Components,555-2657,555-9317,790 Main Boulevard,Evanston,IL,62531,true,
+Apex Plus Supplies,555-3712,555-8170,45 Birch Road,Aurora,IL,61819,false,
+Midwest Express Motors,555-6070,555-8684,926 Elm Road,Rockford,IL,61804,false,
+Quality Express Hub,555-7859,555-3655,837 Elm Lane,Joliet,IL,61024,true,
+Elite Express Distributors #139,555-9452,555-3042,292 Oak Avenue,Naperville,IL,61840,true,
+National Plus Solutions,555-6727,555-1436,425 Main Drive,Arlington Heights,IL,61531,true,
+National Pro Motors,555-1461,555-6221,954 Oak Boulevard,Evanston,IL,60598,true,Electronic
+Premier Online Solutions,555-3273,555-8685,460 Main Street,Springfield,IL,61048,true,Electronic
+Advanced Direct Center,555-9647,555-7934,114 Maple Avenue,Naperville,IL,60499,true,Electronic
+Quality Direct Center #144,555-8489,555-2029,114 Ash Lane,Arlington Heights,IL,60067,true,Electronic
+Premier Max Auto Parts,555-6780,555-4941,585 Birch Avenue,Chicago,IL,62144,false,Electronic
+Advanced Express Hub,555-9316,555-1333,400 Ash Street,Waukegan,IL,61529,false,Electronic
+Elite Online Distributors,555-6649,555-4950,751 Oak Lane,Evanston,IL,60546,true,
+Advanced Pro Supplies,555-8612,555-8840,647 Pine Avenue,Chicago,IL,62932,false,Electronic
+Premier Plus Auto Parts,555-4268,555-1686,324 Maple Lane,Waukegan,IL,62224,false,
+ACE Online Motors,555-5687,555-6848,883 Main Boulevard,Evanston,IL,61119,true,
+Quality Max Solutions,555-7334,555-6554,998 Pine Drive,Cicero,IL,61504,false,Electronic
+Quality Group,555-3956,555-9937,301 Cedar Street,Chicago,IL,61343,false,
+Pro Express Group,555-3730,555-8272,360 Ash Street,Evanston,IL,62518,false,
+ACE Group,555-6952,555-9406,821 Pine Street,Joliet,IL,62488,false,Electronic
+Apex Motors,555-7001,555-6933,393 Main Lane,Joliet,IL,62781,false,
+Elite Max Distributors,555-3255,555-9674,376 Birch Road,Naperville,IL,61022,true,Electronic
+Apex Max Hub #157,555-7340,555-2929,269 Maple Boulevard,Cicero,IL,60878,false,
+Midwest Supplies,555-2213,555-8406,177 Ash Street,Evanston,IL,62735,false,Electronic
+Advanced Express Components,555-5914,555-3580,729 Pine Road,Arlington Heights,IL,60918,true,Electronic
+Apex Plus Solutions,555-1430,555-6912,568 Cedar Drive,Arlington Heights,IL,60531,true,Electronic
+Premier Max Solutions,555-9612,555-7730,788 Birch Lane,Chicago,IL,60513,false,Electronic
+Pro Max Hub,555-6644,555-3102,900 Pine Avenue,Waukegan,IL,62059,true,Electronic
+Advanced Plus Components,555-3697,555-3653,331 Elm Road,Arlington Heights,IL,61163,true,
+Midwest Direct Hub,555-5496,555-3050,641 Maple Lane,Arlington Heights,IL,60382,true,Electronic
+Apex Direct Center,555-6531,555-1674,846 Main Street,Springfield,IL,62627,false,Electronic
+Superior Max Center,555-1496,555-9159,911 Maple Boulevard,Naperville,IL,61978,true,
+Premier Max Distributors,555-1981,555-3589,451 Birch Drive,Cicero,IL,60835,false,Electronic
+Elite Online Services,555-6658,555-7532,134 Cedar Lane,Arlington Heights,IL,60434,false,Electronic
+Pro Components,555-8366,555-5061,145 Oak Street,Naperville,IL,61573,false,Electronic
+Apex Online Services,555-6123,555-4110,782 Pine Drive,Arlington Heights,IL,61912,false,
+Pro Distributors #171,555-7442,555-9281,469 Elm Avenue,Rockford,IL,61445,true,Electronic
+Premier Max Center,555-8710,555-5681,550 Main Street,Waukegan,IL,60548,false,
+Quality Pro Auto Parts,555-7563,555-1838,584 Elm Road,Arlington Heights,IL,61182,true,
+Advanced Max Hub,555-5582,555-2946,132 Oak Drive,Evanston,IL,61388,false,Electronic
+Midwest Express Hub,555-7576,555-9193,42 Main Street,Joliet,IL,62922,false,
+Advanced Max Supplies,555-9446,555-3290,336 Cedar Avenue,Waukegan,IL,62525,false,
+Advanced Online Hub,555-9721,555-9025,726 Maple Drive,Springfield,IL,61508,false,Electronic
+Quality Express Components,555-1436,555-8775,272 Elm Boulevard,Springfield,IL,62390,false,Electronic
+Advanced Direct Center #179,555-7229,555-3421,842 Elm Street,Rockford,IL,62869,true,Electronic
+ACE Max Services #180,555-7861,555-3481,423 Elm Drive,Arlington Heights,IL,62504,false,Electronic
+Apex Express Motors,555-6325,555-8837,539 Birch Road,Joliet,IL,61882,false,
+Premier Express Solutions,555-4150,555-5038,286 Maple Avenue,Naperville,IL,61183,true,
+Elite Max Services,555-5480,555-5715,125 Birch Drive,Evanston,IL,60599,false,Electronic
+Premier Direct Distributors,555-6674,555-8247,672 Maple Boulevard,Cicero,IL,60876,true,
+Advanced Direct Components,555-3249,555-2789,631 Elm Avenue,Springfield,IL,62743,true,Electronic
+ACE Group #186,555-6411,555-8739,103 Pine Street,Arlington Heights,IL,60646,false,
+Pro Direct Motors,555-5706,555-6262,293 Main Street,Rockford,IL,60951,true,Electronic
+Quality Online Supplies,555-1595,555-7504,807 Ash Avenue,Naperville,IL,60153,true,
+Superior Express Distributors,555-6489,555-5662,466 Ash Avenue,Arlington Heights,IL,61917,false,Electronic
+National Pro Supplies,555-8518,555-5215,736 Pine Street,Evanston,IL,61208,true,Electronic
+Superior Online Group,555-8007,555-9442,336 Oak Drive,Chicago,IL,60756,true,
+Elite Plus Auto Parts #192,555-5272,555-7284,242 Ash Road,Evanston,IL,61236,true,
+Elite Direct Motors,555-2017,555-2936,477 Maple Avenue,Waukegan,IL,62810,false,Electronic
+Premier Pro Center,555-4618,555-4590,981 Pine Drive,Joliet,IL,61863,false,
+Advanced Max Hub #195,555-4578,555-5054,697 Oak Lane,Cicero,IL,62163,false,Electronic
+Superior Auto Parts,555-9972,555-9281,208 Pine Avenue,Evanston,IL,62131,false,Electronic
+Midwest Direct Center,555-9008,555-2489,921 Ash Street,Cicero,IL,60540,false,
+Superior Hub #198,555-8575,555-6049,741 Main Drive,Naperville,IL,60012,true,Electronic
+ACE Max Services #199,555-2044,555-9866,62 Oak Drive,Springfield,IL,61175,false,Electronic
+Apex Online Group,555-7135,555-7266,460 Birch Drive,Chicago,IL,62796,true,
+National Plus Hub,555-7439,555-9664,131 Elm Street,Springfield,IL,61222,false,
+Advanced Max Motors,555-5055,555-8546,355 Pine Road,Aurora,IL,62969,true,Electronic
+Quality Express Auto Parts,555-4943,555-4376,69 Oak Lane,Springfield,IL,61828,true,Electronic
+ACE Max Solutions,555-4839,555-9843,223 Main Avenue,Arlington Heights,IL,61184,true,
+Superior Express Services,555-4881,555-5944,898 Pine Boulevard,Arlington Heights,IL,60905,false,
+Premier Hub,555-3869,555-7999,570 Ash Street,Evanston,IL,62635,false,
+Quality Max Supplies,555-5913,555-7167,189 Ash Avenue,Aurora,IL,61231,true,
+ACE Express Group,555-7824,555-9683,138 Birch Avenue,Naperville,IL,60832,false,Electronic
+Pro Online Services,555-2514,555-9775,742 Elm Street,Naperville,IL,61544,true,Electronic
+Midwest Online Center,555-4555,555-8854,214 Cedar Road,Springfield,IL,60867,true,Electronic
+Pro Plus Center,555-4350,555-7498,938 Elm Lane,Evanston,IL,61159,false,
+Advanced Direct Services #212,555-6053,555-5285,369 Ash Drive,Chicago,IL,62959,false,
+Midwest Pro Services,555-7781,555-1749,577 Elm Boulevard,Joliet,IL,60066,false,
+Premier Plus Motors,555-6404,555-4768,389 Elm Drive,Arlington Heights,IL,62681,false,
+Pro Direct Solutions #215,555-8550,555-3756,751 Cedar Avenue,Joliet,IL,62950,false,Electronic
+Advanced Direct Auto Parts,555-9584,555-1554,860 Oak Boulevard,Springfield,IL,60026,false,Electronic
+Midwest Supplies #217,555-1149,555-4583,518 Ash Road,Springfield,IL,62530,false,
+ACE Hub,555-7739,555-1194,18 Maple Lane,Naperville,IL,60070,false,Electronic
+National Hub,555-3439,555-4948,197 Maple Road,Naperville,IL,61625,true,
+Quality Max Center,555-4984,555-4700,308 Oak Boulevard,Springfield,IL,60382,false,
+Quality Express Solutions,555-1919,555-1154,720 Pine Street,Cicero,IL,61777,false,Electronic
+Advanced Motors,555-4463,555-8790,278 Main Street,Naperville,IL,62224,true,Electronic
+Elite Motors #223,555-3362,555-7525,952 Oak Road,Joliet,IL,62309,true,
+Advanced Pro Group,555-3292,555-2284,513 Cedar Street,Chicago,IL,61790,true,Electronic
+Elite Express Center,555-7499,555-6347,31 Maple Drive,Cicero,IL,60934,false,
+Quality Plus Center,555-7227,555-2404,791 Maple Avenue,Chicago,IL,60336,false,Electronic
+Quality Direct Supplies,555-7383,555-6188,370 Oak Street,Springfield,IL,61262,false,
+Premier Supplies,555-2430,555-4070,442 Ash Lane,Arlington Heights,IL,62098,false,Electronic
+ACE Services,555-2524,555-6315,885 Birch Street,Naperville,IL,61694,false,Electronic
+Advanced Plus Center,555-9537,555-3778,702 Birch Avenue,Joliet,IL,61101,false,
+Pro Plus Distributors,555-3739,555-8121,283 Birch Road,Cicero,IL,60315,false,
+Midwest Direct Solutions #232,555-4203,555-8501,110 Pine Road,Springfield,IL,61620,false,
+Elite Max Services #233,555-8055,555-3230,308 Cedar Lane,Aurora,IL,61962,false,Electronic
+Quality Pro Components,555-9044,555-4971,334 Birch Road,Waukegan,IL,61495,true,Electronic
+Superior Express Supplies #235,555-1440,555-8563,966 Elm Drive,Naperville,IL,62837,true,
+Pro Plus Components,555-4965,555-5139,675 Pine Boulevard,Waukegan,IL,61544,true,
+Superior Max Center #237,555-7566,555-9755,519 Birch Lane,Springfield,IL,61472,true,Electronic
+Midwest Direct Services,555-3725,555-1725,577 Birch Road,Waukegan,IL,60433,true,Electronic
+Premier Plus Hub,555-9499,555-4621,457 Cedar Drive,Cicero,IL,62783,true,
+ACE Max Distributors,555-5840,555-7815,943 Oak Street,Joliet,IL,61426,false,
+Pro Online Motors,555-9537,555-8912,357 Ash Street,Cicero,IL,62957,false,
+National Pro Auto Parts,555-2885,555-1370,870 Cedar Boulevard,Chicago,IL,62773,true,Electronic
+Advanced Plus Hub #243,555-3623,555-6422,574 Birch Drive,Aurora,IL,61659,true,Electronic
+Quality Max Auto Parts,555-4232,555-8365,607 Birch Drive,Springfield,IL,62886,true,Electronic
+Premier Online Distributors,555-2667,555-9796,192 Cedar Road,Aurora,IL,61874,true,
+Pro Express Services,555-7367,555-7431,602 Oak Road,Evanston,IL,61875,true,
+Superior Express Distributors #247,555-3194,555-6131,121 Elm Road,Chicago,IL,60749,false,Electronic
+Advanced Max Group #248,555-3258,555-7286,434 Pine Drive,Arlington Heights,IL,62840,true,Electronic
+Pro Pro Supplies,555-4065,555-6154,863 Ash Lane,Springfield,IL,61470,true,
+Apex Plus Group,555-9281,555-9109,419 Ash Drive,Cicero,IL,62001,true,Electronic
+Superior Motors,555-5785,555-1535,282 Elm Lane,Naperville,IL,60688,false,
+Advanced Express Distributors,555-2871,555-5389,794 Cedar Lane,Springfield,IL,62944,false,Electronic
+Quality Motors,555-5877,555-1528,461 Maple Road,Chicago,IL,61798,true,Electronic
+Midwest Online Center #254,555-6744,555-8015,170 Pine Avenue,Aurora,IL,60243,false,
+Superior Express Supplies #255,555-6302,555-5794,297 Maple Lane,Chicago,IL,60555,false,Electronic
+Premier Online Supplies,555-3174,555-5090,150 Cedar Avenue,Waukegan,IL,62004,true,
+Quality Max Solutions #257,555-2237,555-2525,413 Maple Boulevard,Evanston,IL,61862,false,
+Superior Distributors,555-8511,555-6869,871 Oak Lane,Waukegan,IL,60892,false,Electronic
+Pro Pro Services,555-5646,555-6533,561 Pine Lane,Cicero,IL,61407,true,Electronic
+National Direct Solutions,555-1266,555-3035,952 Pine Drive,Cicero,IL,60002,false,Electronic
+Apex Direct Components #261,555-3604,555-5489,96 Cedar Road,Chicago,IL,61523,true,Electronic
+Quality Direct Components,555-4836,555-8032,672 Oak Boulevard,Chicago,IL,60004,true,
+National Plus Center,555-4705,555-9510,697 Ash Street,Springfield,IL,62849,false,Electronic
+Quality Direct Supplies #264,555-8826,555-2160,235 Birch Street,Chicago,IL,60422,false,
+Premier Plus Group,555-3181,555-3340,71 Main Lane,Joliet,IL,61802,false,Electronic
+Apex Max Center,555-8248,555-4559,89 Oak Avenue,Chicago,IL,62414,false,
+Quality Pro Supplies,555-5059,555-5537,661 Oak Avenue,Arlington Heights,IL,62461,false,Electronic
+Premier Plus Hub #268,555-9348,555-4090,766 Birch Road,Springfield,IL,60980,false,
+National Plus Solutions #269,555-2163,555-9655,911 Main Road,Evanston,IL,60540,false,
+Elite Express Supplies,555-8717,555-2195,18 Oak Street,Naperville,IL,60883,true,Electronic
+Quality Express Components #271,555-9209,555-7806,434 Birch Street,Arlington Heights,IL,62202,true,
+National Pro Distributors,555-9377,555-4329,998 Pine Lane,Evanston,IL,61600,true,
+Quality Direct Motors,555-1948,555-5005,89 Birch Street,Cicero,IL,62507,true,
+Apex Auto Parts,555-3248,555-1185,168 Ash Road,Arlington Heights,IL,62118,false,Electronic
+Elite Plus Components,555-2934,555-1480,344 Birch Road,Arlington Heights,IL,60261,false,Electronic
+Pro Max Hub #276,555-6900,555-1908,512 Pine Road,Joliet,IL,61044,true,Electronic
+Midwest Direct Hub #277,555-1042,555-1721,880 Main Avenue,Springfield,IL,61932,false,
+Apex Plus Auto Parts,555-7870,555-4678,330 Elm Drive,Evanston,IL,61111,true,
+National Express Auto Parts,555-3938,555-4656,824 Main Drive,Chicago,IL,61905,false,
+Elite Hub,555-8483,555-1130,378 Elm Road,Rockford,IL,61244,true,
+Elite Express Solutions,555-4201,555-9954,779 Elm Avenue,Springfield,IL,61679,true,Electronic
+Advanced Pro Auto Parts #282,555-6488,555-1023,778 Birch Boulevard,Naperville,IL,60425,true,Electronic
+Quality Max Auto Parts #283,555-3332,555-5584,96 Main Avenue,Arlington Heights,IL,61691,false,
+National Express Distributors,555-9280,555-3187,653 Birch Street,Rockford,IL,62325,true,
+Apex Plus Components,555-5276,555-6161,949 Birch Boulevard,Evanston,IL,61302,false,
+Midwest Motors,555-3230,555-2785,160 Oak Avenue,Cicero,IL,61908,false,
+National Express Services,555-4401,555-8404,316 Ash Road,Chicago,IL,60370,true,
+Superior Motors #288,555-6370,555-3430,94 Elm Road,Waukegan,IL,62103,true,
+Premier Online Supplies #289,555-1509,555-7625,876 Ash Lane,Arlington Heights,IL,61023,true,
+National Online Supplies,555-2989,555-1195,64 Elm Avenue,Aurora,IL,61640,false,Electronic
+Superior Express Components #291,555-2228,555-1357,67 Elm Boulevard,Cicero,IL,60527,true,
+National Solutions,555-1829,555-3752,947 Birch Boulevard,Waukegan,IL,62032,true,
+Quality Plus Services,555-4517,555-4066,282 Maple Drive,Joliet,IL,60141,true,
+Pro Max Hub #294,555-8848,555-1999,90 Maple Drive,Joliet,IL,61717,true,Electronic
+Advanced Online Auto Parts,555-7266,555-6883,492 Ash Road,Rockford,IL,62057,false,
+Premier Plus Auto Parts #296,555-6224,555-4588,31 Maple Street,Cicero,IL,62168,false,Electronic
+Apex Motors #297,555-4951,555-5366,547 Main Avenue,Rockford,IL,61590,false,Electronic
+Apex Plus Center,555-6210,555-6878,936 Main Boulevard,Evanston,IL,62325,true,Electronic
+Pro Express Components #299,555-3876,555-9035,39 Oak Street,Aurora,IL,62464,true,Electronic
